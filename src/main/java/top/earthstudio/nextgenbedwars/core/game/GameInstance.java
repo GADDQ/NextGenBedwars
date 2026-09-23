@@ -151,7 +151,7 @@ public final class GameInstance {
                             gameSubSystem.get(WorldProtector.class).addGroup(scannedBlocks);
                             isReady = true;
                         }
-                    }.runTaskAsynchronously(BedwarsAPI.getInstance().getPlugin());
+                    }.runTask(BedwarsAPI.getInstance().getPlugin());
                 }).exceptionally(throwable -> {
                     ComponentLogger.logger().error("Scan chunk async failed!", throwable);
                     return null;
