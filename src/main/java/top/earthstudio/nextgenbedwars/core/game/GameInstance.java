@@ -154,6 +154,9 @@ public final class GameInstance {
                     }.runTask(BedwarsAPI.getInstance().getPlugin());
                 }).exceptionally(throwable -> {
                     ComponentLogger.logger().error("Scan chunk async failed!", throwable);
+                    if (isShutdown) return null;
+
+                    isReady = true;
                     return null;
                 });;
     }
