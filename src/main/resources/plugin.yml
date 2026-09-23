@@ -1,0 +1,9 @@
+name: NextGenBedwars
+description: $description
+version: '${version}'
+
+main: top.earthstudio.nextgenbedwars.NextGenBedwars
+api-version: '1.21.11'
+load: POSTWORLD
+
+authors: [ Earth Studio ]
