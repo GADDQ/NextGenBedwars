@@ -1,0 +1,203 @@
+package top.earthstudio.nextgenbedwars.core.world;
+
+import it.unimi.dsi.fastutil.Pair;
+import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongIterator;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import org.bukkit.scheduler.BukkitRunnable;
+import org.joml.Vector3i;
+
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+public class WorldProtectorImpl implements WorldProtector {
+    // 用于 O(1) 按 UUID 查找与移除
+    private Map<UUID, LongSet> protectGroups;
+
+    // 用于 O(1) 快速遍历
+    private Long2IntOpenHashMap refCounts;
+
+    @Override
+    public void initialize() {
+        protectGroups = new Object2ObjectOpenHashMap<>();
+        refCounts = new Long2IntOpenHashMap();
+        refCounts.defaultReturnValue(0);
+    }
+
+    @Override
+    public UUID addGroup(LongSet group) {
+        UUID uuid = UUID.randomUUID();
+        protectGroups.put(uuid, group);
+
+        // 遍历该组的方块，计数全部 +1
+        LongIterator it = group.iterator();
+        while (it.hasNext())
+            refCounts.addTo(it.nextLong(), 1);
+
+        return uuid;
+    }
+
+    @Override
+    public void removeGroup(UUID uuid) {
+        LongSet removedGroup = protectGroups.remove(uuid);
+
+        // 只减去这个组包含的方块计数
+        LongIterator it = removedGroup.iterator();
+        while (it.hasNext()) {
+            long blockLong = it.nextLong();
+            int currentCount = refCounts.addTo(blockLong, -1); // 计数减 1
+
+            // 如果减完后计数归零，说明所有组都不再保护它，移出哈希表
+            if (currentCount <= 1) {
+                refCounts.remove(blockLong);
+            }
+        }
+    }
+
+    @Override
+    public boolean contains(long blockLong) {
+        return refCounts.get(blockLong) > 0;
+    }
+
+    @Override
+    public List<UUID> getOwnerGroupUuids(long blockLong) {
+        List<UUID> owners = new ObjectArrayList<>();
+        for (Map.Entry<UUID, LongSet> entry : protectGroups.entrySet()) {
+            if (entry.getValue().contains(blockLong)) {
+                owners.add(entry.getKey());
+            }
+        }
+        return owners.isEmpty() ? null : owners;
+    }
+
+    @Override
+    public void addBlockToGroup(UUID uuid, long blockLong) {
+        LongSet group = protectGroups.get(uuid);
+        if (group == null) throw new IllegalArgumentException("No such group!");
+
+        if (group.add(blockLong))
+            refCounts.addTo(blockLong, 1);
+    }
+
+    @Override
+    public void addBlocksToGroup(UUID uuid, LongSet blockLongs) {
+        LongSet group = protectGroups.get(uuid);
+        if (group == null) throw new IllegalArgumentException("No such group!");
+
+        LongIterator it = blockLongs.iterator();
+        while (it.hasNext()) {
+            long block = it.nextLong();
+            if (group.add(block))
+                refCounts.addTo(block, 1);
+        }
+    }
+
+    @Override
+    public void addRegionToGroup(UUID uuid, Pair<Vector3i, Vector3i> region) {
+        if (protectGroups.get(uuid) == null) throw new IllegalArgumentException("No such group!");
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                LongSet blockLongs = buildBlockLongs(region);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        addBlocksToGroup(uuid, blockLongs);
+                    }
+                }.runTask(BedwarsAPI.getInstance().getPlugin());
+            }
+        }.runTaskAsynchronously(BedwarsAPI.getInstance().getPlugin());
+    }
+
+    @Override
+    public void removeBlockFromGroup(UUID uuid, long blockLong) {
+        LongSet group = protectGroups.get(uuid);
+        if (group == null) throw new IllegalArgumentException("No such group!");
+
+        if (group.remove(blockLong)) {
+            int currentCount = refCounts.addTo(blockLong, -1);
+            if (currentCount <= 1) {
+                refCounts.remove(blockLong);
+            }
+        }
+    }
+
+    @Override
+    public void removeBlocksFromGroup(UUID uuid, LongSet blockLongs) {
+        LongSet group = protectGroups.get(uuid);
+        if (group == null) throw new IllegalArgumentException("No such group!");
+
+        LongIterator it = blockLongs.iterator();
+        while (it.hasNext()) {
+            long block = it.nextLong();
+            if (group.remove(block)) {
+                int currentCount = refCounts.addTo(block, -1);
+                if (currentCount <= 1) {
+                    refCounts.remove(block);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void removeRegionFromGroup(UUID uuid, Pair<Vector3i, Vector3i> region) {
+        if (protectGroups.get(uuid) == null) throw new IllegalArgumentException("No such group!");
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                LongSet blockLongs = buildBlockLongs(region);
+
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        removeBlocksFromGroup(uuid, blockLongs);
+                    }
+                }.runTask(BedwarsAPI.getInstance().getPlugin());
+            }
+        }.runTaskAsynchronously(BedwarsAPI.getInstance().getPlugin());
+    }
+
+    @Override
+    public void shutdown() {
+        protectGroups.clear();
+        protectGroups = null;
+        refCounts.clear();
+        refCounts = null;
+    }
+
+    private LongSet buildBlockLongs(Pair<Vector3i, Vector3i> region) {
+        LongSet blockLongs = new LongOpenHashSet();
+
+        Vector3i loc1 = region.left();
+        Vector3i loc2 = region.right();
+
+        int minX = Math.min(loc1.x, loc2.x);
+        int maxX = Math.max(loc1.x, loc2.x);
+        int minY = Math.min(loc1.y, loc2.y);
+        int maxY = Math.max(loc1.y, loc2.y);
+        int minZ = Math.min(loc1.z, loc2.z);
+        int maxZ = Math.max(loc1.z, loc2.z);
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    blockLongs.add(BlockPosUtil.asLong(x, y, z));
+                }
+            }
+        }
+
+        return blockLongs;
+    }
+}
