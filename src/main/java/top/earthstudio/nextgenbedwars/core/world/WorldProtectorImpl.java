@@ -57,7 +57,7 @@ public class WorldProtectorImpl implements WorldProtector {
             int currentCount = refCounts.addTo(blockLong, -1); // 计数减 1
 
             // 如果减完后计数归零，说明所有组都不再保护它，移出哈希表
-            if (currentCount <= 1) {
+            if (currentCount <= 0) {
                 refCounts.remove(blockLong);
             }
         }
@@ -127,7 +127,7 @@ public class WorldProtectorImpl implements WorldProtector {
 
         if (group.remove(blockLong)) {
             int currentCount = refCounts.addTo(blockLong, -1);
-            if (currentCount <= 1) {
+            if (currentCount <= 0) {
                 refCounts.remove(blockLong);
             }
         }
@@ -143,7 +143,7 @@ public class WorldProtectorImpl implements WorldProtector {
             long block = it.nextLong();
             if (group.remove(block)) {
                 int currentCount = refCounts.addTo(block, -1);
-                if (currentCount <= 1) {
+                if (currentCount <= 0) {
                     refCounts.remove(block);
                 }
             }
