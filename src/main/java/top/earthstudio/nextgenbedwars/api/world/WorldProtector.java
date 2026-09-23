@@ -31,7 +31,23 @@ public interface WorldProtector extends IGameSubSystem {
     public boolean contains(long blockLong);
 
     /**
-     * 查出这个方块由哪些组持有
+     * 查询指定方块当前被哪些保护组持有。
+     *
+     * <p><b>前置条件：</b>该方块必须被至少一个保护组持有，即
+     * {@link #contains(long)} 返回 {@code true}。
+     * 否则说明调用方的逻辑存在错误，将返回 {@code null}。
+     *
+     * <p>典型用法：
+     * <pre>{@code
+     * if (protector.contains(blockLong)) {
+     *     List<UUID> owners = protector.getOwnerGroupUuids(blockLong);
+     *     // owners 保证非 null 且非空
+     * }
+     * }</pre>
+     *
+     * @param blockLong 由 {@link top.earthstudio.nextgenbedwars.api.util.BlockPosUtil#asLong}
+     *                  压缩后的方块坐标
+     * @return 持有该方块的所有保护组 UUID，保证非 null 且非空
      */
     public List<UUID> getOwnerGroupUuids(long blockLong);
 
