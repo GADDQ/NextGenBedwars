@@ -3,11 +3,13 @@ package top.earthstudio.nextgenbedwars.api.world;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.longs.LongSet;
 
+import org.bukkit.World;
 import org.joml.Vector3i;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public interface WorldProtector extends IGameSubSystem {
     @Override
@@ -57,4 +59,5 @@ public interface WorldProtector extends IGameSubSystem {
     public void removeBlockFromGroup(UUID uuid, long blockLong);
     public void removeBlocksFromGroup(UUID uuid, LongSet blockLongs);
     public void removeRegionFromGroup(UUID uuid, Pair<Vector3i, Vector3i> region);
+    public void scanWorldToProtectLater(World world, Pair<Vector3i, Vector3i> region, Consumer<UUID> consumer);
 }
