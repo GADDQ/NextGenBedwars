@@ -56,7 +56,12 @@ public final class GameInstanceImpl implements GameInstance {
         });
     }
 
-    private void buildSubSystems() {
+    @Override
+    public void add(IGameSubSystem gameSubSystem) {
+        subSystems.add(gameSubSystem);
+    }
+
+    private void buildSubSystems() { // TODO: Isolate registerListener method to clean constructor
         subSystems.add(new SpawnerManager());
         subSystems.add(new WorldProtectorImpl(world));
         subSystems.add(new TeamManager(this));
@@ -70,9 +75,11 @@ public final class GameInstanceImpl implements GameInstance {
     public void shutdown() {
         isShutdown = true;
 
-        subSystems.forEach(IGameSubSystem::shutdown);
-        subSystems.clear();
-        subSystems = null;
+        if (subSystems != null) {
+            subSystems.forEach(IGameSubSystem::shutdown);
+            subSystems.clear();
+            subSystems = null;
+        }
 
         WorldManager.destroy(worldUUID);
         worldUUID = null;
