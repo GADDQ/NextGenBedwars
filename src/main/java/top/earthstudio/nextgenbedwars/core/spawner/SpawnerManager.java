@@ -17,9 +17,7 @@ public class SpawnerManager implements IManager<Spawner> {
 
     @Override
     public void update() {
-        spawners.forEach((uuid, spawnerEntity) -> {
-            spawnerEntity.update();
-        });
+        spawners.forEach((uuid, spawnerEntity) -> spawnerEntity.update());
     }
 
     @Override

@@ -13,7 +13,7 @@ public final class SpawnerDisplayUtil {
 
     public static final Vector ZERO_VELOCITY = new Vector(0, 0, 0);
 
-    public static Component updateTextDisplay(int seconds, Spawner spawner) {
+    public static Component updateTextDisplay(int seconds, Spawner spawner) { // TODO: i18n
         Component component = Component.text("");
         if (spawner.isShowHolo) {
             if (spawner.resourceName != null) {
