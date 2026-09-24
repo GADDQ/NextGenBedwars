@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WorldManager {
+public class WorldManager { // TODO: return real UUID from world.getUID(), rebuild this shit
     private static JavaPlugin plugin;
     private static WorldReadyListener worldReadyListener;
     private static Map<UUID, World> worlds;

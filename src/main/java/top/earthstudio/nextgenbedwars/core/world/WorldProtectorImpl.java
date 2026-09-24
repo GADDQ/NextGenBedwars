@@ -17,7 +17,6 @@ import org.joml.Vector3i;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
-import top.earthstudio.nextgenbedwars.core.game.GameSubSystem;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldProtectListener;
 
 import java.util.ArrayList;
@@ -28,8 +27,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class WorldProtectorImpl implements WorldProtector {
-    private GameSubSystem gameSubSystem;
-
     // 用于 O(1) 按 UUID 查找与移除
     private Map<UUID, LongSet> protectGroups;
 
@@ -39,13 +36,12 @@ public class WorldProtectorImpl implements WorldProtector {
     private UUID worldGroupUuid;
     private WorldProtectListener worldProtectListener;
 
-    public WorldProtectorImpl(GameSubSystem gameSubSystem) {
-        this.gameSubSystem = gameSubSystem;
+    public WorldProtectorImpl(World world) {
         protectGroups = new Object2ObjectOpenHashMap<>();
         refCounts = new Long2IntOpenHashMap();
         refCounts.defaultReturnValue(0);
 
-        this.worldProtectListener = new WorldProtectListener(this, gameSubSystem.world);
+        this.worldProtectListener = new WorldProtectListener(this, world);
         Bukkit.getPluginManager().registerEvents(worldProtectListener, BedwarsAPI.getInstance().getPlugin());
     }
 
@@ -297,6 +293,5 @@ public class WorldProtectorImpl implements WorldProtector {
         protectGroups = null;
         refCounts.clear();
         refCounts = null;
-        gameSubSystem = null;
     }
 }

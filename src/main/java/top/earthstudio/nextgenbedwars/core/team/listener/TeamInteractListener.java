@@ -10,21 +10,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.event.BedBrokenEvent;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
-import top.earthstudio.nextgenbedwars.core.game.GameSubSystem;
 import top.earthstudio.nextgenbedwars.core.team.TeamManager;
 
 import java.util.List;
 
 public class TeamInteractListener implements Listener {  // TODO: i18n
-    private final GameSubSystem gameSubSystem;
+    private final GameInstance gameInstance;
     private final TeamManager teamManager;
 
-    public TeamInteractListener(TeamManager teamManager, GameSubSystem gameSubSystem) {
-        this.gameSubSystem = gameSubSystem;
+    public TeamInteractListener(TeamManager teamManager, GameInstance gameInstance) {
+        this.gameInstance = gameInstance;
         this.teamManager = teamManager;
     }
 
@@ -73,11 +73,11 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
                 event.setDropItems(false);
                 teamManager.getInstance(targetTeam).isBedAlive = false;
 
-                WorldProtector protector = gameSubSystem.get(WorldProtector.class);
+                WorldProtector protector = gameInstance.get(WorldProtector.class);
                 protector.removeBlockFromWorldGroup(targetTeam.bedBlockLongs.firstLong());
                 protector.removeBlockFromWorldGroup(targetTeam.bedBlockLongs.secondLong());
 
-                Bukkit.getPluginManager().callEvent(new BedBrokenEvent(targetTeam, player));
+                Bukkit.getPluginManager().callEvent(new BedBrokenEvent(gameInstance, targetTeam, player));
                 player.getWorld().sendMessage(targetTeam.displayName.append(Component.text(" 的床被 ").color(NamedTextColor.RED).append(player.displayName().asComponent().append(Component.text("摧毁了！")))));
                 return;
             }

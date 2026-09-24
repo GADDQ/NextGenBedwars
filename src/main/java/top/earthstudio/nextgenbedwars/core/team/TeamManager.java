@@ -2,14 +2,17 @@ package top.earthstudio.nextgenbedwars.core.team;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
-import top.earthstudio.nextgenbedwars.core.game.GameSubSystem;
+
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
 
 import java.util.List;
@@ -22,10 +25,10 @@ public class TeamManager implements IManager<Team> {
 
     private TeamInteractListener teamInteractListener;
 
-    public TeamManager(GameSubSystem gameSubSystem) {
+    public TeamManager(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
-        teamInteractListener = new TeamInteractListener(this, gameSubSystem);
+        teamInteractListener = new TeamInteractListener(this, gameInstance);
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().getPlugin());
     }
 

@@ -24,11 +24,10 @@ import org.joml.Vector3i;
 import top.earthstudio.nextgenbedwars.NextGenBedwars;
 
 import top.earthstudio.nextgenbedwars.api.game.Game;
+import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
-import top.earthstudio.nextgenbedwars.core.game.GameInstance;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
-import top.earthstudio.nextgenbedwars.core.game.GameSubSystem;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
@@ -85,12 +84,12 @@ public class DebugCommand {
 
     private int switchToGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
         activeGame = GameManager.getInstance(UUID.fromString(commandSourceStackCommandContext.getArgument("targetGame", String.class)));
-        ((Player) commandSourceStackCommandContext.getSource().getSender()).teleport(new Location(WorldManager.get(activeGame.worldUUID), 0, 0, 0));
+        ((Player) commandSourceStackCommandContext.getSource().getSender()).teleport(new Location(WorldManager.get(activeGame.getWorldUUID()), 0, 0, 0));
         return 0;
     }
 
     private int addSpawner(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        spawnerUuids.add(activeGame.gameSubSystem.get(SpawnerManager.class).add(
+        spawnerUuids.add(activeGame.get(SpawnerManager.class).add(
                 new Spawner(
                         ((Player) commandSourceStackCommandContext.getSource().getSender()).getLocation(),
                         20,
@@ -109,7 +108,7 @@ public class DebugCommand {
     }
 
     private int removeAllSpawner(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        spawnerUuids.forEach(uuid -> activeGame.gameSubSystem.get(SpawnerManager.class).remove(uuid));
+        spawnerUuids.forEach(uuid -> activeGame.get(SpawnerManager.class).remove(uuid));
         spawnerUuids.clear();
         return 0;
     }
@@ -124,7 +123,7 @@ public class DebugCommand {
 
         UUID uuid = GameManager.addInstance(game, Component.text("test"), new File(Bukkit.getWorldContainer(), "testworld"));
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
-        NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).worldUUID, world -> {
+        NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).getWorldUUID(), world -> {
             player.teleport(new Location(world, 0, 0, 0));
         });
         activeGame = GameManager.getInstance(uuid);
