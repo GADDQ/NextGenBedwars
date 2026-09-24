@@ -136,7 +136,7 @@ public class WorldProtectorImpl implements WorldProtector {
 
         if (group.remove(blockLong)) {
             int currentCount = refCounts.addTo(blockLong, -1);
-            if (currentCount <= 0) {
+            if (currentCount <= 1) {
                 refCounts.remove(blockLong);
             }
         }
@@ -152,7 +152,7 @@ public class WorldProtectorImpl implements WorldProtector {
             long block = it.nextLong();
             if (group.remove(block)) {
                 int currentCount = refCounts.addTo(block, -1);
-                if (currentCount <= 0)
+                if (currentCount <= 1)
                     refCounts.remove(block);
             }
         }
@@ -175,7 +175,7 @@ public class WorldProtectorImpl implements WorldProtector {
                     long block = BlockPosUtil.asLong(x, y, z);
                     if (group.remove(block)) {
                         int currentCount = refCounts.addTo(block, -1);
-                        if (currentCount <= 0)
+                        if (currentCount <= 1)
                             refCounts.remove(block);
                     }
                 }
