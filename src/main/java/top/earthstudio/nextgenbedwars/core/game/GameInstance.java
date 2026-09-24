@@ -24,13 +24,11 @@ public final class GameInstance {
     public File mapTemplate;
     public UUID worldUUID;
 
-    private WorldProtectListener worldProtectListener;
     private boolean isShutdown = false;
     private boolean isReady = false;
 
-    public GameInstance(Game game, GameSubSystem gameSubSystem, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener) {
+    public GameInstance(Game game, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener) {
         this.game = game;
-        this.gameSubSystem = gameSubSystem;
 
         this.displayName = displayName;
         this.mapTemplate = mapTemplate;
@@ -41,13 +39,11 @@ public final class GameInstance {
             if (isShutdown) return;
 
             game.locationsModifier(world);
+            this.gameSubSystem = new GameSubSystem(world);
             WorldManager.forceLoadRegions(worldUUID, game.region);
             WorldProtector worldProtector = gameSubSystem.get(WorldProtector.class);
 
-            this.worldProtectListener = new WorldProtectListener(worldProtector, world);
-            Bukkit.getPluginManager().registerEvents(worldProtectListener, BedwarsAPI.getInstance().getPlugin());
-
-            worldProtector.scanWorldToProtectLater(world, game.region, uuid -> {
+            worldProtector.scanWorldToProtectLater(world, game.region, v -> {
                 if (isShutdown) return;
 
                 isReady = true;
@@ -64,11 +60,6 @@ public final class GameInstance {
 
     public void shutdown() {
         isShutdown = true;
-
-        if (worldProtectListener != null)
-            HandlerList.unregisterAll(worldProtectListener);
-
-        worldProtectListener = null;
 
         gameSubSystem.shutdown();
         gameSubSystem = null;
