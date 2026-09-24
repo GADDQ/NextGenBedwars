@@ -1,6 +1,7 @@
 package top.earthstudio.nextgenbedwars.core.game;
 
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 
@@ -19,7 +20,7 @@ public final class GameInstance {
     public Game game;
     public GameSubSystem gameSubSystem;
 
-    public String displayName;
+    public Component displayName;
     public File mapTemplate;
     public UUID worldUUID;
 
@@ -27,7 +28,7 @@ public final class GameInstance {
     private boolean isShutdown = false;
     private boolean isReady = false;
 
-    public GameInstance(Game game, GameSubSystem gameSubSystem, String displayName, File mapTemplate, WorldReadyListener worldReadyListener) {
+    public GameInstance(Game game, GameSubSystem gameSubSystem, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener) {
         this.game = game;
         this.gameSubSystem = gameSubSystem;
 

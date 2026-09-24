@@ -123,7 +123,7 @@ public class DebugCommand {
         );
 
         GameSubSystem gameSubSystem = new GameSubSystem();
-        UUID uuid = GameManager.addInstance(game, gameSubSystem, "test", new File(Bukkit.getWorldContainer(), "testworld"));
+        UUID uuid = GameManager.addInstance(game, gameSubSystem, Component.text("test"), new File(Bukkit.getWorldContainer(), "testworld"));
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).worldUUID, world -> {
             player.teleport(new Location(world, 0, 0, 0));

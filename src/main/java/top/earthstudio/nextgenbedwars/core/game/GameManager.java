@@ -1,6 +1,7 @@
 package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.kyori.adventure.text.Component;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
@@ -30,7 +31,7 @@ public class GameManager {
         gameInstances = null;
     }
 
-    static public UUID addInstance(Game game, GameSubSystem gameSubSystem, String displayName, File mapTemplate) {
+    static public UUID addInstance(Game game, GameSubSystem gameSubSystem, Component displayName, File mapTemplate) {
         UUID uuid = UUID.randomUUID();
 
         GameInstance gameInstance = new GameInstance(game, gameSubSystem, displayName, mapTemplate, worldReadyListener);
