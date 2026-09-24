@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
-import top.earthstudio.nextgenbedwars.api.world.WorldReadyEvent;
+import top.earthstudio.nextgenbedwars.api.world.event.WorldReadyEvent;
 
 import java.util.Map;
 import java.util.Queue;

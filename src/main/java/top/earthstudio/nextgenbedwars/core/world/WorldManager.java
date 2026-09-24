@@ -16,7 +16,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 import org.joml.Vector3i;
 
-import top.earthstudio.nextgenbedwars.api.world.WorldReadyEvent;
+import top.earthstudio.nextgenbedwars.api.world.event.WorldReadyEvent;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.io.File;

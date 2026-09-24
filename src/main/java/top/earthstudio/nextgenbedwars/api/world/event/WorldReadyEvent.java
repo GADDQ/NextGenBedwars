@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.world;
+package top.earthstudio.nextgenbedwars.api.world.event;
 
 import org.bukkit.World;
 import org.bukkit.event.Event;

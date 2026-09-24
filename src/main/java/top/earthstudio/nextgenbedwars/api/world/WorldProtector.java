@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.LongSet;
 
 import org.bukkit.World;
 import org.joml.Vector3i;
+
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 
 import java.util.List;
@@ -20,17 +21,17 @@ public interface WorldProtector extends IGameSubSystem {
     /**
      * 注册保护组
      * */
-    public UUID addGroup(LongSet group);
+     UUID addGroup(LongSet group);
 
     /**
      * 移除保护组
      * */
-    public void removeGroup(UUID uuid);
+     void removeGroup(UUID uuid);
 
     /**
      * 判断某个方块是否被保护
      */
-    public boolean contains(long blockLong);
+     boolean contains(long blockLong);
 
     /**
      * 查询指定方块当前被哪些保护组持有。
@@ -51,13 +52,16 @@ public interface WorldProtector extends IGameSubSystem {
      *                  压缩后的方块坐标
      * @return 持有该方块的所有保护组 UUID，保证非 null 且非空
      */
-    public List<UUID> getOwnerGroupUuids(long blockLong);
+     List<UUID> getOwnerGroupUuids(long blockLong);
 
-    public void addBlockToGroup(UUID uuid, long blockLong);
-    public void addBlocksToGroup(UUID uuid, LongSet blockLongs);
-    public void addRegionToGroup(UUID uuid, Pair<Vector3i, Vector3i> region);
-    public void removeBlockFromGroup(UUID uuid, long blockLong);
-    public void removeBlocksFromGroup(UUID uuid, LongSet blockLongs);
-    public void removeRegionFromGroup(UUID uuid, Pair<Vector3i, Vector3i> region);
-    public void scanWorldToProtectLater(World world, Pair<Vector3i, Vector3i> region, Consumer<UUID> consumer);
+     void addBlockToGroup(UUID uuid, long blockLong);
+     void addBlocksToGroup(UUID uuid, LongSet blockLongs);
+     void addRegionToGroup(UUID uuid, Pair<Vector3i, Vector3i> region);
+     void removeBlockFromGroup(UUID uuid, long blockLong);
+     void removeBlocksFromGroup(UUID uuid, LongSet blockLongs);
+    void removeRegionFromGroup(UUID uuid, Pair<Vector3i, Vector3i> region);
+    void removeBlockFromWorldGroup(long blockLong);
+    void removeBlocksFromWorldGroup(LongSet blockLongs);
+    void removeRegionFromWorldGroup(Pair<Vector3i, Vector3i> region);
+    void scanWorldToProtectLater(World world, Pair<Vector3i, Vector3i> region, Consumer<Void> consumer);
 }

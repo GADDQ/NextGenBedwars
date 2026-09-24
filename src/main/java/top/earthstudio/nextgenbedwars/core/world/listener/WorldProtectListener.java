@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.world.listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -42,7 +43,7 @@ public class WorldProtectListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) { // TODO: 装饰性无碰撞体积方块放行并从保护中删除, 并设置不掉落物品
         if (event.getBlock().getWorld() == world) {
             if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
-                if (org.bukkit.Tag.BEDS.isTagged(event.getBlock().getType()))
+                if (Tag.BEDS.isTagged(event.getBlock().getType()))
                     return;
 
                 event.getPlayer().sendMessage(Component.text("你只能破坏玩家放置的方块！").color(NamedTextColor.RED));

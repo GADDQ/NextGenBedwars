@@ -10,12 +10,15 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import org.bukkit.*;
+import org.bukkit.event.HandlerList;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+import top.earthstudio.nextgenbedwars.core.game.GameSubSystem;
+import top.earthstudio.nextgenbedwars.core.world.listener.WorldProtectListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +28,25 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class WorldProtectorImpl implements WorldProtector {
+    private GameSubSystem gameSubSystem;
+
     // 用于 O(1) 按 UUID 查找与移除
     private Map<UUID, LongSet> protectGroups;
 
     // 用于 O(1) 快速遍历
     private Long2IntOpenHashMap refCounts;
 
-    @Override
-    public void initialize() {
+    private UUID worldGroupUuid;
+    private WorldProtectListener worldProtectListener;
+
+    public WorldProtectorImpl(GameSubSystem gameSubSystem) {
+        this.gameSubSystem = gameSubSystem;
         protectGroups = new Object2ObjectOpenHashMap<>();
         refCounts = new Long2IntOpenHashMap();
         refCounts.defaultReturnValue(0);
+
+        this.worldProtectListener = new WorldProtectListener(this, gameSubSystem.world);
+        Bukkit.getPluginManager().registerEvents(worldProtectListener, BedwarsAPI.getInstance().getPlugin());
     }
 
     @Override
@@ -157,6 +168,21 @@ public class WorldProtectorImpl implements WorldProtector {
             }
         }
     }
+
+    @Override
+    public void removeBlockFromWorldGroup(long blockLong) {
+        removeBlockFromGroup(worldGroupUuid, blockLong);
+    }
+
+    @Override
+    public void removeBlocksFromWorldGroup(LongSet blockLongs) {
+        removeBlocksFromGroup(worldGroupUuid, blockLongs);
+    }
+
+    @Override
+    public void removeRegionFromWorldGroup(Pair<Vector3i, Vector3i> region) {
+        removeRegionFromGroup(worldGroupUuid, region);
+    }
     
     @Override
     public void removeRegionFromGroup(UUID uuid, Pair<Vector3i, Vector3i> region) {
@@ -184,7 +210,7 @@ public class WorldProtectorImpl implements WorldProtector {
     }
 
     @Override
-    public void scanWorldToProtectLater(World world, Pair<Vector3i, Vector3i> region, Consumer<UUID> consumer) {
+    public void scanWorldToProtectLater(World world, Pair<Vector3i, Vector3i> region, Consumer<Void> consumer) {
         Vector3i loc1 = region.left();
         Vector3i loc2 = region.right();
 
@@ -246,7 +272,8 @@ public class WorldProtectorImpl implements WorldProtector {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            consumer.accept(addGroup(scannedBlocks));
+                            worldGroupUuid = addGroup(scannedBlocks);
+                            consumer.accept(null);
                         }
                     }.runTask(BedwarsAPI.getInstance().getPlugin());
                 }).exceptionally(throwable -> {
@@ -263,9 +290,13 @@ public class WorldProtectorImpl implements WorldProtector {
 
     @Override
     public void shutdown() {
+        HandlerList.unregisterAll(worldProtectListener);
+        worldProtectListener = null;
+
         protectGroups.clear();
         protectGroups = null;
         refCounts.clear();
         refCounts = null;
+        gameSubSystem = null;
     }
 }
