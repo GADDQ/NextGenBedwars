@@ -1,5 +1,5 @@
 name: NextGenBedwars
-description: $description
+description: The next-generation plugin for BedWars.
 version: '${version}'
 
 main: top.earthstudio.nextgenbedwars.NextGenBedwars
