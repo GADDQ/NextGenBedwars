@@ -268,28 +268,4 @@ public class WorldProtectorImpl implements WorldProtector {
         refCounts.clear();
         refCounts = null;
     }
-
-    private LongSet buildBlockLongs(Pair<Vector3i, Vector3i> region) {
-        LongSet blockLongs = new LongOpenHashSet();
-
-        Vector3i loc1 = region.left();
-        Vector3i loc2 = region.right();
-
-        int minX = Math.min(loc1.x, loc2.x);
-        int maxX = Math.max(loc1.x, loc2.x);
-        int minY = Math.min(loc1.y, loc2.y);
-        int maxY = Math.max(loc1.y, loc2.y);
-        int minZ = Math.min(loc1.z, loc2.z);
-        int maxZ = Math.max(loc1.z, loc2.z);
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    blockLongs.add(BlockPosUtil.asLong(x, y, z));
-                }
-            }
-        }
-
-        return blockLongs;
-    }
 }
