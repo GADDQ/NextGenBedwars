@@ -17,8 +17,6 @@ public final class GameSubSystem {
 
         subSystems.add(new SpawnerManager());
         subSystems.add(new WorldProtectorImpl());
-
-        subSystems.forEach(IGameSubSystem::initialize);
     }
 
     public <M extends IGameSubSystem> M get(Class<M> type) {

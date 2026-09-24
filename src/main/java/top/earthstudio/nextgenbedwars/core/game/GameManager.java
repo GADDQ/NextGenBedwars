@@ -56,6 +56,10 @@ public class GameManager {
         return gameInstances.get(uuid);
     }
 
+    static public void editInstance(UUID uuid) {
+        // TODO: ability to edit instance map and save to template
+    }
+
     static public void removeInstance(UUID uuid) {
         gameInstances.remove(uuid);
         GlobalTicker.remove(uuid);
