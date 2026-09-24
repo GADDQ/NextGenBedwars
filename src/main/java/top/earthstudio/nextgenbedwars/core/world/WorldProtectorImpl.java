@@ -63,7 +63,7 @@ public class WorldProtectorImpl implements WorldProtector {
             int currentCount = refCounts.addTo(blockLong, -1); // 计数减 1
 
             // 如果减完后计数归零，说明所有组都不再保护它，移出哈希表
-            if (currentCount <= 0) {
+            if (currentCount <= 1) {
                 refCounts.remove(blockLong);
             }
         }
