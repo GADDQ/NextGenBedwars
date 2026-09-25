@@ -27,8 +27,8 @@ import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
+import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
-import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
 import java.io.File;
@@ -37,14 +37,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class DebugCommand {
-    private JavaPlugin plugin;
     private List<UUID> gameUuids = new ArrayList<>();
     private List<UUID> spawnerUuids = new ArrayList<>();
 
     private GameInstance activeGame;
 
     public DebugCommand(JavaPlugin plugin) {
-        this.plugin = plugin;
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("bw").then(
                 Commands.literal("debug").then(
                         Commands.literal("spawner").then(
@@ -142,6 +140,5 @@ public class DebugCommand {
         gameUuids.clear();
         spawnerUuids = null;
         gameUuids = null;
-        plugin = null;
     }
 }

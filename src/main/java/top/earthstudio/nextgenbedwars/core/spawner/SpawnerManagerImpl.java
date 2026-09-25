@@ -1,17 +1,17 @@
 package top.earthstudio.nextgenbedwars.core.spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
-import top.earthstudio.nextgenbedwars.api.game.IManager;
+import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Map;
 import java.util.UUID;
 
-public class SpawnerManager implements IManager<Spawner> {
+public class SpawnerManagerImpl implements SpawnerManager {
     private Map<UUID, SpawnerEntity> spawners;
 
-    public SpawnerManager() {
+    public SpawnerManagerImpl() {
         spawners = new Object2ObjectOpenHashMap<>();
     }
 
