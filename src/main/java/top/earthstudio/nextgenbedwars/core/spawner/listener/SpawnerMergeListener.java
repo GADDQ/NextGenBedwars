@@ -10,7 +10,6 @@ import top.earthstudio.nextgenbedwars.api.PdcKeys;
 public class SpawnerMergeListener implements Listener {
     @EventHandler
     public void onItemMergeEvent(ItemMergeEvent event) {
-        // TODO: abstract tags class/enum
         Item entity = event.getEntity();
         Item target = event.getTarget();
 

@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class WorldManager { // TODO: return real UUID from world.getUID(), rebuild this shit
+public class WorldManager {
     private static JavaPlugin plugin;
     private static WorldReadyListener worldReadyListener;
     private static Map<UUID, World> worlds;
@@ -43,7 +43,7 @@ public class WorldManager { // TODO: return real UUID from world.getUID(), rebui
         pendingDestroyUuids = ConcurrentHashMap.newKeySet();
         worlds = new ConcurrentHashMap<>();
 
-        // TODO: 清理可能的意外残留世界
+        cleanupOrphanedWorlds();
     }
 
     static public UUID create(File mapTemplate) {
@@ -191,6 +191,26 @@ public class WorldManager { // TODO: return real UUID from world.getUID(), rebui
             }.runTaskAsynchronously(plugin);
         } catch (IllegalPluginAccessException e) {
             baseDelete.run();
+        }
+    }
+
+    private static void cleanupOrphanedWorlds() {
+        File[] candidates = Bukkit.getWorldContainer().listFiles(
+                (dir, name) -> name.startsWith("bw-")
+        );
+        if (candidates == null) return;
+
+        for (File dir : candidates) {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    try {
+                        FileUtils.deleteDirectory(dir);
+                    } catch (IOException e) {
+                        plugin.getLogger().warning("Failed to clean up orphaned temp world: " + dir.getName());
+                    }
+                }
+            }.runTaskAsynchronously(plugin);
         }
     }
 }

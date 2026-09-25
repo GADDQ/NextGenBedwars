@@ -40,8 +40,13 @@ public class WorldProtectListener implements Listener {
      * 2. 方块破坏：床放行，玩家放置的方块允许破坏，地图原方块拦截
      */
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onBlockBreak(BlockBreakEvent event) { // TODO: 装饰性无碰撞体积方块放行并从保护中删除, 并设置不掉落物品
+    public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() == world) {
+            if (!event.getBlock().getType().isCollidable()) {
+                event.setDropItems(false);
+                return;
+            }
+
             if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
                 if (Tag.BEDS.isTagged(event.getBlock().getType()))
                     return;
