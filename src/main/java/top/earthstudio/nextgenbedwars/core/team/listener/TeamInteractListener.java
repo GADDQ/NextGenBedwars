@@ -1,8 +1,10 @@
 package top.earthstudio.nextgenbedwars.core.team.listener;
 
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -10,12 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
+import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.team.event.BedBrokenEvent;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
-import top.earthstudio.nextgenbedwars.core.team.TeamManager;
 
 import java.util.List;
 
@@ -71,7 +74,7 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
 
             if (targetTeam.bedBlockLongs.firstLong() == blockLong || targetTeam.bedBlockLongs.secondLong() == blockLong) {
                 event.setDropItems(false);
-                teamManager.getInstance(targetTeam).isBedAlive = false;
+                targetTeam.isBedAlive = false;
 
                 WorldProtector protector = gameInstance.get(WorldProtector.class);
                 protector.removeBlockFromWorldGroup(targetTeam.bedBlockLongs.firstLong());

@@ -10,8 +10,8 @@ import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.game.IManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
+import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
 
@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TeamManager implements IManager<Team> {
-    private Map<UUID, TeamInstance> teams;
-    private Map<Color, TeamInstance> teamsByColor;
+public class TeamManagerImpl implements TeamManager {
+    private Map<UUID, Team> teams;
+    private Map<Color, Team> teamsByColor;
 
     private TeamInteractListener teamInteractListener;
 
-    public TeamManager(GameInstance gameInstance) {
+    public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
         teamInteractListener = new TeamInteractListener(this, gameInstance);
@@ -35,48 +35,42 @@ public class TeamManager implements IManager<Team> {
     @Override
     public UUID add(Team team) {
         UUID uuid = UUID.randomUUID();
-        TeamInstance teamInstance = new TeamInstance(team);
 
-        teams.put(uuid, teamInstance);
-        teamsByColor.put(team.teamColor, teamInstance);
+        teams.put(uuid, team);
+        teamsByColor.put(team.teamColor, team);
         return uuid;
     }
 
     @Override
     public Team get(UUID uuid) {
-        return teams.get(uuid).team;
+        return teams.get(uuid);
     }
 
+    @Override
     public Team get(Color color) {
-        return teamsByColor.get(color).team;
+        return teamsByColor.get(color);
     }
 
+    @Override
     public Team get(Player player) {
         UUID uuid = player.getUniqueId();
-        for (TeamInstance instance : teams.values()) {
-            if (instance.team.players.contains(uuid))
-                return instance.team;
+        for (Team team : teams.values()) {
+            if (team.players.contains(uuid))
+                return team;
         }
-        return null; // 零 heap 内存分配，极速
-    }
-
-    public TeamInstance getInstance(Team team) {
-        for (TeamInstance instance : teams.values())
-            if (instance.team == team) return instance;
         return null;
     }
 
+    @Override
     public List<Team> getAll() {
         List<Team> teamList = new ObjectArrayList<>();
-        teams.values().forEach(teamInstance -> teamList.add(teamInstance.team));
+        teamList.addAll(teams.values());
         return teamList;
     }
 
     @Override
     public void remove(UUID uuid) {
-        TeamInstance teamInstance = teams.remove(uuid);
-        teamsByColor.remove(teamInstance.team.teamColor);
-        teamInstance.destroy();
+        teamsByColor.remove(teams.remove(uuid).teamColor);
     }
 
     @Override

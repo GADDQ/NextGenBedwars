@@ -23,6 +23,8 @@ public final class Team { // struct Team
     public Location respawnLocation;
     public final LongLongPair bedBlockLongs;
 
+    public boolean isBedAlive = true;
+
     // TODO: upgrade struct?
 
     public final Set<Spawner> teamSpawners = new ObjectOpenHashSet<>();

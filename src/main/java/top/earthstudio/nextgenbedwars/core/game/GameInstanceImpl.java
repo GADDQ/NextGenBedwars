@@ -12,7 +12,7 @@ import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManager;
-import top.earthstudio.nextgenbedwars.core.team.TeamManager;
+import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
@@ -64,7 +64,7 @@ public final class GameInstanceImpl implements GameInstance {
     private void buildSubSystems() { // TODO: Isolate registerListener method to clean constructor
         subSystems.add(new SpawnerManager());
         subSystems.add(new WorldProtectorImpl(world));
-        subSystems.add(new TeamManager(this));
+        subSystems.add(new TeamManagerImpl(this));
     }
 
     public void update() {
