@@ -29,6 +29,7 @@ public class TeamManagerImpl implements TeamManager {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
         teamInteractListener = new TeamInteractListener(this, gameInstance);
+        // TODO: respawn logic/listener
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().getPlugin());
     }
 

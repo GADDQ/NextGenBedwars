@@ -14,6 +14,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -28,6 +29,8 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
+import top.earthstudio.nextgenbedwars.api.team.Team;
+import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
@@ -45,12 +48,6 @@ public class DebugCommand {
     public DebugCommand(JavaPlugin plugin) {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("bw").then(
                 Commands.literal("debug").then(
-                        Commands.literal("spawner").then(
-                                Commands.literal("add").executes(this::addSpawner)
-                        ).then(
-                                Commands.literal("removeAll").executes(this::removeAllSpawner)
-                        )
-                ).then(
                         Commands.literal("game").then(
                                 Commands.literal("add").executes(this::addGame)
                         ).then(
@@ -74,15 +71,69 @@ public class DebugCommand {
                         ).then(
                                 Commands.literal("removeAll").executes(this::removeAllGame)
                         )
+                ).then(
+                        Commands.literal("spawner").then(
+                                Commands.literal("add").executes(this::addSpawner)
+                        ).then(
+                                Commands.literal("removeAll").executes(this::removeAllSpawner)
+                        )
+                ).then(
+                        Commands.literal("team").then(
+                                Commands.literal("join").executes(this::joinTeamA)
+                        ).then(
+                                Commands.literal("join").executes(this::joinTeamB)
+                        ).then(
+                                Commands.literal("leave").executes(this::leaveTeam)
+                        )
                 )
         );
 
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> commands.registrar().register(root.build()));
     }
 
+    private int addGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        Game game = new Game(
+                new Location(null, 0, 0, 0),
+                new Location(null, 0, 0, 0),
+                new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100)),
+                new ArrayList<>()
+        );
+
+        UUID uuid = GameManager.addInstance(game, Component.text("test"), new File(Bukkit.getWorldContainer(), "testworld"));
+        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
+        NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).getWorldUUID(), world -> {
+            player.teleport(new Location(world, 0, 0, 0));
+        });
+        activeGame = GameManager.getInstance(uuid);
+        activeGame.get(TeamManager.class).add(new Team(
+                Component.text("A").color(NamedTextColor.RED),
+                Color.RED,
+                16,
+                5,
+                new Location(null, 0, 0, 0),
+                null
+        ));
+        activeGame.get(TeamManager.class).add(new Team(
+                Component.text("B").color(NamedTextColor.BLUE),
+                Color.BLUE,
+                16,
+                5,
+                new Location(null, 0, 0, 0),
+                null
+        ));
+        gameUuids.add(uuid);
+        return 0;
+    }
+
     private int switchToGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
         activeGame = GameManager.getInstance(UUID.fromString(commandSourceStackCommandContext.getArgument("targetGame", String.class)));
         ((Player) commandSourceStackCommandContext.getSource().getSender()).teleport(new Location(WorldManager.get(activeGame.getWorldUUID()), 0, 0, 0));
+        return 0;
+    }
+
+    private int removeAllGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        gameUuids.forEach(GameManager::removeInstance);
+        gameUuids.clear();
         return 0;
     }
 
@@ -111,27 +162,17 @@ public class DebugCommand {
         return 0;
     }
 
-    private int addGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        Game game = new Game(
-                new Location(null, 0, 0, 0),
-                new Location(null, 0, 0, 0),
-                new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100)),
-                new ArrayList<>()
-        );
-
-        UUID uuid = GameManager.addInstance(game, Component.text("test"), new File(Bukkit.getWorldContainer(), "testworld"));
-        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
-        NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).getWorldUUID(), world -> {
-            player.teleport(new Location(world, 0, 0, 0));
-        });
-        activeGame = GameManager.getInstance(uuid);
-        gameUuids.add(uuid);
+    private int joinTeamA(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        activeGame.get(TeamManager.class).get(Color.RED).players.add(((Player) commandSourceStackCommandContext.getSource().getSender()).getUniqueId());
         return 0;
     }
 
-    private int removeAllGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        gameUuids.forEach(GameManager::removeInstance);
-        gameUuids.clear();
+    private int joinTeamB(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        activeGame.get(TeamManager.class).get(Color.BLUE).players.add(((Player) commandSourceStackCommandContext.getSource().getSender()).getUniqueId());
+        return 0;
+    }
+
+    private int leaveTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
         return 0;
     }
 
