@@ -1,6 +1,6 @@
 package top.earthstudio.nextgenbedwars.core.game;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.kyori.adventure.text.Component;
 
@@ -9,16 +9,14 @@ import org.bukkit.World;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
+import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
-import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
-import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
-import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.io.File;
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public final class GameInstanceImpl implements GameInstance {
@@ -26,14 +24,18 @@ public final class GameInstanceImpl implements GameInstance {
     private final Component displayName;
     private UUID worldUUID;
     private World world;
-    private List<IGameSubSystem> subSystems;
+
+    private Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates;
+    private Map<Class<? extends IGameSubSystem>, IGameSubSystem> subSystems;
 
     private boolean isShutdown = false;
     private boolean isReady = false;
 
-    public GameInstanceImpl(Game game, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener) {
+    public GameInstanceImpl(Game game, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
         this.game = game;
         this.displayName = displayName;
+        this.subSystemTemplates = subSystemTemplates;
+        this.subSystems = new Object2ObjectOpenHashMap<>();
 
         this.worldUUID = WorldManager.create(mapTemplate);
 
@@ -43,7 +45,6 @@ public final class GameInstanceImpl implements GameInstance {
             this.world = world;
             game.locationsModifier(world);
 
-            this.subSystems = new ObjectArrayList<>();
             buildSubSystems();
 
             WorldManager.forceLoadRegions(worldUUID, game.region);
@@ -56,31 +57,32 @@ public final class GameInstanceImpl implements GameInstance {
         });
     }
 
-    @Override
-    public void add(IGameSubSystem gameSubSystem) {
-        subSystems.add(gameSubSystem);
-    }
+    private void buildSubSystems() {
+        for (var entry : subSystemTemplates.entrySet()) {
+            Class<? extends IGameSubSystem> type = entry.getKey();
+            SubSystemConstructor<?> constructor = entry.getValue();
 
-    private void buildSubSystems() { // TODO: Isolate registerListener method to clean constructor
-        subSystems.add(new SpawnerManagerImpl());
-        subSystems.add(new WorldProtectorImpl(world));
-        subSystems.add(new TeamManagerImpl(this));
+            IGameSubSystem instanceSystem = constructor.construct(this);
+            subSystems.put(type, instanceSystem);
+        }
     }
 
     public void update() {
         if (!isReady || isShutdown) return;
-        subSystems.forEach(IGameSubSystem::update);
+        subSystems.values().forEach(IGameSubSystem::update);
     }
 
     public void shutdown() {
         isShutdown = true;
 
         if (subSystems != null) {
-            subSystems.forEach(IGameSubSystem::shutdown);
+            subSystems.values().forEach(IGameSubSystem::shutdown);
             subSystems.clear();
             subSystems = null;
         }
 
+        subSystemTemplates.clear();
+        subSystemTemplates = null;
         WorldManager.destroy(worldUUID);
         worldUUID = null;
         world = null;
@@ -94,9 +96,10 @@ public final class GameInstanceImpl implements GameInstance {
 
     @Override
     public <M extends IGameSubSystem> M get(Class<M> type) {
-        for (IGameSubSystem s : subSystems) {
-            if (type.isInstance(s)) return type.cast(s);
+        IGameSubSystem system = subSystems.get(type);
+        if (system == null) {
+            throw new IllegalStateException("SubSystem not registered for type: " + type.getName());
         }
-        throw new IllegalStateException("SubSystem not found: " + type.getName());
+        return type.cast(system);
     }
 }

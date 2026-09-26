@@ -6,10 +6,17 @@ import net.kyori.adventure.text.Component;
 
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-
+import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
+import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
+import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
+import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 
+import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
+import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
+import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.io.File;
@@ -20,12 +27,18 @@ public class GameManager {
 
     private static Map<UUID, GameInstance> gameInstances;
     private static WorldReadyListener worldReadyListener;
+    private static final Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> SUB_SYSTEM_TEMPLATES =
+            new Object2ObjectOpenHashMap<>();
 
     private GameManager() {};
 
     static public void initialize(WorldReadyListener worldReadyListener) {
         gameInstances = new Object2ObjectOpenHashMap<>();
         GameManager.worldReadyListener = worldReadyListener;
+
+        registerSubSystem(SpawnerManager.class, game -> new SpawnerManagerImpl());
+        registerSubSystem(WorldProtector.class, game -> new WorldProtectorImpl(game.getWorld()));
+        registerSubSystem(TeamManager.class, TeamManagerImpl::new);
     }
 
     static public void shutdown() {
@@ -39,7 +52,7 @@ public class GameManager {
     static public UUID addInstance(Game game, Component displayName, File mapTemplate) {
         UUID uuid = UUID.randomUUID();
 
-        GameInstanceImpl gameInstance = new GameInstanceImpl(game, displayName, mapTemplate, worldReadyListener);
+        GameInstanceImpl gameInstance = new GameInstanceImpl(game, displayName, mapTemplate, worldReadyListener, SUB_SYSTEM_TEMPLATES);
 
         GlobalTicker.set(uuid, new TickerTask() {
             @Override
@@ -68,5 +81,9 @@ public class GameManager {
     static public void removeInstance(UUID uuid) {
         gameInstances.remove(uuid);
         GlobalTicker.remove(uuid);
+    }
+
+    public static <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor) {
+        SUB_SYSTEM_TEMPLATES.put(type, constructor);
     }
 }

@@ -11,7 +11,5 @@ public interface GameInstance {
     Component getDisplayName();
     Game getGame();
     World getWorld();
-
-    void add(IGameSubSystem gameSubSystem);
     <M extends IGameSubSystem> M get(Class<M> type);
 }

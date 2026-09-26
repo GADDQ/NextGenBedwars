@@ -1,6 +1,8 @@
 package top.earthstudio.nextgenbedwars.api;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
+import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 
 public interface BedwarsAPI {
     /**
@@ -16,7 +18,9 @@ public interface BedwarsAPI {
 
     // ================= 暴露给外部调用的能力接口 =================
     JavaPlugin getPlugin();
-    // TODO: 以后在这里扩展：GameManager getGameManager(); 等等
+
+    <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor);
+    // TODO: 以后在这里扩展：GameManager getGameManager(); 等等? GameInstance info? 如何开放多例抽象单例api？
 
     // ================= 核心挂载与注销通道 =================
     static void register(BedwarsAPI implementation) {
