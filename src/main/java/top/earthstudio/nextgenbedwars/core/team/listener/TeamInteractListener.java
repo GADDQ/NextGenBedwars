@@ -33,6 +33,8 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
 
     @EventHandler
     public void onPvp(PrePlayerAttackEntityEvent event) {
+        if (event.getPlayer().getWorld() != gameInstance.getWorld()) return;
+
         if (!(event.getAttacked() instanceof Player attacked))
             return;
 
@@ -49,6 +51,8 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
+        if (event.getBlock().getWorld() != gameInstance.getWorld()) return;
+
         Player player = event.getPlayer();
         Team team = teamManager.get(player);
         if (team == null)
