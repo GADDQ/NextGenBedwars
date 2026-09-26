@@ -54,9 +54,8 @@ public class TeamManagerImpl implements TeamManager {
 
     @Override
     public Team get(Player player) {
-        UUID uuid = player.getUniqueId();
         for (Team team : teams.values()) {
-            if (team.players.contains(uuid))
+            if (team.players.contains(player))
                 return team;
         }
         return null;

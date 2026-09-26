@@ -33,15 +33,13 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
 
     @EventHandler
     public void onPvp(PrePlayerAttackEntityEvent event) {
-        Player attacked;
-        if (event.getAttacked() instanceof Player p) {
-            attacked = p;
-        } else
+        if (!(event.getAttacked() instanceof Player attacked))
             return;
 
         Player player = event.getPlayer();
         Team teamA = teamManager.get(player);
         Team teamB = teamManager.get(attacked);
+
         if (teamA == null || teamB == null)
             return;
 

@@ -8,10 +8,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Location;
 
+import org.bukkit.entity.Player;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import java.util.Set;
-import java.util.UUID;
 
 public final class Team { // struct Team
     public final Component displayName;
@@ -29,7 +29,7 @@ public final class Team { // struct Team
 
     public final Set<Spawner> teamSpawners = new ObjectOpenHashSet<>();
 
-    public final Set<UUID> players = new ObjectOpenHashSet<>();
+    public final Set<Player> players = new ObjectOpenHashSet<>();
 
     public Team(Component displayName, Color teamColor, int maxPlayerCount, int respawnTick, Location respawnLocation, LongLongPair bedBlockLongs) {
         this.displayName = displayName;
