@@ -24,8 +24,6 @@ public final class GameInstanceImpl implements GameInstance {
     private final Component displayName;
     private UUID worldUUID;
     private World world;
-
-    private Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates;
     private Map<Class<? extends IGameSubSystem>, IGameSubSystem> subSystems;
 
     private boolean isShutdown = false;
@@ -34,7 +32,6 @@ public final class GameInstanceImpl implements GameInstance {
     public GameInstanceImpl(Game game, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
         this.game = game;
         this.displayName = displayName;
-        this.subSystemTemplates = subSystemTemplates;
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
         this.worldUUID = WorldManager.create(mapTemplate);
@@ -45,7 +42,7 @@ public final class GameInstanceImpl implements GameInstance {
             this.world = world;
             game.locationsModifier(world);
 
-            buildSubSystems();
+            buildSubSystems(subSystemTemplates);
 
             WorldManager.forceLoadRegions(worldUUID, game.region);
 
@@ -57,7 +54,7 @@ public final class GameInstanceImpl implements GameInstance {
         });
     }
 
-    private void buildSubSystems() {
+    private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
         for (var entry : subSystemTemplates.entrySet()) {
             Class<? extends IGameSubSystem> type = entry.getKey();
             SubSystemConstructor<?> constructor = entry.getValue();
@@ -81,8 +78,6 @@ public final class GameInstanceImpl implements GameInstance {
             subSystems = null;
         }
 
-        subSystemTemplates.clear();
-        subSystemTemplates = null;
         WorldManager.destroy(worldUUID);
         worldUUID = null;
         world = null;
