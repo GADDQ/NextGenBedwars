@@ -79,11 +79,11 @@ public class DebugCommand {
                         )
                 ).then(
                         Commands.literal("team").then(
-                                Commands.literal("join").executes(this::joinTeamA)
+                                Commands.literal("joinA").executes(this::joinTeamA)
                         ).then(
-                                Commands.literal("join").executes(this::joinTeamB)
+                                Commands.literal("joinB").executes(this::joinTeamB)
                         ).then(
-                                Commands.literal("leave").executes(this::leaveTeam)
+                                Commands.literal("leaveAll").executes(this::leaveAllTeam)
                         )
                 )
         );
@@ -103,24 +103,25 @@ public class DebugCommand {
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).getWorldUUID(), world -> {
             player.teleport(new Location(world, 0, 0, 0));
+
+            activeGame = GameManager.getInstance(uuid);
+            activeGame.get(TeamManager.class).add(new Team(
+                    Component.text("A").color(NamedTextColor.RED),
+                    Color.RED,
+                    16,
+                    5,
+                    new Location(null, 0, 0, 0),
+                    null
+            ));
+            activeGame.get(TeamManager.class).add(new Team(
+                    Component.text("B").color(NamedTextColor.BLUE),
+                    Color.BLUE,
+                    16,
+                    5,
+                    new Location(null, 0, 0, 0),
+                    null
+            ));
         });
-        activeGame = GameManager.getInstance(uuid);
-        activeGame.get(TeamManager.class).add(new Team(
-                Component.text("A").color(NamedTextColor.RED),
-                Color.RED,
-                16,
-                5,
-                new Location(null, 0, 0, 0),
-                null
-        ));
-        activeGame.get(TeamManager.class).add(new Team(
-                Component.text("B").color(NamedTextColor.BLUE),
-                Color.BLUE,
-                16,
-                5,
-                new Location(null, 0, 0, 0),
-                null
-        ));
         gameUuids.add(uuid);
         return 0;
     }
@@ -163,16 +164,17 @@ public class DebugCommand {
     }
 
     private int joinTeamA(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(TeamManager.class).get(Color.RED).players.add(((Player) commandSourceStackCommandContext.getSource().getSender()).getUniqueId());
+        activeGame.get(TeamManager.class).get(Color.RED).players.add((Player) commandSourceStackCommandContext.getSource().getSender());
         return 0;
     }
 
     private int joinTeamB(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(TeamManager.class).get(Color.BLUE).players.add(((Player) commandSourceStackCommandContext.getSource().getSender()).getUniqueId());
+        activeGame.get(TeamManager.class).get(Color.BLUE).players.add((Player) commandSourceStackCommandContext.getSource().getSender());
         return 0;
     }
 
-    private int leaveTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+    private int leaveAllTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        activeGame.get(TeamManager.class).get((Player) commandSourceStackCommandContext.getSource().getSender()).players.remove((Player) commandSourceStackCommandContext.getSource().getSender());
         return 0;
     }
 
