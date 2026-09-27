@@ -26,14 +26,14 @@ import java.util.UUID;
 public class GameManager {
 
     private static Map<UUID, GameInstance> gameInstances;
+    private static Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> SUB_SYSTEM_TEMPLATES;
     private static WorldReadyListener worldReadyListener;
-    private static final Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> SUB_SYSTEM_TEMPLATES =
-            new Object2ObjectOpenHashMap<>();
 
     private GameManager() {};
 
     static public void initialize(WorldReadyListener worldReadyListener) {
         gameInstances = new Object2ObjectOpenHashMap<>();
+        SUB_SYSTEM_TEMPLATES = new Object2ObjectOpenHashMap<>();
         GameManager.worldReadyListener = worldReadyListener;
 
         registerSubSystem(SpawnerManager.class, game -> new SpawnerManagerImpl());
@@ -42,6 +42,7 @@ public class GameManager {
     }
 
     static public void shutdown() {
+        SUB_SYSTEM_TEMPLATES = null;
         gameInstances.forEach(((uuid, gameInstance) -> {
             GlobalTicker.remove(uuid);
         }));
