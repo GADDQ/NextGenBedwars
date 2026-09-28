@@ -26,12 +26,15 @@ import top.earthstudio.nextgenbedwars.NextGenBedwars;
 
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
+import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
+import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
+import top.earthstudio.nextgenbedwars.core.gui.page.TestPage;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
 import java.io.File;
@@ -85,10 +88,19 @@ public class DebugCommand {
                         ).then(
                                 Commands.literal("leaveAll").executes(this::leaveAllTeam)
                         )
+                ).then(
+                        Commands.literal("gui").then(
+                                Commands.literal("showTest").executes(this::showTestGui)
+                        )
                 )
         );
 
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> commands.registrar().register(root.build()));
+    }
+
+    private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestPage());
+        return 0;
     }
 
     private int addGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
