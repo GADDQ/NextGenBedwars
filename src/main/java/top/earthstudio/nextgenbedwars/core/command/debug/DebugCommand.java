@@ -27,8 +27,7 @@ import top.earthstudio.nextgenbedwars.NextGenBedwars;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
-import top.earthstudio.nextgenbedwars.api.shop.ShopPage;
+import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
@@ -106,7 +105,7 @@ public class DebugCommand {
     }
 
     private int showItemShopGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new ShopPage(Component.text("商店测试")));
+        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new ItemShopPage(Component.text("商店测试")));
         return 0;
     }
 

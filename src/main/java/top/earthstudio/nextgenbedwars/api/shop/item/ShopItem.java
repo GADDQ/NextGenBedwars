@@ -1,9 +1,9 @@
-package top.earthstudio.nextgenbedwars.api.shop;
+package top.earthstudio.nextgenbedwars.api.shop.item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-public final class ShopItem { // struct ShopItem // TODO: Material Only, not ItemStack. add Component:description
+public final class ShopItem { // struct ShopItem // TODO: Material Only, not ItemStack. add Component:description/name
     public ItemStack showItem;
     public ItemStack actualItem = null;
     public Material coinType;

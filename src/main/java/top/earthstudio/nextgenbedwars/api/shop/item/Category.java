@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.shop;
+package top.earthstudio.nextgenbedwars.api.shop.item;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 

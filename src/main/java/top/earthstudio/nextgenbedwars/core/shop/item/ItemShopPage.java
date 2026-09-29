@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.shop;
+package top.earthstudio.nextgenbedwars.core.shop.item;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -13,10 +13,12 @@ import org.bukkit.inventory.ItemStack;
 
 import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 import top.earthstudio.nextgenbedwars.api.gui.GuiUtil;
+import top.earthstudio.nextgenbedwars.api.shop.item.Category;
+import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
 import java.util.List;
 
-public class ShopPage extends GuiPage {
+public class ItemShopPage extends GuiPage {
     private boolean isCategoryFullSize = false;
     private int activeCategoryIndex = 0;
     private int currentCategoryIconPage = 0;
@@ -24,7 +26,7 @@ public class ShopPage extends GuiPage {
 
     private final List<Category> categories;
 
-    public ShopPage(Component title) {
+    public ItemShopPage(Component title) {
         super(title, 6);
         this.allowPlayerInventoryInteraction = true;
         categories = new ObjectArrayList<>();
@@ -224,7 +226,7 @@ public class ShopPage extends GuiPage {
             return;
         }
 
-        if (page > 0 && page < category.items.size() - 1 / categorySize) {
+        if (page > 0 && page < (category.items.size() - 1) / categorySize) {
             add(
                     0,
                     5,
