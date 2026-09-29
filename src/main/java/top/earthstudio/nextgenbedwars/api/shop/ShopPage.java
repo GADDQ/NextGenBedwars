@@ -69,6 +69,7 @@ public class ShopPage extends GuiPage {
                             activeCategoryIndex = index;
                             buildPage();
                             update();
+                            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
                         }
                 );
         }
