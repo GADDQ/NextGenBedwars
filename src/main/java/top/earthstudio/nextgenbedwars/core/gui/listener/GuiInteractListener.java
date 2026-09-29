@@ -24,9 +24,15 @@ public class GuiInteractListener implements Listener {
         // 点击发生在上方 GUI 视窗内
         if (event.getClickedInventory() == event.getInventory()) {
             event.setCancelled(true);
+
+            if (event.getClick() == org.bukkit.event.inventory.ClickType.DOUBLE_CLICK) {
+                return;
+            }
+
             if (event.getWhoClicked() instanceof Player player) {
                 guiHolder.handleClick(event.getSlot(), player, event.getClick());
             }
+
             return;
         }
 
