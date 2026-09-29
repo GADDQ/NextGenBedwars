@@ -13,17 +13,35 @@ import top.earthstudio.nextgenbedwars.api.gui.GuiAction;
 import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 
 public class GuiHolder implements InventoryHolder {
-    private final GuiPage guiPage;
+    public final GuiPage guiPage;
     private final Inventory inventory;
 
     public GuiHolder(GuiPage guiPage) {
         this.guiPage = guiPage;
-        // 1. 创建真正属于当前视窗的全新原生 Inventory（正确传 size！）
         this.inventory = Bukkit.createInventory(this, guiPage.rowCount * 9, guiPage.title);
+
+        this.guiPage.bindRefresh(this::refreshInventory);
+        this.guiPage.bindClose(this::closeInventory);
 
         guiPage.buttons.forEach((slot, button) -> {
             inventory.setItem(slot, button.first());
         });
+    }
+
+    public void refreshInventory() {
+        int totalSlots = guiPage.rowCount * 9;
+        for (int slot = 0; slot < totalSlots; slot++) {
+            Pair<ItemStack, GuiAction> button = guiPage.buttons.get(slot);
+            if (button != null && button.first() != null) {
+                inventory.setItem(slot, button.first());
+            } else {
+                inventory.setItem(slot, null); // 清空没有按钮的残余格子
+            }
+        }
+    }
+
+    public void closeInventory() {
+        inventory.close();
     }
 
     public void handleClick(int slot, Player player, ClickType clickType) {
