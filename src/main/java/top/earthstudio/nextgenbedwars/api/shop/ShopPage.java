@@ -225,7 +225,7 @@ public class ShopPage extends GuiPage {
             return;
         }
 
-        if (page > 0 && page < category.items.size() / categorySize) {
+        if (page > 0 && page < category.items.size() - 1 / categorySize) {
             add(
                     0,
                     5,
