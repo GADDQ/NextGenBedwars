@@ -39,6 +39,8 @@ public class ShopPage extends GuiPage {
     private void buildPage() {
         clearCategoryIconSlots();
         clearCategoryContentSlots(isCategoryFullSize);
+        clearPageDivider();
+        buildPageDivider(new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         buildCategoryList(currentCategoryIconPage);
         buildCategoryContent(categories.get(activeCategoryIndex), currentCategoryContentPage, isCategoryFullSize);
     }
@@ -79,13 +81,20 @@ public class ShopPage extends GuiPage {
 
     private void buildPageDivider(ItemStack divider) {
         for (int x = 0; x <= 8; x++) {
-            add(
-                    x,
-                    1,
-                    divider
-            );
-        }
-        for (int x = 0; x <= 8; x++) {
+            if (x == 4) {
+                add(
+                        x,
+                        1,
+                        categories.get(activeCategoryIndex).categoryIcon
+                );
+            } else {
+                add(
+                        x,
+                        1,
+                        divider
+                );
+            }
+
             add(
                     x,
                     5,
@@ -254,6 +263,13 @@ public class ShopPage extends GuiPage {
                 }
         );
         add(8, 5, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+    }
+
+    private void clearPageDivider() {
+        for (int i = 0; i <= 8; i++) {
+            remove(i, 1);
+            remove(i, 5);
+        }
     }
 
     private void clearCategoryIconSlots() {
