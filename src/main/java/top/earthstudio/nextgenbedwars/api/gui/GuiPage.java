@@ -76,4 +76,7 @@ public class GuiPage {
     protected void remove(int x, int y) {
         buttons.remove(x + 9 * y);
     }
+    protected void removeAll() {
+        buttons.clear();
+    }
 }

@@ -28,6 +28,7 @@ import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
+import top.earthstudio.nextgenbedwars.api.shop.ShopPage;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
@@ -92,10 +93,21 @@ public class DebugCommand {
                         Commands.literal("gui").then(
                                 Commands.literal("showTest").executes(this::showTestGui)
                         )
+                ).then(
+                        Commands.literal("shop").then(
+                                Commands.literal("item").then(
+                                        Commands.literal("showShopGui").executes(this::showItemShopGui)
+                                )
+                        )
                 )
         );
 
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> commands.registrar().register(root.build()));
+    }
+
+    private int showItemShopGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new ShopPage(Component.text("商店测试")));
+        return 0;
     }
 
     private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
