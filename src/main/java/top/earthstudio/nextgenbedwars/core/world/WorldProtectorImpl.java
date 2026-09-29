@@ -257,8 +257,8 @@ public class WorldProtectorImpl implements WorldProtector {
                                 for (int x = 0; x < 16; x++) {
                                     for (int z = 0; z < 16; z++) {
                                         Material type = snapshot.getBlockType(x, currentY, z);
-                                        // 跳过空气和可被替换方块（如：草，花）
-                                        if (!type.isAir() && !Tag.REPLACEABLE.isTagged(type)) {
+                                        // 跳过空气
+                                        if (!type.isAir()) {
                                             long posKey = BlockPosUtil.asLong(baseBlockX + x, currentY, baseBlockZ + z);
                                             scannedBlocks.add(posKey);
                                         }

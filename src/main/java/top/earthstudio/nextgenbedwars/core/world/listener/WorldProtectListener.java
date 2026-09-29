@@ -43,7 +43,11 @@ public class WorldProtectListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() == world) {
             if (!event.getBlock().getType().isCollidable()) {
+                if (!worldProtector.contains(BlockPosUtil.asLong(event.getBlock())))
+                    return;
+
                 event.setDropItems(false);
+                worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(event.getBlock()));
                 return;
             }
 
