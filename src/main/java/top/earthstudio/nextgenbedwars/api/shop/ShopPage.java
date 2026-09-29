@@ -32,7 +32,6 @@ public class ShopPage extends GuiPage {
         // FIXME: TEST ONLY
         test();
 
-        buildPageDivider(new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         buildPage();
     }
 
