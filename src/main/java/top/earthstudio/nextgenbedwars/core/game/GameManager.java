@@ -9,6 +9,7 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
+import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
@@ -16,6 +17,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 import top.earthstudio.nextgenbedwars.core.gui.GuiOpenerImpl;
+import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
 import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
@@ -42,6 +44,7 @@ public class GameManager {
         registerSubSystem(WorldProtector.class, game -> new WorldProtectorImpl(game.getWorld()));
         registerSubSystem(TeamManager.class, TeamManagerImpl::new);
         registerSubSystem(GuiOpener.class, game -> new GuiOpenerImpl());
+        registerSubSystem(ShopManager.class, ShopManagerImpl::new);
     }
 
     static public void shutdown() {

@@ -26,8 +26,8 @@ public class ItemShopPage extends GuiPage {
 
     private final List<Category> categories;
 
-    public ItemShopPage(Component title) {
-        super(title, 6);
+    public ItemShopPage() { // TODO: i18n
+        super(Component.text("物品商店"), 6);
         this.allowPlayerInventoryInteraction = true;
         categories = new ObjectArrayList<>();
 

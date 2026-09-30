@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +28,8 @@ import top.earthstudio.nextgenbedwars.NextGenBedwars;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
+import top.earthstudio.nextgenbedwars.api.shop.Shop;
+import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
@@ -45,6 +48,7 @@ import java.util.UUID;
 public class DebugCommand {
     private List<UUID> gameUuids = new ArrayList<>();
     private List<UUID> spawnerUuids = new ArrayList<>();
+    private List<UUID> shopUuids = new ArrayList<>();
 
     private GameInstance activeGame;
 
@@ -96,6 +100,10 @@ public class DebugCommand {
                         Commands.literal("shop").then(
                                 Commands.literal("item").then(
                                         Commands.literal("showShopGui").executes(this::showItemShopGui)
+                                ).then(
+                                        Commands.literal("spawn").executes(this::spawnItemShop)
+                                ).then(
+                                        Commands.literal("removeAll").executes(this::removeAllItemShop)
                                 )
                         )
                 )
@@ -104,8 +112,27 @@ public class DebugCommand {
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> commands.registrar().register(root.build()));
     }
 
+    private int removeAllItemShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        shopUuids.forEach(uuid -> activeGame.get(ShopManager.class).remove(uuid));
+        shopUuids.clear();
+        return 0;
+    }
+
+    private int spawnItemShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        shopUuids.add(
+                activeGame.get(ShopManager.class).add(new Shop(
+                        Component.text("物品商店").color(NamedTextColor.YELLOW),
+                        Component.text("右键打开").color(NamedTextColor.AQUA),
+                        EntityType.VILLAGER,
+                        ((Player) commandSourceStackCommandContext.getSource().getSender()).getLocation(),
+                        ItemShopPage::new
+                ))
+        );
+        return 0;
+    }
+
     private int showItemShopGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new ItemShopPage(Component.text("商店测试")));
+        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new ItemShopPage());
         return 0;
     }
 
@@ -202,8 +229,10 @@ public class DebugCommand {
     }
 
     public void shutdown() {
+        shopUuids.clear();
         spawnerUuids.clear();
         gameUuids.clear();
+        shopUuids = null;
         spawnerUuids = null;
         gameUuids = null;
     }
