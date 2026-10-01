@@ -146,6 +146,8 @@ public class DebugCommand {
                 new Location(null, 0, 0, 0),
                 new Location(null, 0, 0, 0),
                 new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100)),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 new ArrayList<>()
         );
 
@@ -159,16 +161,16 @@ public class DebugCommand {
                     Component.text("A").color(NamedTextColor.RED),
                     Color.RED,
                     16,
-                    5,
-                    new Location(null, 0, 0, 0),
+                    100,
+                    new Location(world, 0, 0, 0),
                     null
             ));
             activeGame.get(TeamManager.class).add(new Team(
                     Component.text("B").color(NamedTextColor.BLUE),
                     Color.BLUE,
                     16,
-                    5,
-                    new Location(null, 0, 0, 0),
+                    100,
+                    new Location(world, 0, 0, 0),
                     null
             ));
         });

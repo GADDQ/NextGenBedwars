@@ -6,10 +6,7 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.World;
 
-import top.earthstudio.nextgenbedwars.api.game.Game;
-import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
-import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
+import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
@@ -20,6 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public final class GameInstanceImpl implements GameInstance {
+    public GameState gameState;
+
     private final Game game;
     private final Component displayName;
     private UUID worldUUID;
@@ -30,6 +29,8 @@ public final class GameInstanceImpl implements GameInstance {
     private boolean isReady = false;
 
     public GameInstanceImpl(Game game, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
+        // this.gameState = GameState.WAITING; // TODO
+        this.gameState = GameState.PLAYING;
         this.game = game;
         this.displayName = displayName;
         this.subSystems = new Object2ObjectOpenHashMap<>();
@@ -66,10 +67,13 @@ public final class GameInstanceImpl implements GameInstance {
 
     public void update() {
         if (!isReady || isShutdown) return;
+        if (gameState != GameState.PLAYING) return;
+
         subSystems.values().forEach(IGameSubSystem::update);
     }
 
     public void shutdown() {
+        gameState = GameState.ENDING;
         isShutdown = true;
 
         if (subSystems != null) {
@@ -97,4 +101,13 @@ public final class GameInstanceImpl implements GameInstance {
         }
         return type.cast(system);
     }
+
+    /*
+    *TODO LISTS:
+    * 1. Killer Check
+    * 2. Fake Spectator mode
+    * 3. Player join/leave server logic handler
+    * 4. Scoreboard INFO show
+    * 5. Velocity Proxy Support
+    * **/
 }

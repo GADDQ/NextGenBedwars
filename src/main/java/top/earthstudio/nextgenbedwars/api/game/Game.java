@@ -25,11 +25,13 @@ public final class Game {
     /* TODO: Game Information
      *    e.g. Team...
      *  */
-    public Game(Location waitingLobby, Location spectatorRespawnPoint, ObjectObjectImmutablePair<Vector3i, Vector3i> region, List<Spawner> spawners) {
+    public Game(Location waitingLobby, Location spectatorRespawnPoint, ObjectObjectImmutablePair<Vector3i, Vector3i> region, List<Spawner> spawners, List<Team> teams, List<Shop> shops) {
         this.waitingLobby = waitingLobby;
         this.spectatorRespawnPoint = spectatorRespawnPoint;
         this.region = region;
         this.spawners = spawners;
+        this.teams = teams;
+        this.shops = shops;
     }
 
     public void locationsModifier(World world) {
@@ -39,12 +41,11 @@ public final class Game {
         spawners.forEach(spawner -> {
             spawner.location.setWorld(world);
         });
-        // TODO
-//        teams.forEach(team -> {
-//            team.respawnLocation.setWorld(world);
-//        });
-//        shops.forEach(shop -> {
-//            shop.location.setWorld(world);
-//        });
+        teams.forEach(team -> {
+            team.respawnLocation.setWorld(world);
+        });
+        shops.forEach(shop -> {
+            shop.location.setWorld(world);
+        });
     }
 }
