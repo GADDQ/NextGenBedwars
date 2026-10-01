@@ -27,7 +27,7 @@ public class ShopEntity {
         shop.location.setPitch(0);
 
         this.bodyEntity = shop.location.getWorld().spawnEntity(shop.location, shop.entityType);
-        this.bodyEntity.setPersistent(false); // FIXME: TEST ONLY
+        this.bodyEntity.setPersistent(false); // TODO: FIXME: TEST ONLY
 
         if (bodyEntity instanceof LivingEntity living) {
             living.setAI(false);

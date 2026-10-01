@@ -31,7 +31,7 @@ public class ItemShopPage extends GuiPage {
         this.allowPlayerInventoryInteraction = true;
         categories = new ObjectArrayList<>();
 
-        // FIXME: TEST ONLY
+        //TODO: FIXME: TEST ONLY
         test();
 
         buildPage();
