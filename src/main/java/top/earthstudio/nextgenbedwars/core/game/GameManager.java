@@ -48,6 +48,7 @@ public class GameManager {
     }
 
     static public void shutdown() {
+        SUB_SYSTEM_TEMPLATES.clear();
         SUB_SYSTEM_TEMPLATES = null;
         gameInstances.forEach(((uuid, gameInstance) -> {
             GlobalTicker.remove(uuid);
