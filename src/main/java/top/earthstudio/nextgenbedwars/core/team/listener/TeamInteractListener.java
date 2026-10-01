@@ -6,13 +6,17 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
+import org.bukkit.inventory.EquipmentSlot;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
@@ -87,5 +91,23 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
                 return;
             }
         }
+    }
+
+    @EventHandler
+    public void onBedUse(PlayerInteractEvent event) {
+        if (event.getHand() != EquipmentSlot.HAND)
+            return;
+
+        if (event.getPlayer().getWorld() != gameInstance.getWorld())
+            return;
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
+            return;
+
+        if (event.getClickedBlock() == null)
+            return;
+
+        if (Tag.BEDS.isTagged(event.getClickedBlock().getType()))
+            event.setCancelled(true);
     }
 }

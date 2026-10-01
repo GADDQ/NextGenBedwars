@@ -14,6 +14,7 @@ import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
+import top.earthstudio.nextgenbedwars.core.team.listener.TeamRespawnListener;
 
 import java.util.List;
 import java.util.Map;
@@ -24,13 +25,15 @@ public class TeamManagerImpl implements TeamManager {
     private Map<Color, Team> teamsByColor;
 
     private TeamInteractListener teamInteractListener;
+    private TeamRespawnListener teamRespawnListener;
 
     public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
         teamInteractListener = new TeamInteractListener(this, gameInstance);
-        // TODO: respawn logic/listener
+        teamRespawnListener = new TeamRespawnListener(this, gameInstance);
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().getPlugin());
+        Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().getPlugin());
     }
 
     @Override
@@ -75,7 +78,9 @@ public class TeamManagerImpl implements TeamManager {
 
     @Override
     public void shutdown() {
+        HandlerList.unregisterAll(teamRespawnListener);
         HandlerList.unregisterAll(teamInteractListener);
+        teamRespawnListener = null;
         teamInteractListener = null;
 
         teamsByColor.clear();
