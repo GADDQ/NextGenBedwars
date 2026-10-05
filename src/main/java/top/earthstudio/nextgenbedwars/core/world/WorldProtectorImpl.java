@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
@@ -39,12 +40,12 @@ public class WorldProtectorImpl implements WorldProtector {
     private UUID worldGroupUuid;
     private WorldProtectListener worldProtectListener;
 
-    public WorldProtectorImpl(World world) {
+    public WorldProtectorImpl(GameInstance gameInstance) {
         protectGroups = new Object2ObjectOpenHashMap<>();
         refCounts = new Long2IntOpenHashMap();
         refCounts.defaultReturnValue(0);
 
-        this.worldProtectListener = new WorldProtectListener(this, world);
+        this.worldProtectListener = new WorldProtectListener(this, gameInstance.getWorld());
         Bukkit.getPluginManager().registerEvents(worldProtectListener, BedwarsAPI.getInstance().getPlugin());
     }
 

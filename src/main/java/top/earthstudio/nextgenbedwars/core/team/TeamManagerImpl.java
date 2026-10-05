@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
@@ -27,11 +28,14 @@ public class TeamManagerImpl implements TeamManager {
     private TeamInteractListener teamInteractListener;
     private TeamRespawnListener teamRespawnListener;
 
+    private World world;
+
     public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
         teamInteractListener = new TeamInteractListener(this, gameInstance);
         teamRespawnListener = new TeamRespawnListener(this, gameInstance);
+        world = gameInstance.getWorld();
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().getPlugin());
         Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().getPlugin());
     }
@@ -40,6 +44,7 @@ public class TeamManagerImpl implements TeamManager {
     public UUID add(Team team) {
         UUID uuid = UUID.randomUUID();
 
+        team.respawnLocation.setWorld(world);
         teams.put(uuid, team);
         teamsByColor.put(team.teamColor, team);
         return uuid;
@@ -78,6 +83,8 @@ public class TeamManagerImpl implements TeamManager {
 
     @Override
     public void shutdown() {
+        world = null;
+
         HandlerList.unregisterAll(teamRespawnListener);
         HandlerList.unregisterAll(teamInteractListener);
         teamRespawnListener = null;

@@ -23,8 +23,6 @@ public final class Game {
     public Location spectatorRespawnPoint;
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;
 
-    private final Map<Class<? extends GameAsset>, GameAsset> assets = new Object2ObjectOpenHashMap<>();
-
     public Game(File mapTemplate, Location waitingLobby, Location spectatorRespawnPoint, ObjectObjectImmutablePair<Vector3i, Vector3i> region) {
         this.mapTemplate = mapTemplate;
         this.waitingLobby = waitingLobby;
@@ -32,19 +30,8 @@ public final class Game {
         this.region = region;
     }
 
-    public <T extends GameAsset> void add(Class<T> type, T asset) {
-        assets.put(type, asset);
-    }
-
-    public <T extends GameAsset> T get(Class<T> type) {
-        GameAsset asset = assets.get(type);
-        return asset != null ? type.cast(asset) : null;
-    }
-
     public void locationsModifier(World world) {
         waitingLobby.setWorld(world);
         spectatorRespawnPoint.setWorld(world);
-
-        assets.values().forEach(asset -> asset.bindWorld(world));
     }
 }

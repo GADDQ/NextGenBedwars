@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.shop;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
@@ -20,15 +21,18 @@ import java.util.UUID;
 public class ShopManagerImpl implements ShopManager {
     private Map<UUID, ShopEntity> shops;
     private ShopInteractListener shopInteractListener;
+    private World world;
 
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
         shopInteractListener = new ShopInteractListener(this, gameInstance);
+        world = gameInstance.getWorld();
         Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().getPlugin());
     }
 
     @Override
     public UUID add(Shop shop) {
+        shop.location.setWorld(world);
         ShopEntity shopEntity = new ShopEntity(shop);
         shops.put(shopEntity.getUuid(), shopEntity);
         return shopEntity.getUuid();
@@ -56,6 +60,8 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public void shutdown() {
+        world = null;
+
         HandlerList.unregisterAll(shopInteractListener);
         shopInteractListener = null;
 

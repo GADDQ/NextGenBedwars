@@ -40,8 +40,8 @@ public class GameManager {
         SUB_SYSTEM_TEMPLATES = new Object2ObjectOpenHashMap<>();
         GameManager.worldReadyListener = worldReadyListener;
 
-        registerSubSystem(SpawnerManager.class, game -> new SpawnerManagerImpl());
-        registerSubSystem(WorldProtector.class, game -> new WorldProtectorImpl(game.getWorld()));
+        registerSubSystem(SpawnerManager.class, SpawnerManagerImpl::new);
+        registerSubSystem(WorldProtector.class, WorldProtectorImpl::new);
         registerSubSystem(TeamManager.class, TeamManagerImpl::new);
         registerSubSystem(GuiOpener.class, game -> new GuiOpenerImpl());
         registerSubSystem(ShopManager.class, ShopManagerImpl::new);

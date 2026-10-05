@@ -1,5 +1,7 @@
 package top.earthstudio.nextgenbedwars.api.game;
 
+import org.bukkit.World;
+
 import java.util.UUID;
 
 public interface IManager<T> extends IGameSubSystem {
