@@ -143,15 +143,13 @@ public class DebugCommand {
 
     private int addGame(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
         Game game = new Game(
+                new File(Bukkit.getWorldContainer(), "testworld"),
                 new Location(null, 0, 0, 0),
                 new Location(null, 0, 0, 0),
-                new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100)),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>()
+                new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100))
         );
 
-        UUID uuid = GameManager.addInstance(game, Component.text("test"), new File(Bukkit.getWorldContainer(), "testworld"));
+        UUID uuid = GameManager.addInstance(game, Component.text("test"));
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).getWorldUUID(), world -> {
             player.teleport(new Location(world, 0, 0, 0));

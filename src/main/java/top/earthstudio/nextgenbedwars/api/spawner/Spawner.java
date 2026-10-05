@@ -3,8 +3,10 @@ package top.earthstudio.nextgenbedwars.api.spawner;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import top.earthstudio.nextgenbedwars.api.game.GameAsset;
 
-public final class Spawner { // struct Spawner
+public final class Spawner implements GameAsset { // struct Spawner
     public Location location;
     public int spawnTick;
     public Material material;
@@ -51,5 +53,10 @@ public final class Spawner { // struct Spawner
     public Spawner(Location location, int spawnTick, Material material, boolean isShowHolo, Material holoMaterial, Component resourceName, boolean isShowTimer, int level, int maxSpawnCount, boolean isAllowMerge) {
         this(location, spawnTick, material, isShowHolo, holoMaterial, resourceName, isShowTimer, level, maxSpawnCount);
         this.isAllowMerge = isAllowMerge;
+    }
+
+    @Override
+    public void bindWorld(World world) {
+        location.setWorld(world);
     }
 }

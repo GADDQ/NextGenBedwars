@@ -8,12 +8,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Location;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import top.earthstudio.nextgenbedwars.api.game.GameAsset;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import java.util.Set;
 
-public final class Team { // struct Team
+public final class Team implements GameAsset { // struct Team
     public final Component displayName;
     public final Color teamColor;
 
@@ -38,5 +40,10 @@ public final class Team { // struct Team
         this.respawnTick = respawnTick;
         this.respawnLocation = respawnLocation;
         this.bedBlockLongs = bedBlockLongs;
+    }
+
+    @Override
+    public void bindWorld(World world) {
+        respawnLocation.setWorld(world);
     }
 }

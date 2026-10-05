@@ -28,14 +28,14 @@ public final class GameInstanceImpl implements GameInstance {
     private boolean isShutdown = false;
     private boolean isReady = false;
 
-    public GameInstanceImpl(Game game, Component displayName, File mapTemplate, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
+    public GameInstanceImpl(Game game, Component displayName, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
         // this.gameState = GameState.WAITING; // TODO
         this.gameState = GameState.PLAYING;
         this.game = game;
         this.displayName = displayName;
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
-        this.worldUUID = WorldManager.create(mapTemplate);
+        this.worldUUID = WorldManager.create(game.mapTemplate);
 
         worldReadyListener.addTask(worldUUID, world -> {
             if (isShutdown) return;
@@ -109,5 +109,9 @@ public final class GameInstanceImpl implements GameInstance {
     * 3. Player join/leave server logic handler
     * 4. Scoreboard INFO show
     * 5. Velocity Proxy Support
+    * 6. Fast buy UI
+    * 7. Data Base
+    * 8. upgrade + upgrade shop
+    * 9. lock resource when fight
     * **/
 }
