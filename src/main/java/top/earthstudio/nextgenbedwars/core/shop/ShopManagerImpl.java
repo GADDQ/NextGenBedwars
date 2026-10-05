@@ -8,7 +8,6 @@ import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
@@ -23,11 +22,16 @@ public class ShopManagerImpl implements ShopManager {
     private ShopInteractListener shopInteractListener;
     private World world;
 
+    public ShopConfig shopConfig; // TODO: public DEBUG ONLY
+
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
         shopInteractListener = new ShopInteractListener(this, gameInstance);
         world = gameInstance.getWorld();
         Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().getPlugin());
+
+        shopConfig = new ShopConfig(gameInstance);
+        shopConfig.shopList.forEach(this::add);
     }
 
     @Override
@@ -60,6 +64,9 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public void shutdown() {
+        shopConfig.release();
+        shopConfig = null;
+
         world = null;
 
         HandlerList.unregisterAll(shopInteractListener);

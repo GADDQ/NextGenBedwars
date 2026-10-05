@@ -25,11 +25,15 @@ import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.NextGenBedwars;
 
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
+import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
+import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
@@ -44,11 +48,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class DebugCommand {
     private List<UUID> gameUuids = new ArrayList<>();
     private List<UUID> spawnerUuids = new ArrayList<>();
-    private List<UUID> shopUuids = new ArrayList<>();
 
     private GameInstance activeGame;
 
@@ -96,44 +100,10 @@ public class DebugCommand {
                         Commands.literal("gui").then(
                                 Commands.literal("showTest").executes(this::showTestGui)
                         )
-                ).then(
-                        Commands.literal("shop").then(
-                                Commands.literal("item").then(
-                                        Commands.literal("showShopGui").executes(this::showItemShopGui)
-                                ).then(
-                                        Commands.literal("spawn").executes(this::spawnItemShop)
-                                ).then(
-                                        Commands.literal("removeAll").executes(this::removeAllItemShop)
-                                )
-                        )
                 )
         );
 
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> commands.registrar().register(root.build()));
-    }
-
-    private int removeAllItemShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        shopUuids.forEach(uuid -> activeGame.get(ShopManager.class).remove(uuid));
-        shopUuids.clear();
-        return 0;
-    }
-
-    private int spawnItemShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        shopUuids.add(
-                activeGame.get(ShopManager.class).add(new Shop(
-                        Component.text("物品商店").color(NamedTextColor.YELLOW),
-                        Component.text("右键打开").color(NamedTextColor.AQUA),
-                        EntityType.VILLAGER,
-                        ((Player) commandSourceStackCommandContext.getSource().getSender()).getLocation(),
-                        ItemShopPage::new
-                ))
-        );
-        return 0;
-    }
-
-    private int showItemShopGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new ItemShopPage());
-        return 0;
     }
 
     private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
@@ -150,6 +120,15 @@ public class DebugCommand {
                 new Location(null, 0, 0, 0),
                 new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100))
         );
+
+        File gameFolder = new File(
+                BedwarsAPI.getInstance().getPlugin().getDataFolder(),
+                game.name
+        );
+        Config debugTeamYml = new Config(gameFolder, "team.yml");
+        if (debugTeamYml.read("teams") == null) {
+            debugTeamYml.write("teams", new ArrayList<>());
+        }
 
         UUID uuid = GameManager.addInstance(game);
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
@@ -231,10 +210,8 @@ public class DebugCommand {
     }
 
     public void shutdown() {
-        shopUuids.clear();
         spawnerUuids.clear();
         gameUuids.clear();
-        shopUuids = null;
         spawnerUuids = null;
         gameUuids = null;
     }

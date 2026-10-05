@@ -1,0 +1,370 @@
+title: 物品商店
+
+categories:
+  # ==================== 1. 方块 ====================
+  - icon:
+      material: ORANGE_TERRACOTTA
+      name: 方块
+
+    items:
+      - show:
+          material: WHITE_WOOL
+          amount: 16
+          name: 羊毛
+          lore:
+            - 16 个
+        coin: IRON_INGOT
+        price: 4
+
+      - show:
+          material: ORANGE_TERRACOTTA
+          amount: 16
+          name: 陶土
+          lore:
+            - 16 个
+        coin: IRON_INGOT
+        price: 12
+
+      - show:
+          material: GLASS
+          amount: 4
+          name: 玻璃
+          lore:
+            - 4 个
+        coin: IRON_INGOT
+        price: 12
+
+      - show:
+          material: END_STONE
+          amount: 16
+          name: 末地石
+          lore:
+            - 16 个
+        coin: IRON_INGOT
+        price: 24
+
+      - show:
+          material: LADDER
+          amount: 16
+          name: 梯子
+          lore:
+            - 16 个
+        coin: IRON_INGOT
+        price: 4
+
+      - show:
+          material: OAK_PLANKS
+          amount: 16
+          name: 木板
+          lore:
+            - 16 个
+        coin: GOLD_INGOT
+        price: 4
+
+      - show:
+          material: OBSIDIAN
+          amount: 4
+          name: 黑曜石
+          lore:
+            - 4 个
+        coin: EMERALD
+        price: 4
+
+  # ==================== 2. 近战 ====================
+  - icon:
+      material: GOLDEN_SWORD
+      name: 近战
+
+    items:
+      - show:
+          material: STICK
+          name: 击退棒 I
+          lore:
+            - 击退 I
+        actual:
+          material: STICK
+          name: 击退棒 I
+        coin: IRON_INGOT
+        price: 5
+
+      - show:
+          material: STICK
+          name: 击退棒 II
+          lore:
+            - 击退 II
+        actual:
+          material: STICK
+          name: 击退棒 II
+        coin: GOLD_INGOT
+        price: 5
+
+      - show:
+          material: STONE_SWORD
+          name: 石剑
+        coin: IRON_INGOT
+        price: 10
+
+      - show:
+          material: IRON_SWORD
+          name: 铁剑
+        coin: GOLD_INGOT
+        price: 7
+
+      - show:
+          material: DIAMOND_SWORD
+          name: 钻石剑
+        coin: EMERALD
+        price: 4
+
+  # ==================== 3. 护甲 ====================
+  - icon:
+      material: CHAINMAIL_BOOTS
+      name: 护甲
+
+    items:
+      - show:
+          material: CHAINMAIL_BOOTS
+          name: 锁链靴子
+        coin: IRON_INGOT
+        price: 40
+
+      - show:
+          material: CHAINMAIL_LEGGINGS
+          name: 锁链护腿
+        coin: IRON_INGOT
+        price: 40
+
+      - show:
+          material: IRON_BOOTS
+          name: 铁靴子
+        coin: GOLD_INGOT
+        price: 12
+
+      - show:
+          material: IRON_LEGGINGS
+          name: 铁护腿
+        coin: GOLD_INGOT
+        price: 12
+
+      - show:
+          material: DIAMOND_BOOTS
+          name: 钻石靴子
+        coin: EMERALD
+        price: 6
+
+      - show:
+          material: DIAMOND_LEGGINGS
+          name: 钻石护腿
+        coin: EMERALD
+        price: 6
+
+  # ==================== 4. 工具 ====================
+  - icon:
+      material: STONE_PICKAXE
+      name: 工具
+
+    items:
+      - show:
+          material: SHEARS
+          name: 剪刀
+        coin: IRON_INGOT
+        price: 20
+
+      - show:
+          material: WOODEN_PICKAXE
+          name: 木镐
+        coin: IRON_INGOT
+        price: 10
+
+      - show:
+          material: IRON_PICKAXE
+          name: 铁镐
+          lore:
+            - 效率 II
+        coin: IRON_INGOT
+        price: 10
+
+      - show:
+          material: GOLDEN_PICKAXE
+          name: 金镐
+          lore:
+            - 效率 III
+            - 锋利 II
+        coin: GOLD_INGOT
+        price: 3
+
+      - show:
+          material: DIAMOND_PICKAXE
+          name: 钻石镐
+          lore:
+            - 效率 III
+        coin: GOLD_INGOT
+        price: 6
+
+      - show:
+          material: WOODEN_AXE
+          name: 木斧
+          lore:
+            - 效率 I
+        coin: IRON_INGOT
+        price: 10
+
+      - show:
+          material: IRON_AXE
+          name: 铁斧
+          lore:
+            - 效率 I
+        coin: IRON_INGOT
+        price: 10
+
+      - show:
+          material: GOLDEN_AXE
+          name: 金斧
+          lore:
+            - 效率 II
+        coin: GOLD_INGOT
+        price: 3
+
+      - show:
+          material: DIAMOND_AXE
+          name: 钻石斧
+          lore:
+            - 效率 III
+        coin: GOLD_INGOT
+        price: 6
+
+  # ==================== 5. 远程 ====================
+  - icon:
+      material: BOW
+      name: 远程
+
+    items:
+      - show:
+          material: ARROW
+          amount: 8
+          name: 箭
+          lore:
+            - 8 支
+        coin: GOLD_INGOT
+        price: 2
+
+      - show:
+          material: BOW
+          name: 弓
+        coin: GOLD_INGOT
+        price: 12
+
+      - show:
+          material: BOW
+          name: 弓（力量 I）
+          lore:
+            - 力量 I
+        coin: GOLD_INGOT
+        price: 24
+
+      - show:
+          material: BOW
+          name: 弓（力量 I + 冲击 I）
+          lore:
+            - 力量 I
+            - 冲击 I
+        coin: EMERALD
+        price: 6
+
+  # ==================== 6. 药水 ====================
+  - icon:
+      material: BREWING_STAND
+      name: 药水
+
+    items:
+      - show:
+          material: POTION
+          name: 跳跃药水
+          lore:
+            - 跳跃提升 45 秒
+        coin: EMERALD
+        price: 1
+
+      - show:
+          material: POTION
+          name: 速度药水
+          lore:
+            - 速度 II 45 秒
+        coin: EMERALD
+        price: 1
+
+      - show:
+          material: POTION
+          name: 隐身药水
+          lore:
+            - 隐身 30 秒
+        coin: EMERALD
+        price: 2
+
+  # ==================== 7. 实用 ====================
+  - icon:
+      material: TNT
+      name: 实用
+
+    items:
+      - show:
+          material: GOLDEN_APPLE
+          name: 金苹果
+        coin: GOLD_INGOT
+        price: 3
+
+      - show:
+          material: SNOWBALL
+          name: 蠹虫蛋
+          lore:
+            - 召唤蠹虫
+        coin: IRON_INGOT
+        price: 40
+
+      - show:
+          material: FIRE_CHARGE
+          name: 火球
+        coin: IRON_INGOT
+        price: 40
+
+      - show:
+          material: TNT
+          name: TNT
+        coin: GOLD_INGOT
+        price: 4
+
+      - show:
+          material: ENDER_PEARL
+          name: 末影珍珠
+        coin: EMERALD
+        price: 4
+
+      - show:
+          material: WATER_BUCKET
+          name: 水桶
+        coin: GOLD_INGOT
+        price: 4
+
+      - show:
+          material: EGG
+          name: 搭桥蛋
+        coin: EMERALD
+        price: 3
+
+      - show:
+          material: MILK_BUCKET
+          name: 魔法牛奶
+        coin: GOLD_INGOT
+        price: 4
+
+      - show:
+          material: SPONGE
+          name: 海绵
+        coin: GOLD_INGOT
+        price: 3
+
+      - show:
+          material: CHEST
+          name: 防御塔
+        coin: IRON_INGOT
+        price: 24

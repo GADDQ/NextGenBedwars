@@ -82,5 +82,6 @@ public final class NextGenBedwars extends JavaPlugin{
 
     private void bootstrapDefaultConfigs() {
         ConfigManager.bootstrap(new Config("spawner_types.yml"));
+        ConfigManager.bootstrap(new Config("item_shop.yml"));
     }
 }

@@ -26,14 +26,17 @@ public class ItemShopPage extends GuiPage {
 
     private final List<Category> categories;
 
-    public ItemShopPage() { // TODO: i18n
-        super(Component.text("物品商店"), 6);
+    public ItemShopPage(Component title, List<Category> categories) { // TODO: i18n
+        super(title, 6);
         this.allowPlayerInventoryInteraction = true;
-        categories = new ObjectArrayList<>();
+
+        if (categories == null || categories.isEmpty())
+            throw new IllegalStateException("ItemShopPage requires at least one category");
 
         //TODO: FIXME: TEST ONLY
-        test();
+        // test();
 
+        this.categories = new ObjectArrayList<>(categories);
         buildPage();
     }
 
