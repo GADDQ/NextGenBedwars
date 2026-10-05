@@ -1,0 +1,65 @@
+copper:
+  material: COPPER_INGOT
+  spawnTick: 20
+  maxSpawnCount: 32
+  isAllowMerge: false
+  isShowHolo: false
+  holoMaterial: COPPER_BLOCK
+  resourceName: "铜锭"
+  isShowTimer: true
+  level: 1
+  isShowLevel: true
+
+iron:
+  material: IRON_INGOT
+  spawnTick: 40
+  maxSpawnCount: 32
+  isAllowMerge: false
+  isShowHolo: false
+  holoMaterial: IRON_BLOCK
+  resourceName: "铁锭"
+  isShowTimer: true
+  level: 1
+  isShowLevel: true
+
+gold:
+  material: GOLD_INGOT
+  spawnTick: 80
+  maxSpawnCount: 16
+  isAllowMerge: false
+  isShowHolo: false
+  holoMaterial: GOLD_BLOCK
+  resourceName: "金锭"
+  isShowTimer: true
+  level: 1
+  isShowLevel: true
+
+diamond:
+  material: DIAMOND
+  spawnTick: 200
+  maxSpawnCount: 8
+  isAllowMerge: false
+  isShowHolo: true
+  holoMaterial: DIAMOND_BLOCK
+  resourceName: "钻石"
+  isShowTimer: true
+  level: 1
+  isShowLevel: true
+
+emerald:
+  material: EMERALD
+  spawnTick: 300
+  maxSpawnCount: 8
+  isAllowMerge: false
+  isShowHolo: true
+  holoMaterial: EMERALD_BLOCK
+  resourceName: "绿宝石"
+  isShowTimer: true
+  level: 1
+  isShowLevel: true
+
+minimal:
+  material: NETHER_STAR
+  spawnTick: 600
+  maxSpawnCount: 1
+  isAllowMerge: false

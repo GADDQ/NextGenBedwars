@@ -9,6 +9,8 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.config.Config;
+import top.earthstudio.nextgenbedwars.api.config.ConfigManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 
 import top.earthstudio.nextgenbedwars.core.BedwarsAPIImpl;
@@ -36,11 +38,14 @@ public final class NextGenBedwars extends JavaPlugin{
         worldReadyListener = new WorldReadyListener();
 
         GlobalTicker.initialize(this);
+        ConfigManager.initialize();
         WorldManager.initialize(this, worldReadyListener);
         GameManager.initialize(worldReadyListener);
         GuiManager.initialize();
 
         registerListeners();
+
+        bootstrapDefaultConfigs();
 
         logger.info(Component.text("Startup!").color(NamedTextColor.GREEN));
 
@@ -58,6 +63,7 @@ public final class NextGenBedwars extends JavaPlugin{
         GuiManager.shutdown();
         GameManager.shutdown();
         WorldManager.shutdown();
+        ConfigManager.shutdown();
         GlobalTicker.shutdown();
 
         logger.info(Component.text("Shutdown!").color(NamedTextColor.GREEN));
@@ -72,5 +78,9 @@ public final class NextGenBedwars extends JavaPlugin{
         pm.registerEvents(new SpawnerMergeListener(), this);
 
         pm.registerEvents(worldReadyListener, this);
+    }
+
+    private void bootstrapDefaultConfigs() {
+        ConfigManager.bootstrap(new Config("spawner_types.yml"));
     }
 }
