@@ -194,11 +194,17 @@ public class ShopConfig {
     }
 
     private static Location parseLocation(Map<?, ?> map, String tag, World world) {
+        float yaw = map.containsKey("yaw")
+                ? ((Number) map.get("yaw")).floatValue()
+                : 0f;
+
         return new Location(
                 world,
                 requireCoord(map, "x", tag),
                 requireCoord(map, "y", tag),
-                requireCoord(map, "z", tag)
+                requireCoord(map, "z", tag),
+                yaw,
+                0f      // pitch 固定 0
         );
     }
 

@@ -24,7 +24,6 @@ public class ShopEntity {
 
     public ShopEntity(Shop shop) {
         this.shop = shop;
-        shop.location.setPitch(0);
 
         this.bodyEntity = shop.location.getWorld().spawnEntity(shop.location, shop.entityType);
         this.bodyEntity.setPersistent(false); // TODO: FIXME: TEST ONLY
