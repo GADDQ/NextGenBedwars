@@ -33,6 +33,7 @@ import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
+import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
@@ -121,10 +122,7 @@ public class DebugCommand {
                 new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100))
         );
 
-        File gameFolder = new File(
-                BedwarsAPI.getInstance().getPlugin().getDataFolder(),
-                game.name
-        );
+        File gameFolder = GameFolder.of(game);
         Config debugTeamYml = new Config(gameFolder, "team.yml");
         if (debugTeamYml.read("teams") == null) {
             debugTeamYml.write("teams", new ArrayList<>());

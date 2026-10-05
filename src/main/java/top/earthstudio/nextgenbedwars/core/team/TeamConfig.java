@@ -8,11 +8,11 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Color;
 import org.bukkit.Location;
 
-import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 
 import java.io.File;
 import java.util.List;
@@ -23,10 +23,8 @@ public class TeamConfig {
     public final List<Team> teamList;
 
     public TeamConfig(GameInstance gameInstance) {
-        File gameFolder = new File(
-                BedwarsAPI.getInstance().getPlugin().getDataFolder(),
-                gameInstance.getGame().name
-        );
+        File gameFolder = GameFolder.of(gameInstance.getGame());
+
         this.config = new Config(gameFolder, "team.yml");
         this.teamList = new ObjectArrayList<>();
 

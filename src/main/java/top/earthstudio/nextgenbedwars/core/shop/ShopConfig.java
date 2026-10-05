@@ -10,13 +10,14 @@ import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
-import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
+import top.earthstudio.nextgenbedwars.api.util.GameFolder;
+
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
 
 import java.io.File;
@@ -31,10 +32,7 @@ public class ShopConfig {
     public final List<Shop> shopList;
 
     public ShopConfig(GameInstance gameInstance) { // TODO: 1. italic, bold, etc. format process; 2. auto item_lore: how much? what coin?
-        File gameFolder = new File(
-                BedwarsAPI.getInstance().getPlugin().getDataFolder(),
-                gameInstance.getGame().name
-        );
+        File gameFolder = GameFolder.of(gameInstance.getGame());
 
         Config globalItemShop = new Config("item_shop.yml");
         this.itemShopConfig = new Config(gameFolder, "item_shop.yml", globalItemShop);

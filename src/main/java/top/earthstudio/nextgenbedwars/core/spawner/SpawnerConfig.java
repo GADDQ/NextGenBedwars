@@ -7,10 +7,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
+import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 
 import java.io.File;
 import java.util.List;
@@ -23,10 +23,7 @@ public class SpawnerConfig {
     public final List<Spawner> spawnerList;
 
     public SpawnerConfig(GameInstance gameInstance) {
-        File gameFolder = new File(
-                BedwarsAPI.getInstance().getPlugin().getDataFolder(),
-                gameInstance.getGame().name
-        );
+        File gameFolder = GameFolder.of(gameInstance.getGame());
 
         Config globalParams = new Config("spawner_types.yml");
         this.localParams  = new Config(gameFolder, "spawner_types.yml", globalParams);
