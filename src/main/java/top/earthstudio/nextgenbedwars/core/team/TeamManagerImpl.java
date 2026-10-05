@@ -30,6 +30,8 @@ public class TeamManagerImpl implements TeamManager {
 
     private World world;
 
+    private TeamConfig teamConfig;
+
     public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
@@ -38,6 +40,9 @@ public class TeamManagerImpl implements TeamManager {
         world = gameInstance.getWorld();
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().getPlugin());
         Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().getPlugin());
+
+        this.teamConfig = new TeamConfig(gameInstance);
+        teamConfig.teamList.forEach(this::add);
     }
 
     @Override
@@ -83,6 +88,9 @@ public class TeamManagerImpl implements TeamManager {
 
     @Override
     public void shutdown() {
+        teamConfig.release();
+        teamConfig = null;
+
         world = null;
 
         HandlerList.unregisterAll(teamRespawnListener);
