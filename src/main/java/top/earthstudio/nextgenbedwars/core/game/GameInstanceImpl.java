@@ -20,7 +20,6 @@ public final class GameInstanceImpl implements GameInstance {
     public GameState gameState;
 
     private final Game game;
-    private final Component displayName;
     private UUID worldUUID;
     private World world;
     private Map<Class<? extends IGameSubSystem>, IGameSubSystem> subSystems;
@@ -28,11 +27,10 @@ public final class GameInstanceImpl implements GameInstance {
     private boolean isShutdown = false;
     private boolean isReady = false;
 
-    public GameInstanceImpl(Game game, Component displayName, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
+    public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
         // this.gameState = GameState.WAITING; // TODO
         this.gameState = GameState.PLAYING;
         this.game = game;
-        this.displayName = displayName;
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
         this.worldUUID = WorldManager.create(game.mapTemplate);
@@ -89,7 +87,7 @@ public final class GameInstanceImpl implements GameInstance {
 
     // ================= 接口实现 =================
     @Override public UUID getWorldUUID() { return worldUUID; }
-    @Override public Component getDisplayName() { return displayName; }
+    @Override public Component getDisplayName() { return game.displayName; }
     @Override public Game getGame() { return game; }
     @Override public World getWorld() { return world; }
 

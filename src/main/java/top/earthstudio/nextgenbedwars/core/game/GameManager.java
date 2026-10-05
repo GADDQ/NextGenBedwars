@@ -57,10 +57,10 @@ public class GameManager {
         gameInstances = null;
     }
 
-    static public UUID addInstance(Game game, Component displayName) {
+    static public UUID addInstance(Game game) {
         UUID uuid = UUID.randomUUID();
 
-        GameInstanceImpl gameInstance = new GameInstanceImpl(game, displayName, worldReadyListener, SUB_SYSTEM_TEMPLATES);
+        GameInstanceImpl gameInstance = new GameInstanceImpl(game, worldReadyListener, SUB_SYSTEM_TEMPLATES);
 
         GlobalTicker.set(uuid, new TickerTask() {
             @Override

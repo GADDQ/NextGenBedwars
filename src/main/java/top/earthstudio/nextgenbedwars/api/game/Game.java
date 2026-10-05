@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.api.game;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -17,13 +18,18 @@ import java.util.List;
 import java.util.Map;
 
 public final class Game {
+    public final String name;
+    public Component displayName;
+
     public File mapTemplate;
 
     public Location waitingLobby;
     public Location spectatorRespawnPoint;
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;
 
-    public Game(File mapTemplate, Location waitingLobby, Location spectatorRespawnPoint, ObjectObjectImmutablePair<Vector3i, Vector3i> region) {
+    public Game(String name, Component displayName, File mapTemplate, Location waitingLobby, Location spectatorRespawnPoint, ObjectObjectImmutablePair<Vector3i, Vector3i> region) {
+        this.name = name;
+        this.displayName = displayName;
         this.mapTemplate = mapTemplate;
         this.waitingLobby = waitingLobby;
         this.spectatorRespawnPoint = spectatorRespawnPoint;
