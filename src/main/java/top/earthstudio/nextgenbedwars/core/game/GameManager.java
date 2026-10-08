@@ -35,7 +35,7 @@ public class GameManager {
 
     private GameManager() {};
 
-    static public void initialize(WorldReadyListener worldReadyListener) {
+    static public void initialize(WorldReadyListener worldReadyListener) { // TODO: ability to edit instance map and save to template
         gameInstances = new Object2ObjectOpenHashMap<>();
         SUB_SYSTEM_TEMPLATES = new Object2ObjectOpenHashMap<>();
         GameManager.worldReadyListener = worldReadyListener;
@@ -80,10 +80,6 @@ public class GameManager {
 
     static public GameInstance getInstance(UUID uuid) {
         return gameInstances.get(uuid);
-    }
-
-    static public void editInstance(UUID uuid) {
-        // TODO: ability to edit instance map and save to template
     }
 
     static public void removeInstance(UUID uuid) {

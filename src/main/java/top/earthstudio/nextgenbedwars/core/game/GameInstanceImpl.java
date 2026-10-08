@@ -27,9 +27,15 @@ public final class GameInstanceImpl implements GameInstance {
     private boolean isShutdown = false;
     private boolean isReady = false;
 
+    public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
+        this(game, worldReadyListener, subSystemTemplates);
+        if (isEditMode)
+            this.gameState = GameState.EDITING;
+    }
+
     public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
         // this.gameState = GameState.WAITING; // TODO
-        this.gameState = GameState.PLAYING;
+        this.gameState = GameState.PLAYING; // TODO: DEBUG ONLY
         this.game = game;
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
