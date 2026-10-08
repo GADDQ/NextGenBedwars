@@ -1,5 +1,7 @@
 package top.earthstudio.nextgenbedwars.api.util;
 
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -11,6 +13,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+
+import org.joml.Vector3i;
 
 import java.util.List;
 import java.util.Map;
@@ -172,5 +176,26 @@ public final class ConfigParser {
             });
         }
         return item;
+    }
+
+    public static Vector3i parseVector3i(Object raw, String tag) {
+        if (!(raw instanceof Map<?, ?> map)) {
+            throw new IllegalStateException(tag + " must be a {x, y, z} map");
+        }
+        return new Vector3i(
+                parseInt(map, "x", tag),
+                parseInt(map, "y", tag),
+                parseInt(map, "z", tag)
+        );
+    }
+
+    public static ObjectObjectImmutablePair<Vector3i, Vector3i> parseRegion(Object raw, String tag) {
+        if (!(raw instanceof Map<?, ?> map)) {
+            throw new IllegalStateException(tag + " must be a {min, max} map");
+        }
+        return new ObjectObjectImmutablePair<>(
+                parseVector3i(map.get("min"), tag + ".min"),
+                parseVector3i(map.get("max"), tag + ".max")
+        );
     }
 }
