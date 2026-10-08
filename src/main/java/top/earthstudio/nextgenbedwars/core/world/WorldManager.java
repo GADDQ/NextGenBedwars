@@ -2,10 +2,7 @@ package top.earthstudio.nextgenbedwars.core.world;
 
 import it.unimi.dsi.fastutil.Pair;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.IllegalPluginAccessException;
@@ -85,6 +82,7 @@ public class WorldManager {
 
                         WorldCreator creator = new WorldCreator(worldName);
                         creator.generator(new ChunkGenerator() {});
+                        creator.generateStructures(false);
                         World world = Bukkit.createWorld(creator);
 
                         if (world == null) {
@@ -104,6 +102,35 @@ public class WorldManager {
             }
         }.runTaskAsynchronously(plugin);
 
+        return uuid;
+    }
+
+    public static UUID createEmptyTemp() {
+        UUID uuid = UUID.randomUUID();
+        String worldName = "bw-" + uuid;
+        WorldCreator creator = new WorldCreator(worldName);
+        creator.generator(new ChunkGenerator() {});
+        creator.generateStructures(false);
+        World world = Bukkit.createWorld(creator);
+
+        if (world == null) {
+            Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, null, false));
+            throw new IllegalStateException("Failed to create temp world: " + worldName);
+        }
+
+        world.setAutoSave(false);
+
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+        world.setTime(6000);
+
+        world.getBlockAt(0, 64, 0).setType(Material.BEDROCK);
+        world.setSpawnLocation(new Location(world, 0.5, 65.0, 0.5, 0f, 0f));
+
+        worlds.put(uuid, world);
+
+        Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, world, true));
         return uuid;
     }
 
@@ -160,7 +187,7 @@ public class WorldManager {
         plugin = null;
     }
 
-    private static void deleteTempWorld(World world) {
+    private static void deleteTempWorld(World world) { // TODO: Teleport need to replace to teleport to main server
         File worldFolder = world.getWorldFolder();
 
         Location fallbackLobby = Bukkit.getWorlds().getFirst().getSpawnLocation();
@@ -168,6 +195,11 @@ public class WorldManager {
             player.teleport(fallbackLobby);
         }
 
+        for (Chunk chunk : world.getLoadedChunks()) {
+            if (chunk.isForceLoaded()) {
+                chunk.setForceLoaded(false);
+            }
+        }
         Bukkit.unloadWorld(world, false);
 
         tryDeleteAsync(worldFolder);
