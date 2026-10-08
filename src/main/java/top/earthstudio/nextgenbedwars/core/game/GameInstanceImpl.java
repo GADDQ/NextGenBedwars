@@ -2,17 +2,18 @@ package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.World;
 
+import org.joml.Vector3i;
 import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
-import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,22 +25,23 @@ public final class GameInstanceImpl implements GameInstance {
     private World world;
     private Map<Class<? extends IGameSubSystem>, IGameSubSystem> subSystems;
 
+    private GameConfig gameConfig;
     private boolean isShutdown = false;
     private boolean isReady = false;
+    private boolean isEditMode = false;
 
     public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
-        this(game, worldReadyListener, subSystemTemplates);
-        if (isEditMode)
-            this.gameState = GameState.EDITING;
-    }
-
-    public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
-        // this.gameState = GameState.WAITING; // TODO
-        this.gameState = GameState.PLAYING; // TODO: DEBUG ONLY
         this.game = game;
+
+        this.gameConfig = new GameConfig(this);
+        gameConfig.load();
+
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
-        this.worldUUID = WorldManager.create(game.mapTemplate);
+        if (game.mapTemplate == null)
+            this.worldUUID = WorldManager.createEmptyTemp();
+        else
+            this.worldUUID = WorldManager.create(game.mapTemplate);
 
         worldReadyListener.addTask(worldUUID, world -> {
             if (isShutdown) return;
@@ -51,12 +53,30 @@ public final class GameInstanceImpl implements GameInstance {
 
             WorldManager.forceLoadRegions(worldUUID, game.region);
 
-            WorldProtector worldProtector = get(WorldProtector.class);
-            worldProtector.scanWorldToProtectLater(world, game.region, v -> {
-                if (isShutdown) return;
-                isReady = true;
-            });
+            if (isEditMode) {
+                gameState = GameState.EDITING;
+            } else {
+                WorldProtector worldProtector = get(WorldProtector.class);
+
+                System.out.println(game.region);
+                if (game.region.equals(new ObjectObjectImmutablePair<>(new Vector3i(0, 0, 0), new Vector3i(0, 0, 0)))) { // TODO: Config allow set no protection
+                    setReady();
+                    return;
+                }
+
+                worldProtector.scanWorldToProtectLater(world, game.region, v -> {
+                    setReady();
+                });
+            }
         });
+    }
+
+    private void setReady() {
+        if (isShutdown) return;
+        isReady = true;
+
+        this.gameState = GameState.PLAYING; // TODO: DEBUG ONLY
+        // gameState = GameState.WAITING; // TODO
     }
 
     private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
@@ -77,7 +97,13 @@ public final class GameInstanceImpl implements GameInstance {
     }
 
     public void shutdown() {
-        gameState = GameState.ENDING;
+        if (gameState == GameState.EDITING)
+            gameConfig.save(true); // World should be saved in any time, but configs not.
+
+        gameConfig.release();
+        gameConfig = null;
+
+        gameState = null;
         isShutdown = true;
 
         if (subSystems != null) {
@@ -91,11 +117,16 @@ public final class GameInstanceImpl implements GameInstance {
         world = null;
     }
 
-    // ================= 接口实现 =================
+    @Override
+    public void saveGame() {
+        gameConfig.save(false);
+    }
+
     @Override public UUID getWorldUUID() { return worldUUID; }
     @Override public Component getDisplayName() { return game.displayName; }
     @Override public Game getGame() { return game; }
     @Override public World getWorld() { return world; }
+    @Override public boolean isEditMode() { return isEditMode; }
 
     @Override
     public <M extends IGameSubSystem> M get(Class<M> type) {

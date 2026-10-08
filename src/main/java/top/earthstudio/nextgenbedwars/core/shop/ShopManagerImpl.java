@@ -31,7 +31,7 @@ public class ShopManagerImpl implements ShopManager {
         Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().getPlugin());
 
         shopConfig = new ShopConfig(gameInstance);
-        shopConfig.shopList.forEach(this::add);
+        shopConfig.getValues().forEach(this::add);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class SpawnerManagerImpl implements SpawnerManager {
 
         spawnerConfig = new SpawnerConfig(gameInstance);
 
-        spawnerConfig.spawnerList.forEach(this::add);
+        spawnerConfig.getValues().forEach(this::add);
     }
 
     @Override

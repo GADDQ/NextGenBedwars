@@ -42,7 +42,7 @@ public class TeamManagerImpl implements TeamManager {
         Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().getPlugin());
 
         this.teamConfig = new TeamConfig(gameInstance);
-        teamConfig.teamList.forEach(this::add);
+        teamConfig.getValues().forEach(this::add);
     }
 
     @Override

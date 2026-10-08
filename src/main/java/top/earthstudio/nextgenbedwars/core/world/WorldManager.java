@@ -9,6 +9,7 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import org.bukkit.scheduler.BukkitTask;
 import org.codehaus.plexus.util.FileUtils;
 
 import org.joml.Vector3i;
@@ -136,6 +137,41 @@ public class WorldManager {
 
     static public World get(UUID uuid) {
         return worlds.get(uuid);
+    }
+
+    public static void exportWorld(UUID uuid, File targetTemplateDir) { // TODO: reference count to fix delete problem
+        World world = worlds.get(uuid);
+
+        world.save();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                try {
+                    copyWorldFolderSafely(world.getWorldFolder(), targetTemplateDir);
+                } catch (IOException e) {
+                    plugin.getLogger().warning("Failed to export world!\n" + e);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+    private static void copyWorldFolderSafely(File source, File target) throws IOException {
+        if (source.isDirectory()) {
+            if (!target.exists()) target.mkdirs();
+            File[] files = source.listFiles();
+            if (files == null) return;
+
+            for (File file : files) {
+                String name = file.getName();
+                if (name.equals("session.lock") || name.equals("uid.dat")) {
+                    continue;
+                }
+                copyWorldFolderSafely(file, new File(target, name));
+            }
+        } else {
+            FileUtils.copyFile(source, target);
+        }
     }
 
     static public boolean uuidExist(UUID uuid) {

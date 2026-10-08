@@ -116,19 +116,13 @@ public class DebugCommand {
         Game game = new Game(
                 "testGame",
                 Component.text("Test"),
-                new File(Bukkit.getWorldContainer(), "testworld"),
+                null,
                 new Location(null, 0, 0, 0),
                 new Location(null, 0, 0, 0),
                 new ObjectObjectImmutablePair<>(new Vector3i(100, 320, 100), new Vector3i(-100, -64, -100))
         );
 
-        File gameFolder = GameFolder.of(game);
-        Config debugTeamYml = new Config(gameFolder, "team.yml");
-        if (debugTeamYml.read("teams") == null) {
-            debugTeamYml.write("teams", new ArrayList<>());
-        }
-
-        UUID uuid = GameManager.addInstance(game);
+        UUID uuid = GameManager.addInstance(game, false);
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         NextGenBedwars.worldReadyListener.addTask(GameManager.getInstance(uuid).getWorldUUID(), world -> {
             player.teleport(new Location(world, 0, 0, 0));

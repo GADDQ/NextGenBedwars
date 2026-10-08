@@ -34,7 +34,7 @@ public final class Game {
         this.waitingLobby = waitingLobby;
         this.spectatorRespawnPoint = spectatorRespawnPoint;
         this.region = region;
-    }
+    } // TODO: due to Config System is ready, this might will be replaced to "Game(String name)" later;
 
     public void locationsModifier(World world) {
         waitingLobby.setWorld(world);

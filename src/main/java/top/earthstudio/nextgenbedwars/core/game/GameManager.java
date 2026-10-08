@@ -2,8 +2,6 @@ package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import net.kyori.adventure.text.Component;
-
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
@@ -23,7 +21,6 @@ import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
-import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,10 +54,10 @@ public class GameManager {
         gameInstances = null;
     }
 
-    static public UUID addInstance(Game game) {
+    static public UUID addInstance(Game game, boolean isEditMode) {
         UUID uuid = UUID.randomUUID();
 
-        GameInstanceImpl gameInstance = new GameInstanceImpl(game, worldReadyListener, SUB_SYSTEM_TEMPLATES);
+        GameInstanceImpl gameInstance = new GameInstanceImpl(game, worldReadyListener, SUB_SYSTEM_TEMPLATES, isEditMode);
 
         GlobalTicker.set(uuid, new TickerTask() {
             @Override
@@ -80,6 +77,10 @@ public class GameManager {
 
     static public GameInstance getInstance(UUID uuid) {
         return gameInstances.get(uuid);
+    }
+
+    static public void saveInstance(UUID uuid) {
+        gameInstances.get(uuid).saveGame();
     }
 
     static public void removeInstance(UUID uuid) {

@@ -11,5 +11,8 @@ public interface GameInstance {
     Component getDisplayName();
     Game getGame();
     World getWorld();
+    boolean isEditMode();
+    void saveGame();
+
     <M extends IGameSubSystem> M get(Class<M> type);
 }
