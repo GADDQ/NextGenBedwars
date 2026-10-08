@@ -9,7 +9,7 @@ import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
-import top.earthstudio.nextgenbedwars.api.util.ConfigParser;
+import top.earthstudio.nextgenbedwars.api.util.ConfigUtil;
 import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class SpawnerConfig implements IConfig<Spawner> {
     private final Config localParams;
     private final Config spawnersConfig;
-    public final List<Spawner> spawnerList;
+    private final List<Spawner> spawnerList;
 
     public SpawnerConfig(GameInstance gameInstance) {
         File gameFolder = GameFolder.of(gameInstance.getGame());
@@ -45,8 +45,8 @@ public class SpawnerConfig implements IConfig<Spawner> {
                 throw new IllegalStateException("spawners[" + i + "] must be a map");
             }
             String tag = "spawners[" + i + "]";
-            String type = ConfigParser.parseString(map, "type", tag);
-            Location location = ConfigParser.parseLocation(map, tag);
+            String type = ConfigUtil.parseString(map, "type", tag);
+            Location location = ConfigUtil.parseLocation(map, tag);
 
             spawnerList.add(buildSpawner(type, paramsConfig, location));
         }
@@ -54,7 +54,7 @@ public class SpawnerConfig implements IConfig<Spawner> {
 
     private Spawner buildSpawner(String type, Config params, Location location) {
         String prefix = type + ".";
-        Material material = ConfigParser.parseMaterial(params.read(prefix + "material"), "spawner_types: " + type + ".material");
+        Material material = ConfigUtil.parseMaterial(params.read(prefix + "material"), "spawner_types: " + type + ".material");
 
         Spawner spawner = new Spawner(
                 location,
@@ -70,11 +70,11 @@ public class SpawnerConfig implements IConfig<Spawner> {
 
         spawner.isShowHolo = params.read(prefix + "isShowHolo", false);
         if (spawner.isShowHolo) {
-            spawner.holoMaterial = ConfigParser.parseMaterial(params.read(prefix + "holoMaterial"), "spawner_types: " + type + ".holoMaterial");
+            spawner.holoMaterial = ConfigUtil.parseMaterial(params.read(prefix + "holoMaterial"), "spawner_types: " + type + ".holoMaterial");
 
             Object nameObj = params.read(prefix + "resourceName");
             if (nameObj != null) {
-                spawner.resourceName = ConfigParser.parseComponent(nameObj, "spawner_types: " + type + ".resourceName");
+                spawner.resourceName = ConfigUtil.parseComponent(nameObj, "spawner_types: " + type + ".resourceName");
             }
         }
 

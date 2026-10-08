@@ -5,7 +5,7 @@ import java.io.File;
 public class Config {
     public final String name;
     public final File parentFolder;
-    private final Config fallback;   // 可以是 null
+    protected final Config fallback;   // 可以是 null
 
     public Config(String name) {
         this(null, name, null);
@@ -19,10 +19,12 @@ public class Config {
         this.parentFolder = parentFolder;
         this.name = name.endsWith(".yml") ? name : name + ".yml";
         this.fallback = fallback;
+
+        ConfigManager.bootstrap(this);
     }
 
     public void write(String key, Object value) {
-        ConfigManager.write(this, key, value);   // 永远写自己
+        ConfigManager.write(this, key, value);
     }
 
     /** 移除本层的 key，使 read 回落到 fallback */
@@ -32,9 +34,7 @@ public class Config {
 
     @SuppressWarnings("unchecked")
     public <T> T read(String key) {
-        Object val = ConfigManager.read(this, key);
-        if (val != null) return (T) val;
-        return fallback != null ? fallback.read(key) : null;
+        return (T) ConfigManager.read(this, key);
     }
 
     @SuppressWarnings("unchecked")

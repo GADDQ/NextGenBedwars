@@ -28,33 +28,43 @@ public final class ConfigManager {
     }
 
     /**
-     * 写入内存并立即持久化落盘。
+     * 写入内存，但不持久化落盘。需要手动调用 {@link #save} 来落盘
      * 强契约：value 不可为 null —— 要清除 key 请用 {@link #remove}。
      */
     static public void write(Config config, String key, Object value) {
         Objects.requireNonNull(value, "value");
         YamlConfiguration yaml = getOrLoadYaml(config);
         yaml.set(key, value);
-        save(config);
     }
 
     /**
-     * 移除本层的 key（等价于恢复 fallback 语义），并落盘。
+     * 移除本层的 key（等价于恢复 fallback 语义），需要手动调用 {@link #save} 来落盘。
      */
     static public void remove(Config config, String key) {
         YamlConfiguration yaml = getOrLoadYaml(config);
         yaml.set(key, null);
-        save(config);
     }
 
     static public Object read(Config config, String key) {
-        return getOrLoadYaml(config).get(key);
+        Object val = getOrLoadYaml(config).get(key);
+
+        if (val == null && config.fallback != null) {
+            return read(config.fallback, key);
+        }
+
+        return val;
     }
 
     static public void reloadFromFile(Config config) {
         File file = getConfigFile(config);
+
         if (!file.exists()) {
-            ensureFileExists(config, file);
+            if (config.fallback == null) {
+                ensureFileExists(config, file);
+            } else {
+                cache.put(idOf(config), new CacheEntry(new YamlConfiguration(), file));
+                return;
+            }
         }
 
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
@@ -85,8 +95,6 @@ public final class ConfigManager {
         cache = null;
         plugin = null;
     }
-
-    // ================= 内部物理定位与自动释放 =================
 
     static private YamlConfiguration getOrLoadYaml(Config config) {
         String id = idOf(config);

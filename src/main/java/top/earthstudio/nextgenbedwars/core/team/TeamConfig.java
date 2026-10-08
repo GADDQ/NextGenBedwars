@@ -13,7 +13,7 @@ import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
-import top.earthstudio.nextgenbedwars.api.util.ConfigParser;
+import top.earthstudio.nextgenbedwars.api.util.ConfigUtil;
 import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 
 import java.io.File;
@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class TeamConfig implements IConfig<Team> {
     private final Config config;
-    public final List<Team> teamList;
+    private final List<Team> teamList;
 
     public TeamConfig(GameInstance gameInstance) {
         File gameFolder = GameFolder.of(gameInstance.getGame());
@@ -35,7 +35,7 @@ public class TeamConfig implements IConfig<Team> {
     private void loadFromConfig(Config config) {
         Object raw = config.read("teams");
         if (raw == null) {
-            throw new IllegalStateException("Missing 'teams' in team.yml for game '" + config.parentFolder.getName() + "'");
+            return;
         }
         if (!(raw instanceof List<?> list)) {
             throw new IllegalStateException("'teams' must be a list in team.yml");
@@ -52,11 +52,11 @@ public class TeamConfig implements IConfig<Team> {
 
     private Team buildTeam(Map<?, ?> map, int index) {
         String tag = "teams[" + index + "]";
-        Component displayName = ConfigParser.parseComponent(map.get("displayName"), tag + ".displayName");
-        Color color = ConfigParser.parseColor(map.get("color"), tag);
-        int maxPlayerCount = ConfigParser.parseInt(map, "maxPlayerCount", tag);
-        int respawnTick = ConfigParser.parseInt(map, "respawnTick", tag);
-        Location respawn = ConfigParser.parseLocation(map.get("respawn"), tag);
+        Component displayName = ConfigUtil.parseComponent(map.get("displayName"), tag + ".displayName");
+        Color color = ConfigUtil.parseColor(map.get("color"), tag);
+        int maxPlayerCount = ConfigUtil.parseInt(map, "maxPlayerCount", tag);
+        int respawnTick = ConfigUtil.parseInt(map, "respawnTick", tag);
+        Location respawn = ConfigUtil.parseLocation(map.get("respawn"), tag);
         LongLongPair bed = parseBed(map.get("bed"), tag);
 
         return new Team(displayName, color, maxPlayerCount, respawnTick, respawn, bed);
@@ -77,9 +77,9 @@ public class TeamConfig implements IConfig<Team> {
         if (!(raw instanceof Map<?, ?> map)) {
             throw new IllegalStateException(tag + " must be a {x, y, z} map");
         }
-        int x = (int) ConfigParser.parseDouble(map, "x", tag);
-        int y = (int) ConfigParser.parseDouble(map, "y", tag);
-        int z = (int) ConfigParser.parseDouble(map, "z", tag);
+        int x = (int) ConfigUtil.parseDouble(map, "x", tag);
+        int y = (int) ConfigUtil.parseDouble(map, "y", tag);
+        int z = (int) ConfigUtil.parseDouble(map, "z", tag);
         return BlockPosUtil.asLong(x, y, z);
     }
 

@@ -17,7 +17,7 @@ import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 import top.earthstudio.nextgenbedwars.api.util.GameFolder;
-import top.earthstudio.nextgenbedwars.api.util.ConfigParser;
+import top.earthstudio.nextgenbedwars.api.util.ConfigUtil;
 
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
 
@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 public class ShopConfig implements IConfig<Shop> {
     private final Config shopsConfig;
     private final Config itemShopConfig;
-    public final List<Shop> shopList;
+    private final List<Shop> shopList;
 
     public ShopConfig(GameInstance gameInstance) {
         File gameFolder = GameFolder.of(gameInstance.getGame());
@@ -61,14 +61,14 @@ public class ShopConfig implements IConfig<Shop> {
     private Shop buildShop(Map<?, ?> map, int index) {
         String tag = "shops[" + index + "]";
 
-        String type = ConfigParser.parseString(map, "type", tag);
-        EntityType entity = ConfigParser.parseEntityType(map.get("entityType"), tag);
+        String type = ConfigUtil.parseString(map, "type", tag);
+        EntityType entity = ConfigUtil.parseEntityType(map.get("entityType"), tag);
 
-        Location location = ConfigParser.parseLocation(map, tag);
+        Location location = ConfigUtil.parseLocation(map, tag);
         Supplier<GuiPage> provider = providerFor(type, tag);
 
-        Component title = map.containsKey("title") ? ConfigParser.parseComponent(map.get("title"), tag + ".title") : Component.text(type);
-        Component subTitle = map.containsKey("subtitle") ? ConfigParser.parseComponent(map.get("subtitle"), tag + ".subtitle") : Component.empty();
+        Component title = map.containsKey("title") ? ConfigUtil.parseComponent(map.get("title"), tag + ".title") : Component.text(type);
+        Component subTitle = map.containsKey("subtitle") ? ConfigUtil.parseComponent(map.get("subtitle"), tag + ".subtitle") : Component.empty();
 
         return new Shop(title, subTitle, entity, location, provider);
     }
@@ -76,7 +76,7 @@ public class ShopConfig implements IConfig<Shop> {
     private Supplier<GuiPage> providerFor(String type, String tag) {
         return switch (type) {
             case "item_shop" -> {
-                Component guiTitle = ConfigParser.parseComponent(readItemShopGuiTitle(), "item_shop.yml.title");
+                Component guiTitle = ConfigUtil.parseComponent(readItemShopGuiTitle(), "item_shop.yml.title");
                 List<Category> categories = loadItemShopCategories();
                 yield () -> new ItemShopPage(guiTitle, categories);
             }
@@ -109,7 +109,7 @@ public class ShopConfig implements IConfig<Shop> {
 
     private Category buildCategory(Map<?, ?> map, int index) {
         String tag = "item_shop.yml categories[" + index + "]";
-        ItemStack icon = ConfigParser.parseItemStack(map.get("icon"), tag, "icon");
+        ItemStack icon = ConfigUtil.parseItemStack(map.get("icon"), tag, "icon");
         Category category = new Category(icon);
 
         Object rawItems = map.get("items");
@@ -126,12 +126,12 @@ public class ShopConfig implements IConfig<Shop> {
     }
 
     private ShopItem buildShopItem(Map<?, ?> map, String tag) {
-        ItemStack show = ConfigParser.parseItemStack(map.get("show"), tag, "show");
-        Material coin = ConfigParser.parseMaterial(map.get("coin"), tag + ".coin");
-        int price = ConfigParser.parseInt(map, "price", tag);
+        ItemStack show = ConfigUtil.parseItemStack(map.get("show"), tag, "show");
+        Material coin = ConfigUtil.parseMaterial(map.get("coin"), tag + ".coin");
+        int price = ConfigUtil.parseInt(map, "price", tag);
 
         if (map.containsKey("actual")) {
-            ItemStack actual = ConfigParser.parseItemStack(map.get("actual"), tag, "actual");
+            ItemStack actual = ConfigUtil.parseItemStack(map.get("actual"), tag, "actual");
             return new ShopItem(show, coin, price, actual);
         }
         return new ShopItem(show, coin, price);
