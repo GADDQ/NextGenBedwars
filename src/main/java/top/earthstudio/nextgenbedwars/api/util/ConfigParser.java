@@ -24,21 +24,21 @@ public final class ConfigParser {
 
     private ConfigParser() {}
 
-    public static String requireString(Map<?, ?> map, String key, String tag) {
+    public static String parseString(Map<?, ?> map, String key, String tag) {
         Object val = map.get(key);
         if (val == null) throw new IllegalStateException(tag + " missing field '" + key + "'");
         if (!(val instanceof String string)) throw new IllegalStateException(tag + " field '" + key + "' must be string, got " + val.getClass().getSimpleName());
         return string;
     }
 
-    public static int requireInt(Map<?, ?> map, String key, String tag) {
+    public static int parseInt(Map<?, ?> map, String key, String tag) {
         Object val = map.get(key);
         if (val == null) throw new IllegalStateException(tag + " missing field '" + key + "'");
         if (!(val instanceof Number number)) throw new IllegalStateException(tag + " field '" + key + "' must be number, got " + val.getClass().getSimpleName());
         return number.intValue();
     }
 
-    public static double requireDouble(Map<?, ?> map, String key, String tag) {
+    public static double parseDouble(Map<?, ?> map, String key, String tag) {
         Object val = map.get(key);
         if (val == null) throw new IllegalStateException(tag + " missing field '" + key + "'");
         if (!(val instanceof Number number)) throw new IllegalStateException(tag + " field '" + key + "' must be number, got " + val.getClass().getSimpleName());
@@ -124,9 +124,9 @@ public final class ConfigParser {
         if (raw == null) throw new IllegalStateException(tag + " missing location");
         if (!(raw instanceof Map<?, ?> map)) throw new IllegalStateException(tag + " location must be a {x, y, z} map");
 
-        double x = requireDouble(map, "x", tag);
-        double y = requireDouble(map, "y", tag);
-        double z = requireDouble(map, "z", tag);
+        double x = parseDouble(map, "x", tag);
+        double y = parseDouble(map, "y", tag);
+        double z = parseDouble(map, "z", tag);
         float yaw = map.containsKey("yaw") ? ((Number) map.get("yaw")).floatValue() : 0f;
         float pitch = map.containsKey("pitch") ? ((Number) map.get("pitch")).floatValue() : 0f;
 

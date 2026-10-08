@@ -45,7 +45,7 @@ public class SpawnerConfig implements IConfig<Spawner> {
                 throw new IllegalStateException("spawners[" + i + "] must be a map");
             }
             String tag = "spawners[" + i + "]";
-            String type = ConfigParser.requireString(map, "type", tag);
+            String type = ConfigParser.parseString(map, "type", tag);
             Location location = ConfigParser.parseLocation(map, tag);
 
             spawnerList.add(buildSpawner(type, paramsConfig, location));

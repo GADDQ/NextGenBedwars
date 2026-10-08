@@ -54,8 +54,8 @@ public class TeamConfig implements IConfig<Team> {
         String tag = "teams[" + index + "]";
         Component displayName = ConfigParser.parseComponent(map.get("displayName"), tag + ".displayName");
         Color color = ConfigParser.parseColor(map.get("color"), tag);
-        int maxPlayerCount = ConfigParser.requireInt(map, "maxPlayerCount", tag);
-        int respawnTick = ConfigParser.requireInt(map, "respawnTick", tag);
+        int maxPlayerCount = ConfigParser.parseInt(map, "maxPlayerCount", tag);
+        int respawnTick = ConfigParser.parseInt(map, "respawnTick", tag);
         Location respawn = ConfigParser.parseLocation(map.get("respawn"), tag);
         LongLongPair bed = parseBed(map.get("bed"), tag);
 
@@ -77,9 +77,9 @@ public class TeamConfig implements IConfig<Team> {
         if (!(raw instanceof Map<?, ?> map)) {
             throw new IllegalStateException(tag + " must be a {x, y, z} map");
         }
-        int x = (int) ConfigParser.requireDouble(map, "x", tag);
-        int y = (int) ConfigParser.requireDouble(map, "y", tag);
-        int z = (int) ConfigParser.requireDouble(map, "z", tag);
+        int x = (int) ConfigParser.parseDouble(map, "x", tag);
+        int y = (int) ConfigParser.parseDouble(map, "y", tag);
+        int z = (int) ConfigParser.parseDouble(map, "z", tag);
         return BlockPosUtil.asLong(x, y, z);
     }
 

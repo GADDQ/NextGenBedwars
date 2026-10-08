@@ -1,16 +1,13 @@
 package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
-
 import net.kyori.adventure.text.Component;
-
 import org.bukkit.Location;
-
 import org.joml.Vector3i;
-
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.game.Game;
+import top.earthstudio.nextgenbedwars.api.util.ConfigParser;
 
 import java.io.File;
 import java.util.Map;
@@ -35,14 +32,20 @@ public final class GameConfig {
         Config config = new Config(gameFolder, "game.yml");
 
         try {
-            Component displayName = Component.text(
-                    requireString(config.read("displayName"), "displayName"));
-            Location waitingLobby = parseLocation(
-                    config.read("waitingLobby"), "waitingLobby");
-            Location spectatorRespawnPoint = parseLocation(
-                    config.read("spectatorRespawnPoint"), "spectatorRespawnPoint");
+            // 1. 支持 MiniMessage / & 颜色代码的房间展示名
+            Component displayName = ConfigParser.parseComponent(
+                    config.read("displayName"), "game.yml.displayName");
+
+            // 2. 复用 ConfigParser：自动兼顾 yaw / pitch 视角朝向！
+            Location waitingLobby = ConfigParser.parseLocation(
+                    config.read("waitingLobby"), "game.yml.waitingLobby");
+            Location spectatorRespawnPoint = ConfigParser.parseLocation(
+                    config.read("spectatorRespawnPoint"), "game.yml.spectatorRespawnPoint");
+
+            // 3. 选区包围盒
             ObjectObjectImmutablePair<Vector3i, Vector3i> region =
                     parseRegion(config.read("region"));
+
             File mapTemplate = new File(gameFolder, "map");
 
             return new Game(name, displayName, mapTemplate,
@@ -52,22 +55,12 @@ public final class GameConfig {
         }
     }
 
-    // ================= 解析 =================
-
-    private static Location parseLocation(Object raw, String tag) {
-        if (!(raw instanceof Map<?, ?> map))
-            throw new IllegalStateException("game.yml '" + tag + "' must be a {x, y, z} map");
-        return new Location(
-                null,   // world 由 GameInstanceImpl.locationsModifier 绑
-                requireCoord(map, "x", tag),
-                requireCoord(map, "y", tag),
-                requireCoord(map, "z", tag)
-        );
-    }
+    // ================= 选区解析 =================
 
     private static ObjectObjectImmutablePair<Vector3i, Vector3i> parseRegion(Object raw) {
-        if (!(raw instanceof Map<?, ?> map))
+        if (!(raw instanceof Map<?, ?> map)) {
             throw new IllegalStateException("game.yml 'region' must be a map");
+        }
         return new ObjectObjectImmutablePair<>(
                 parseVector(map.get("min"), "region.min"),
                 parseVector(map.get("max"), "region.max")
@@ -75,38 +68,13 @@ public final class GameConfig {
     }
 
     private static Vector3i parseVector(Object raw, String tag) {
-        if (!(raw instanceof Map<?, ?> map))
+        if (!(raw instanceof Map<?, ?> map)) {
             throw new IllegalStateException("game.yml '" + tag + "' must be a {x, y, z} map");
+        }
         return new Vector3i(
-                requireInt(map, "x", tag),
-                requireInt(map, "y", tag),
-                requireInt(map, "z", tag)
+                ConfigParser.parseInt(map, "x", tag),
+                ConfigParser.parseInt(map, "y", tag),
+                ConfigParser.parseInt(map, "z", tag)
         );
-    }
-
-    private static String requireString(Object raw, String tag) {
-        if (raw == null)
-            throw new IllegalStateException("game.yml missing '" + tag + "'");
-        if (!(raw instanceof String s))
-            throw new IllegalStateException("game.yml '" + tag + "' must be a string");
-        return s;
-    }
-
-    private static double requireCoord(Map<?, ?> map, String key, String tag) {
-        Object raw = map.get(key);
-        if (raw == null)
-            throw new IllegalStateException("game.yml '" + tag + "." + key + "' missing");
-        if (!(raw instanceof Number n))
-            throw new IllegalStateException("game.yml '" + tag + "." + key + "' must be a number");
-        return n.doubleValue();
-    }
-
-    private static int requireInt(Map<?, ?> map, String key, String tag) {
-        Object raw = map.get(key);
-        if (raw == null)
-            throw new IllegalStateException("game.yml '" + tag + "." + key + "' missing");
-        if (!(raw instanceof Number n))
-            throw new IllegalStateException("game.yml '" + tag + "." + key + "' must be a number");
-        return n.intValue();
     }
 }

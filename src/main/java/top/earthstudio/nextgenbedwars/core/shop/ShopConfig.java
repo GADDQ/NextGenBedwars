@@ -61,7 +61,7 @@ public class ShopConfig implements IConfig<Shop> {
     private Shop buildShop(Map<?, ?> map, int index) {
         String tag = "shops[" + index + "]";
 
-        String type = ConfigParser.requireString(map, "type", tag);
+        String type = ConfigParser.parseString(map, "type", tag);
         EntityType entity = ConfigParser.parseEntityType(map.get("entityType"), tag);
 
         Location location = ConfigParser.parseLocation(map, tag);
@@ -128,7 +128,7 @@ public class ShopConfig implements IConfig<Shop> {
     private ShopItem buildShopItem(Map<?, ?> map, String tag) {
         ItemStack show = ConfigParser.parseItemStack(map.get("show"), tag, "show");
         Material coin = ConfigParser.parseMaterial(map.get("coin"), tag + ".coin");
-        int price = ConfigParser.requireInt(map, "price", tag);
+        int price = ConfigParser.parseInt(map, "price", tag);
 
         if (map.containsKey("actual")) {
             ItemStack actual = ConfigParser.parseItemStack(map.get("actual"), tag, "actual");
