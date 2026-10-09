@@ -90,13 +90,14 @@ public class GameManager {
     }
 
     static public void removeInstanceByWorldUuid (UUID worldUUID) {
-        AtomicReference<UUID> targetUuid = new AtomicReference<>(UUID.randomUUID());
-        gameInstances.forEach((uuid, gameInstance) -> {
-            if (gameInstance.getWorldUUID() == worldUUID) {
-                targetUuid.set(uuid);
+        UUID found = null;
+        for (Map.Entry<UUID, GameInstance> entry : gameInstances.entrySet()) {
+            if (worldUUID.equals(entry.getValue().getWorldUUID())) {
+                found = entry.getKey();
+                break;
             }
-        });
-        removeInstance(targetUuid.get());
+        }
+        removeInstance(found);
     }
 
     public static <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor) {
