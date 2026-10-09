@@ -5,12 +5,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Tag;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
@@ -92,6 +91,35 @@ public class WorldProtectListener implements Listener {
             event.blockList().removeIf(block ->
                     worldProtector.contains(BlockPosUtil.asLong(block))
             );
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onLiquidFlow(BlockFromToEvent event) {
+        if (event.getToBlock().getWorld() == world) {
+            Block toBlock = event.getToBlock();
+
+            if (!toBlock.getType().isAir() && !toBlock.isLiquid() && !toBlock.getType().isCollidable()) {
+                worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(toBlock));
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBlockBurn(BlockBurnEvent event) {
+        if (event.getBlock().getWorld() == world) {
+            if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBlockFade(BlockFadeEvent event) {
+        if (event.getBlock().getWorld() == world) {
+            if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
+                event.setCancelled(true);
+            }
         }
     }
 }
