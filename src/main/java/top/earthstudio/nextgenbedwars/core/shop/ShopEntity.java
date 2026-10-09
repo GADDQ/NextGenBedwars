@@ -34,6 +34,7 @@ public class ShopEntity {
             living.setSilent(true);
             living.setCollidable(false);
             living.setRemoveWhenFarAway(false);
+            living.setGravity(false);
         }
 
         this.textDisplay = shop.location.getWorld().spawn(shop.location, TextDisplay.class, display -> {
