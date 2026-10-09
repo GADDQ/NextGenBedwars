@@ -306,7 +306,7 @@ public class ItemShopPage extends GuiPage {
         else
             toGive = new ItemStack(shopItem.showItem.getType(), shopItem.showItem.getAmount());
 
-        if (!canFit(player, toGive)) {
+        if (!canFit(player, toGive, cost)) {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             player.sendMessage(Component.text("购买失败！背包已满！").color(NamedTextColor.RED));
             return;
@@ -319,43 +319,47 @@ public class ItemShopPage extends GuiPage {
         player.sendMessage(Component.text("购买成功！").color(NamedTextColor.GREEN)); // TODO: replace text "你购买了 什么 多少"
     }
 
-    private boolean canFit(Player player, ItemStack toAdd) {
+    private boolean canFit(Player player, ItemStack toAdd, ItemStack toRemove) {
         var inv = player.getInventory();
+        ItemStack[] contents = inv.getStorageContents();
 
-        if (inv.firstEmpty() != -1)
-            return true;
+        ItemStack[] simulated = new ItemStack[contents.length];
+        for (int i = 0; i < contents.length; i++) {
+            simulated[i] = contents[i] == null ? null : contents[i].clone();
+        }
 
-        if (toAdd.getMaxStackSize() <= 1)
-            return false;
-
-        int remaining = toAdd.getAmount();
-        // 只扫描玩家背包
-        for (ItemStack item : inv.getStorageContents()) {
-            if (item != null && item.isSimilar(toAdd)) {
-                remaining -= (item.getMaxStackSize() - item.getAmount());
-                if (remaining <= 0) {
-                    return true;
+        if (toRemove != null && toRemove.getAmount() > 0) {
+            int need = toRemove.getAmount();
+            for (int i = 0; i < simulated.length && need > 0; i++) {
+                ItemStack item = simulated[i];
+                if (item != null && item.isSimilar(toRemove)) {
+                    int take = Math.min(item.getAmount(), need);
+                    item.setAmount(item.getAmount() - take);
+                    need -= take;
+                    if (item.getAmount() <= 0) {
+                        simulated[i] = null;
+                    }
                 }
             }
         }
 
-        return false;
-    }
+        int maxStack = toAdd.getMaxStackSize();
+        int remaining = toAdd.getAmount();
 
-    private void test() {
-        Category testPage1 = new Category(GuiUtil.button(Material.GRASS_BLOCK, Component.text("测试栏位"), Component.text("这是个测试!")));
-        testPage1.items.add(new ShopItem(new ItemStack(Material.COPPER_BLOCK), Material.COPPER_INGOT, 4));
-        Category testPage2 = new Category(GuiUtil.button(Material.DIRT, Component.text("栏位测试"), Component.text("测试在这里!")));
-        testPage2.items.add(new ShopItem(new ItemStack(Material.GOLD_BLOCK), Material.IRON_INGOT, 4));
-        Category testPage3 = new Category(GuiUtil.button(Material.NOTE_BLOCK, Component.text("CategoryContent 翻页测试"), Component.text("它能用吗?")));
-        for (int i = 0; i < 100; i++) {
-            testPage3.items.add(new ShopItem(new ItemStack(Material.DIAMOND_BLOCK), Material.GOLD_INGOT, 4));
+        if (maxStack > 1) {
+            for (ItemStack item : simulated) {
+                if (item != null && item.isSimilar(toAdd)) {
+                    remaining -= (maxStack - item.getAmount());
+                    if (remaining <= 0) return true;
+                }
+            }
         }
-        categories.add(testPage1);
-        categories.add(testPage2);
-        categories.add(testPage3);
-        for (int i = 0; i < 50; i++) {
-            categories.add(new Category(GuiUtil.button(Material.BARRIER, Component.text("CategoryIcon 翻页测试"), Component.text("这个也能用吗?"))));
+
+        int emptySlots = 0;
+        for (ItemStack item : simulated) {
+            if (item == null) emptySlots++;
         }
+
+        return remaining <= (long) emptySlots * maxStack;
     }
 }
