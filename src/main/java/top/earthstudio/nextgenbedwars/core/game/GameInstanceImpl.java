@@ -28,10 +28,11 @@ public final class GameInstanceImpl implements GameInstance {
     private GameConfig gameConfig;
     private boolean isShutdown = false;
     private boolean isReady = false;
-    private boolean isEditMode = false;
+    private final boolean isEditMode;
 
     public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
+        this.isEditMode = isEditMode;
 
         this.gameConfig = new GameConfig(this);
         gameConfig.load();
