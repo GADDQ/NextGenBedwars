@@ -214,10 +214,17 @@ public class WorldProtectorImpl implements WorldProtector {
         Vector3i loc1 = region.left();
         Vector3i loc2 = region.right();
 
-        int minChunkX = Math.min(loc1.x, loc2.x) >> 4;
-        int maxChunkX = Math.max(loc1.x, loc2.x) >> 4;
-        int minChunkZ = Math.min(loc1.z, loc2.z) >> 4;
-        int maxChunkZ = Math.max(loc1.z, loc2.z) >> 4;
+        int minX = Math.min(loc1.x, loc2.x);
+        int maxX = Math.max(loc1.x, loc2.x);
+        int minY = Math.min(loc1.y, loc2.y);
+        int maxY = Math.max(loc1.y, loc2.y);
+        int minZ = Math.min(loc1.z, loc2.z);
+        int maxZ = Math.max(loc1.z, loc2.z);
+
+        int minChunkX = minX >> 4;
+        int maxChunkX = maxX >> 4;
+        int minChunkZ = minZ >> 4;
+        int maxChunkZ = maxZ >> 4;
 
         List<CompletableFuture<ChunkSnapshot>> snapshotFutures = new ArrayList<>();
 
@@ -258,8 +265,13 @@ public class WorldProtectorImpl implements WorldProtector {
                                 for (int x = 0; x < 16; x++) {
                                     for (int z = 0; z < 16; z++) {
                                         Material type = snapshot.getBlockType(x, currentY, z);
-                                        // 跳过空气
+                                        // 跳过空气并排除区域外方块
                                         if (!type.isAir()) {
+                                            int worldX = baseBlockX + x;
+                                            int worldZ = baseBlockZ + z;
+                                            if (worldX < minX || worldX > maxX || currentY < minY || currentY > maxY || worldZ < minZ || worldZ > maxZ)
+                                                continue;
+
                                             long posKey = BlockPosUtil.asLong(baseBlockX + x, currentY, baseBlockZ + z);
                                             scannedBlocks.add(posKey);
                                         }
