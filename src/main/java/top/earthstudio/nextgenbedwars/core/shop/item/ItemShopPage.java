@@ -11,14 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
-import top.earthstudio.nextgenbedwars.api.gui.GuiUtil;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
 import java.util.List;
 
-public class ItemShopPage extends GuiPage {
+public class ItemShopPage extends ChestGuiPage {
     private boolean isCategoryFullSize = false;
     private int activeCategoryIndex = 0;
     private int currentCategoryIconPage = 0;

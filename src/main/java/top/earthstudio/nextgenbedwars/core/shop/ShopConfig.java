@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
@@ -65,7 +65,7 @@ public class ShopConfig implements IConfig<Shop> {
         EntityType entity = ConfigUtil.parseEntityType(map.get("entityType"), tag);
 
         Location location = ConfigUtil.parseLocation(map, tag);
-        Supplier<GuiPage> provider = providerFor(type, tag);
+        Supplier<ChestGuiPage> provider = providerFor(type, tag);
 
         Component title = map.containsKey("title") ? ConfigUtil.parseComponent(map.get("title"), tag + ".title") : Component.text(type);
         Component subTitle = map.containsKey("subtitle") ? ConfigUtil.parseComponent(map.get("subtitle"), tag + ".subtitle") : Component.empty();
@@ -73,7 +73,7 @@ public class ShopConfig implements IConfig<Shop> {
         return new Shop(title, subTitle, entity, location, provider);
     }
 
-    private Supplier<GuiPage> providerFor(String type, String tag) {
+    private Supplier<ChestGuiPage> providerFor(String type, String tag) {
         return switch (type) {
             case "item_shop" -> {
                 Component guiTitle = ConfigUtil.parseComponent(readItemShopGuiTitle(), "item_shop.yml.title");

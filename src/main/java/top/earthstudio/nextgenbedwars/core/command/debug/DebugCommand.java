@@ -13,11 +13,9 @@ import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,31 +23,21 @@ import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.NextGenBedwars;
 
-import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
-import top.earthstudio.nextgenbedwars.api.config.Config;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
-import top.earthstudio.nextgenbedwars.api.shop.Shop;
-import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
-import top.earthstudio.nextgenbedwars.api.util.GameFolder;
-import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
-import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopPage;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiOpener;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
-import top.earthstudio.nextgenbedwars.core.gui.page.TestPage;
+import top.earthstudio.nextgenbedwars.core.gui.chest.page.TestChestPage;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class DebugCommand {
     private List<UUID> gameUuids = new ArrayList<>();
@@ -108,7 +96,7 @@ public class DebugCommand {
     }
 
     private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestPage());
+        activeGame.get(ChestGuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestChestPage());
         return 0;
     }
 

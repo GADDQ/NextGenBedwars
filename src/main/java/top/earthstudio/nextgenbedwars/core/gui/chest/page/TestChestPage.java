@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.gui.page;
+package top.earthstudio.nextgenbedwars.core.gui.chest.page;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -6,21 +6,21 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
-import top.earthstudio.nextgenbedwars.api.gui.GuiUtil;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
+import top.earthstudio.nextgenbedwars.api.util.gui.chest.ChestGuiUtil;
 
 import java.util.Random;
 
-public class TestPage extends GuiPage {
+public class TestChestPage extends ChestGuiPage {
     private final Random random = new Random();
 
-    public TestPage() {
+    public TestChestPage() {
         super(Component.text("Test Gui"), 1);
         this.allowPlayerInventoryInteraction = true;
         add(
                 4,
                 0,
-                GuiUtil.button(
+                ChestGuiUtil.button(
                         Material.GREEN_BANNER,
                         Component.text("测试").color(NamedTextColor.GREEN),
                         Component.text("这是 GUI 系统的测试按钮")
@@ -43,7 +43,7 @@ public class TestPage extends GuiPage {
         add(
                 random.nextInt(8),
                 0,
-                GuiUtil.button(
+                ChestGuiUtil.button(
                         Material.GREEN_BANNER,
                         Component.text("测试").color(NamedTextColor.GREEN),
                         Component.text("这是 GUI 系统的测试按钮")

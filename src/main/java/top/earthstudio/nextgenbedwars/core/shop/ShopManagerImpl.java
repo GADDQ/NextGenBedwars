@@ -8,7 +8,7 @@ import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
@@ -53,7 +53,7 @@ public class ShopManagerImpl implements ShopManager {
     }
 
     @Override
-    public GuiPage getShopGui(UUID uuid) {
+    public ChestGuiPage getShopGui(UUID uuid) {
         return shops.get(uuid).getGui();
     }
 

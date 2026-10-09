@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.gui.listener;
+package top.earthstudio.nextgenbedwars.core.gui.chest.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,18 +8,18 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 
 import org.bukkit.inventory.ItemStack;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 
-import top.earthstudio.nextgenbedwars.core.gui.GuiHolder;
+import top.earthstudio.nextgenbedwars.core.gui.chest.ChestGuiHolder;
 
 public class GuiInteractListener implements Listener {
     @EventHandler
     public void onGuiClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof GuiHolder guiHolder)) {
+        if (!(event.getInventory().getHolder() instanceof ChestGuiHolder chestGuiHolder)) {
             return;
         }
 
-        GuiPage page = guiHolder.guiPage;
+        ChestGuiPage page = chestGuiHolder.chestGuiPage;
 
         // 点击发生在上方 GUI 视窗内
         if (event.getClickedInventory() == event.getInventory()) {
@@ -30,7 +30,7 @@ public class GuiInteractListener implements Listener {
             }
 
             if (event.getWhoClicked() instanceof Player player) {
-                guiHolder.handleClick(event.getSlot(), player, event.getClick());
+                chestGuiHolder.handleClick(event.getSlot(), player, event.getClick());
             }
 
             return;
@@ -64,11 +64,11 @@ public class GuiInteractListener implements Listener {
 
     @EventHandler
     public void onGuiDrag(InventoryDragEvent event) {
-        if (!(event.getInventory().getHolder() instanceof GuiHolder guiHolder)) {
+        if (!(event.getInventory().getHolder() instanceof ChestGuiHolder chestGuiHolder)) {
             return;
         }
 
-        GuiPage page = guiHolder.guiPage;
+        ChestGuiPage page = chestGuiHolder.chestGuiPage;
 
         if (!page.allowPlayerInventoryInteraction) {
             event.setCancelled(true);

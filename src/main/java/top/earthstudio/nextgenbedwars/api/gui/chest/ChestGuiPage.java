@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.gui;
+package top.earthstudio.nextgenbedwars.api.gui.chest;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -8,13 +8,13 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class GuiPage {
+public class ChestGuiPage {
     public final Component title;
     public final int rowCount;
     public boolean closeAfterInteract = false;
     public boolean allowPlayerInventoryInteraction = false;
 
-    public final Map<Integer, Pair<ItemStack, GuiAction>> buttons = new Int2ObjectOpenHashMap<>();
+    public final Map<Integer, Pair<ItemStack, ChestGuiAction>> buttons = new Int2ObjectOpenHashMap<>();
 
     private Runnable refreshCallback;
     private Runnable closeCallback;
@@ -27,12 +27,12 @@ public class GuiPage {
         this.closeCallback = closeCallback;
     }
 
-    public GuiPage(Component title, int rowCount) {
+    public ChestGuiPage(Component title, int rowCount) {
         this.title = title;
         this.rowCount = rowCount;
     }
 
-    public GuiPage(Component title, int rowCount, boolean closeAfterInteract) {
+    public ChestGuiPage(Component title, int rowCount, boolean closeAfterInteract) {
         this(title, rowCount);
         this.closeAfterInteract = closeAfterInteract;
     }
@@ -45,7 +45,7 @@ public class GuiPage {
         closeCallback.run();
     }
 
-    protected void add(int slot, ItemStack button, GuiAction action) {
+    protected void add(int slot, ItemStack button, ChestGuiAction action) {
         buttons.put(slot, new ObjectObjectImmutablePair<>(button, action));
     }
 
@@ -57,7 +57,7 @@ public class GuiPage {
         buttons.put(slot, new ObjectObjectImmutablePair<>(button, null));
     }
 
-    protected void add(int x, int y, ItemStack button, GuiAction action) {
+    protected void add(int x, int y, ItemStack button, ChestGuiAction action) {
         buttons.put(x + 9 * y, new ObjectObjectImmutablePair<>(button, action));
     }
 

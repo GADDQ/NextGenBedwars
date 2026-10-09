@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.gui;
+package top.earthstudio.nextgenbedwars.api.util.gui.chest;
 
 import net.kyori.adventure.text.Component;
 
@@ -7,8 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class GuiUtil {
-    private GuiUtil() {}
+public class ChestGuiUtil {
+    private ChestGuiUtil() {}
 
     static public ItemStack button(Material material, Component name) {
         ItemStack itemStack = new ItemStack(material);

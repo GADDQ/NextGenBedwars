@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 
 import java.util.function.Supplier;
 
@@ -14,9 +14,9 @@ public final class Shop {
     public Component subTitle;
     public EntityType entityType;
     public Location location;
-    public Supplier<GuiPage> shopPageProvider;
+    public Supplier<ChestGuiPage> shopPageProvider;
 
-    public Shop(Component title, Component subTitle, EntityType entityType, Location location, Supplier<GuiPage> shopPageProvider) {
+    public Shop(Component title, Component subTitle, EntityType entityType, Location location, Supplier<ChestGuiPage> shopPageProvider) {
         this.title = title;
         this.subTitle = subTitle;
         this.entityType = entityType;
@@ -25,7 +25,7 @@ public final class Shop {
 
     }
 
-    public Shop(Component title, EntityType entityType, Location location, Supplier<GuiPage> shopPageProvider) {
+    public Shop(Component title, EntityType entityType, Location location, Supplier<ChestGuiPage> shopPageProvider) {
         this(title, Component.text(""), entityType, location, shopPageProvider);
     }
 }

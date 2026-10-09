@@ -3,7 +3,6 @@ package top.earthstudio.nextgenbedwars.core.shop;
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,7 +11,7 @@ import org.bukkit.entity.TextDisplay;
 import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
-import top.earthstudio.nextgenbedwars.api.gui.GuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 
 import java.util.UUID;
@@ -62,7 +61,7 @@ public class ShopEntity {
         return bodyEntity.getUniqueId();
     }
 
-    public GuiPage getGui() {
+    public ChestGuiPage getGui() {
         return shop.shopPageProvider.get();
     }
 
