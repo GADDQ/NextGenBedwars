@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-public class TeamManagerImpl implements TeamManager {
+public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejoin player support
     private Map<UUID, Team> teams;
     private Map<Color, Team> teamsByColor;
 
