@@ -29,6 +29,11 @@ public class WorldProtectListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getWorld() == world) {
+            if (!Tag.AIR.isTagged(event.getBlockReplacedState().getType()) && Tag.REPLACEABLE.isTagged(event.getBlockReplacedState().getType())) {
+                worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(event.getBlockPlaced()));
+                return;
+            }
+
             if (worldProtector.contains(BlockPosUtil.asLong(event.getBlockPlaced()))) {
                 event.getPlayer().sendMessage(Component.text("你不允许在这里放置方块！").color(NamedTextColor.RED));
                 event.setCancelled(true);
@@ -54,6 +59,11 @@ public class WorldProtectListener implements Listener {
             if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
                 if (Tag.BEDS.isTagged(event.getBlock().getType()))
                     return;
+
+                if (!event.getBlock().getType().isCollidable()) {
+                    worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(event.getBlock()));
+                    return;
+                }
 
                 event.getPlayer().sendMessage(Component.text("你只能破坏玩家放置的方块！").color(NamedTextColor.RED));
                 event.setCancelled(true);
