@@ -71,12 +71,13 @@ public class SpawnerEntity {
         leftTick = spawner.spawnTick;
 
         if (SpawnerDisplayUtil.canSpawn(spawner)) {
-            Item item = spawner.location.getWorld().dropItem(spawner.location, new ItemStack(spawner.material));
-            item.setVelocity(ZERO_VELOCITY);
+            spawner.location.getWorld().dropItem(spawner.location, new ItemStack(spawner.material), entity -> {
+                entity.setVelocity(ZERO_VELOCITY);
+                entity.getPersistentDataContainer().set(PdcKeys.spawner.drop, PersistentDataType.BOOLEAN, true);
 
-            item.getPersistentDataContainer().set(PdcKeys.spawner.drop, PersistentDataType.BOOLEAN, true);
-            if (!spawner.isAllowMerge)
-                item.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
+                if (!spawner.isAllowMerge)
+                    entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
+            });
         }
 
         Material targetMaterial = spawner.holoMaterial == null ? Material.AIR : spawner.holoMaterial;
