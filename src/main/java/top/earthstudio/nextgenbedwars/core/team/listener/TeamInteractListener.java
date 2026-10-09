@@ -1,22 +1,22 @@
 package top.earthstudio.nextgenbedwars.core.team.listener;
 
-import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
 import org.bukkit.inventory.EquipmentSlot;
+
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
@@ -36,15 +36,34 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
     }
 
     @EventHandler
-    public void onPvp(PrePlayerAttackEntityEvent event) {
-        if (event.getPlayer().getWorld() != gameInstance.getWorld()) return;
+    public void onPlayerFight(EntityDamageByEntityEvent event) { // TODO: config to enable / disable
+        if (event.getEntity().getWorld() != gameInstance.getWorld()) return;
 
-        if (!(event.getAttacked() instanceof Player attacked))
+        Player attacker;
+
+        if (event.getDamager() instanceof Player p) {
+            attacker = p;
+        } else if (event.getDamager() instanceof Projectile proj) { // TODO: config to enable / disable
+            // 如果是药水实体，不拦截
+            if (proj instanceof ThrownPotion) {
+                return;
+            }
+
+            if (proj.getShooter() instanceof Player p) {
+                attacker = p;
+            } else {
+                return;
+            }
+        } else {
             return;
+        }
 
-        Player player = event.getPlayer();
-        Team teamA = teamManager.get(player);
-        Team teamB = teamManager.get(attacked);
+        if (!(event.getEntity() instanceof Player victim)) {
+            return;
+        }
+
+        Team teamA = teamManager.get(attacker);
+        Team teamB = teamManager.get(victim);
 
         if (teamA == null || teamB == null)
             return;
