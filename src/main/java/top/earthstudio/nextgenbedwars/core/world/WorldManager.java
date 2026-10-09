@@ -159,7 +159,7 @@ public class WorldManager {
                     baseExport.run();
                 }
             }.runTaskAsynchronously(plugin);
-        } catch (IllegalStateException e) {
+        } catch (IllegalPluginAccessException e) {
             baseExport.run();
         }
     }
