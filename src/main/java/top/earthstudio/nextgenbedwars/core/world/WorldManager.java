@@ -144,16 +144,24 @@ public class WorldManager {
 
         world.save();
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    copyWorldFolderSafely(world.getWorldFolder(), targetTemplateDir);
-                } catch (IOException e) {
-                    plugin.getLogger().warning("Failed to export world!\n" + e);
-                }
+        Runnable baseExport = () -> {
+            try {
+                copyWorldFolderSafely(world.getWorldFolder(), targetTemplateDir);
+            } catch (IOException e) {
+                plugin.getLogger().warning("Failed to export world!\n" + e);
             }
-        }.runTaskAsynchronously(plugin);
+        };
+
+        try {
+            new BukkitRunnable() {
+                @Override
+                public void run() {
+                    baseExport.run();
+                }
+            }.runTaskAsynchronously(plugin);
+        } catch (IllegalStateException e) {
+            baseExport.run();
+        }
     }
 
     private static void copyWorldFolderSafely(File source, File target) throws IOException {
