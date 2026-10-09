@@ -23,6 +23,7 @@ import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GameManager {
 
@@ -86,6 +87,16 @@ public class GameManager {
     static public void removeInstance(UUID uuid) {
         gameInstances.remove(uuid);
         GlobalTicker.remove(uuid);
+    }
+
+    static public void removeInstanceByWorldUuid (UUID worldUUID) {
+        AtomicReference<UUID> targetUuid = new AtomicReference<>(UUID.randomUUID());
+        gameInstances.forEach((uuid, gameInstance) -> {
+            if (gameInstance.getWorldUUID() == worldUUID) {
+                targetUuid.set(uuid);
+            }
+        });
+        removeInstance(targetUuid.get());
     }
 
     public static <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor) {

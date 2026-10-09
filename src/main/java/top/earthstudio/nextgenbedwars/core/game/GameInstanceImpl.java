@@ -58,7 +58,6 @@ public final class GameInstanceImpl implements GameInstance {
             } else {
                 WorldProtector worldProtector = get(WorldProtector.class);
 
-                System.out.println(game.region);
                 if (game.region.equals(new ObjectObjectImmutablePair<>(new Vector3i(0, 0, 0), new Vector3i(0, 0, 0)))) { // TODO: Config allow set no protection
                     setReady();
                     return;

@@ -4,8 +4,10 @@ import org.bukkit.World;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.api.world.event.WorldReadyEvent;
+
+import top.earthstudio.nextgenbedwars.core.game.GameManager;
+import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
 import java.util.Map;
 import java.util.Queue;
@@ -22,6 +24,7 @@ public class WorldReadyListener implements Listener {
         UUID worldUUID = event.worldUUID;
         if (!event.isSuccess) {
             pendingTasks.remove(worldUUID);
+            GameManager.removeInstanceByWorldUuid(worldUUID);
             return;
         }
         World world = event.world;
