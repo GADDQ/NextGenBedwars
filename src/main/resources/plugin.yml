@@ -3,7 +3,7 @@ description: The next-generation plugin for BedWars.
 version: '${version}'
 
 main: top.earthstudio.nextgenbedwars.NextGenBedwars
-api-version: '1.21'
+api-version: '1.21.6'
 load: POSTWORLD
 
 authors: [ Earth Studio ]
