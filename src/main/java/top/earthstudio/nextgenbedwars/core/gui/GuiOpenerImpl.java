@@ -8,6 +8,6 @@ import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 public class GuiOpenerImpl implements GuiOpener {
     @Override
     public void openFor(Player player, IGuiPage guiPage) {
-        GuiManager.openFor(player, guiPage);
+        guiPage.openFor(player);
     }
 }

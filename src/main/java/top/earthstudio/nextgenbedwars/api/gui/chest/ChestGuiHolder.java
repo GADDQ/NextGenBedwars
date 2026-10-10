@@ -11,16 +11,17 @@ import org.jetbrains.annotations.NotNull;
 import top.earthstudio.nextgenbedwars.api.gui.GuiAction;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
 
-public class ChestGuiHolder implements IGuiHolder {
-    public final ChestGuiPage chestGuiPage;
+public class ChestGuiHolder extends IGuiHolder {
+    private final ChestGuiPage chestGuiPage;
     private final Inventory inventory;
 
     public ChestGuiHolder(ChestGuiPage chestGuiPage) {
+        super(chestGuiPage);
         this.chestGuiPage = chestGuiPage;
         this.inventory = Bukkit.createInventory(this, chestGuiPage.rowCount * 9, chestGuiPage.title);
 
-        this.chestGuiPage.bindRefresh(this::refreshInventory);
-        this.chestGuiPage.bindClose(this::closeInventory);
+        this.guiPage.bindRefresh(this::refreshInventory);
+        this.guiPage.bindClose(this::closeInventory);
 
         chestGuiPage.buttons.forEach((slot, button) -> inventory.setItem(slot, button.first()));
     }

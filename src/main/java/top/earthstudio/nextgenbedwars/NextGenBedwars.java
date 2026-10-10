@@ -16,7 +16,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.core.BedwarsAPIImpl;
 import top.earthstudio.nextgenbedwars.core.command.debug.DebugCommand;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
-import top.earthstudio.nextgenbedwars.core.gui.GuiManager;
+import top.earthstudio.nextgenbedwars.core.gui.listener.GuiInteractListener;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.spawner.listener.SpawnerMergeListener;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
@@ -24,7 +24,8 @@ import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 public final class NextGenBedwars extends JavaPlugin{
     static public ComponentLogger logger;
 
-    static public WorldReadyListener worldReadyListener;
+    static public WorldReadyListener worldReadyListener; // TODO: public for debug
+    static private GuiInteractListener guiInteractListener;
 
     static public DebugCommand debugCommand;
 
@@ -36,12 +37,12 @@ public final class NextGenBedwars extends JavaPlugin{
         logger.info(Component.text("NextGenBedwars v1.0.0, MIT Licence. Made by Earth_Studio with <3. Now starting up...").color(NamedTextColor.GREEN));
 
         worldReadyListener = new WorldReadyListener();
+        guiInteractListener = new GuiInteractListener();
 
         GlobalTicker.initialize(this);
         ConfigManager.initialize();
         WorldManager.initialize(this, worldReadyListener);
         GameManager.initialize(worldReadyListener);
-        GuiManager.initialize();
 
         registerListeners();
 
@@ -60,7 +61,6 @@ public final class NextGenBedwars extends JavaPlugin{
         debugCommand.shutdown();
         debugCommand = null;
 
-        GuiManager.shutdown();
         GameManager.shutdown();
         WorldManager.shutdown();
         ConfigManager.shutdown();
@@ -78,6 +78,7 @@ public final class NextGenBedwars extends JavaPlugin{
         pm.registerEvents(new SpawnerMergeListener(), this);
 
         pm.registerEvents(worldReadyListener, this);
+        pm.registerEvents(guiInteractListener, this);
     }
 
     private void bootstrapDefaultConfigs() {

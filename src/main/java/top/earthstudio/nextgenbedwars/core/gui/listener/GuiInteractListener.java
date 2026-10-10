@@ -5,21 +5,21 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-
 import org.bukkit.inventory.ItemStack;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiHolder;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
 public class GuiInteractListener implements Listener {
     @EventHandler
     public void onGuiClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof ChestGuiHolder chestGuiHolder)) {
+        if (!(event.getInventory().getHolder() instanceof IGuiHolder guiHolder)) {
             return;
         }
 
-        ChestGuiPage page = chestGuiHolder.chestGuiPage;
+        IGuiPage page = guiHolder.guiPage;
 
         // 点击发生在上方 GUI 视窗内
         if (event.getClickedInventory() == event.getInventory()) {
@@ -30,7 +30,7 @@ public class GuiInteractListener implements Listener {
             }
 
             if (event.getWhoClicked() instanceof Player player) {
-                chestGuiHolder.handleClick(event.getSlot(), player, event.getClick());
+                guiHolder.handleClick(event.getSlot(), player, event.getClick());
             }
 
             return;
@@ -63,11 +63,11 @@ public class GuiInteractListener implements Listener {
 
     @EventHandler
     public void onGuiDrag(InventoryDragEvent event) {
-        if (!(event.getInventory().getHolder() instanceof ChestGuiHolder chestGuiHolder)) {
+        if (!(event.getInventory().getHolder() instanceof IGuiHolder guiHolder)) {
             return;
         }
 
-        ChestGuiPage page = chestGuiHolder.chestGuiPage;
+        IGuiPage page = guiHolder.guiPage;
 
         if (!page.allowPlayerInventoryInteraction) {
             event.setCancelled(true);
@@ -82,6 +82,15 @@ public class GuiInteractListener implements Listener {
                 return;
             }
         }
+    }
+
+    @EventHandler
+    public void onGuiClose(InventoryCloseEvent event) {
+        if (!(event.getInventory().getHolder() instanceof IGuiHolder guiHolder)) {
+            return;
+        }
+
+        IGuiPage page = guiHolder.guiPage;
     }
 
     private void handleManualCollect(Player player) {

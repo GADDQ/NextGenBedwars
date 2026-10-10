@@ -4,20 +4,24 @@ import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
 public abstract class IGuiPage {
+    public boolean closeAfterInteract = false;
+    public boolean allowPlayerInventoryInteraction = false;
+
     protected Runnable refreshCallback;
     protected Runnable closeCallback;
 
     public final Map<Integer, Pair<ItemStack, GuiAction>> buttons = new Int2ObjectOpenHashMap<>();
 
     /**
-     * This is NOT API, DO NOT call it!
+     * This is an advanced API, DO NOT call it unless you know what are you doing!
      * */
-    public abstract IGuiHolder createHolder();
+    public abstract void openFor(Player player);
 
     /**
      * This is NOT API, DO NOT call it!
@@ -56,24 +60,8 @@ public abstract class IGuiPage {
         buttons.put(slot, new ObjectObjectImmutablePair<>(button, null));
     }
 
-    protected void add(int x, int y, ItemStack button, GuiAction action) {
-        buttons.put(x + 9 * y, new ObjectObjectImmutablePair<>(button, action));
-    }
-
-    protected void add(int x, int y, ItemStack button, Runnable action) {
-        add(x, y, button, (player, clickType) -> action.run());
-    }
-
-    protected void add(int x, int y, ItemStack button) {
-        buttons.put(x + 9 * y, new ObjectObjectImmutablePair<>(button, null));
-    }
-
     protected void remove(int slot) {
         buttons.remove(slot);
-    }
-
-    protected void remove(int x, int y) {
-        buttons.remove(x + 9 * y);
     }
 
     @SuppressWarnings("unused")

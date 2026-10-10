@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
-import top.earthstudio.nextgenbedwars.api.util.gui.chest.ChestGuiUtil;
+import top.earthstudio.nextgenbedwars.api.util.GuiUtil;
 
 import java.util.Random;
 
@@ -22,7 +22,7 @@ public class TestChestPage extends ChestGuiPage { // TODO: this need remove afte
         add(
                 4,
                 0,
-                ChestGuiUtil.button(
+                GuiUtil.button(
                         Material.GREEN_BANNER,
                         Component.text("测试").color(NamedTextColor.GREEN),
                         Component.text("这是 GUI 系统的测试按钮")
@@ -45,7 +45,7 @@ public class TestChestPage extends ChestGuiPage { // TODO: this need remove afte
         add(
                 random.nextInt(8),
                 0,
-                ChestGuiUtil.button(
+                GuiUtil.button(
                         Material.GREEN_BANNER,
                         Component.text("测试").color(NamedTextColor.GREEN),
                         Component.text("这是 GUI 系统的测试按钮")

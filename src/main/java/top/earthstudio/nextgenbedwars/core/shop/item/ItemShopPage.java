@@ -18,7 +18,7 @@ import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 import java.util.List;
 
 public class ItemShopPage extends ChestGuiPage {
-    private boolean isCategoryFullSize = false;
+    private final boolean isCategoryFullSize = false;
     private int activeCategoryIndex = 0;
     private int currentCategoryIconPage = 0;
     private int currentCategoryContentPage = 0;
