@@ -74,6 +74,7 @@ public class SpawnerEntity {
             spawner.location.getWorld().dropItem(spawner.location, new ItemStack(spawner.material), entity -> {
                 entity.setVelocity(ZERO_VELOCITY);
                 entity.getPersistentDataContainer().set(PdcKeys.spawner.drop, PersistentDataType.BOOLEAN, true);
+                entity.setUnlimitedLifetime(true);
 
                 if (!spawner.isAllowMerge)
                     entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
