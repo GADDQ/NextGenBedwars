@@ -21,6 +21,7 @@ public abstract class ChestGuiPage extends IGuiPage {
         this.rowCount = rowCount;
     }
 
+    @SuppressWarnings("unused")
     protected ChestGuiPage(Component title, int rowCount, boolean closeAfterInteract) {
         this(title, rowCount);
         this.closeAfterInteract = closeAfterInteract;

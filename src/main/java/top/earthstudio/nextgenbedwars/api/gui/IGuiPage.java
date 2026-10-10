@@ -37,6 +37,7 @@ public abstract class IGuiPage {
         refreshCallback.run();
     }
 
+    @SuppressWarnings("unused")
     protected void close() {
         closeCallback.run();
     }
@@ -74,6 +75,8 @@ public abstract class IGuiPage {
     protected void remove(int x, int y) {
         buttons.remove(x + 9 * y);
     }
+
+    @SuppressWarnings("unused")
     protected void removeAll() {
         buttons.clear();
     }
