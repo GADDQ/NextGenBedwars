@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiOpener;
+import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
 public class ShopInteractListener implements Listener {
@@ -30,7 +30,7 @@ public class ShopInteractListener implements Listener {
             return;
 
         event.setCancelled(true);
-        gameInstance.get(ChestGuiOpener.class).openFor(event.getPlayer(), shopManager.getShopGui(entity.getUniqueId()));
+        gameInstance.get(GuiOpener.class).openFor(event.getPlayer(), shopManager.getShopGui(entity.getUniqueId()));
     }
 
     @EventHandler

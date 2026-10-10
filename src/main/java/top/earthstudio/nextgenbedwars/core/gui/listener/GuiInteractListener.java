@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.gui.chest.listener;
+package top.earthstudio.nextgenbedwars.core.gui.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.ItemStack;
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 
-import top.earthstudio.nextgenbedwars.core.gui.chest.ChestGuiHolder;
+import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiHolder;
 
 public class GuiInteractListener implements Listener {
     @EventHandler

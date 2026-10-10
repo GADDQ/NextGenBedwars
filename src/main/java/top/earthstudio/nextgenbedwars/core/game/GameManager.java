@@ -6,7 +6,7 @@ import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiOpener;
+import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
@@ -14,7 +14,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
-import top.earthstudio.nextgenbedwars.core.gui.chest.ChestGuiOpenerImpl;
+import top.earthstudio.nextgenbedwars.core.gui.GuiOpenerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
 import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
@@ -40,7 +40,7 @@ public class GameManager {
         registerSubSystem(SpawnerManager.class, SpawnerManagerImpl::new);
         registerSubSystem(WorldProtector.class, WorldProtectorImpl::new);
         registerSubSystem(TeamManager.class, TeamManagerImpl::new);
-        registerSubSystem(ChestGuiOpener.class, game -> new ChestGuiOpenerImpl());
+        registerSubSystem(GuiOpener.class, game -> new GuiOpenerImpl());
         registerSubSystem(ShopManager.class, ShopManagerImpl::new);
     }
 

@@ -1,27 +1,26 @@
-package top.earthstudio.nextgenbedwars.core.gui.chest;
+package top.earthstudio.nextgenbedwars.core.gui;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
-import top.earthstudio.nextgenbedwars.core.gui.chest.listener.GuiInteractListener;
+import top.earthstudio.nextgenbedwars.core.gui.listener.GuiInteractListener;
 
-public class ChestGuiManager {
+public class GuiManager {
     private static GuiInteractListener guiInteractListener;
 
-    private ChestGuiManager() {}
+    private GuiManager() {}
 
     static public void initialize() {
         guiInteractListener = new GuiInteractListener();
         Bukkit.getPluginManager().registerEvents(guiInteractListener, BedwarsAPI.getInstance().getPlugin());
     }
 
-    static public void openFor(Player player, ChestGuiPage chestGuiPage) {
-        ChestGuiHolder holder = new ChestGuiHolder(chestGuiPage);
-        player.openInventory(holder.getInventory());
+    static public void openFor(Player player, IGuiPage guiPage) {
+        player.openInventory(guiPage.createHolder().getInventory());
     }
 
     static public void shutdown() {

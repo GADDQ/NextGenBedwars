@@ -16,7 +16,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.core.BedwarsAPIImpl;
 import top.earthstudio.nextgenbedwars.core.command.debug.DebugCommand;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
-import top.earthstudio.nextgenbedwars.core.gui.chest.ChestGuiManager;
+import top.earthstudio.nextgenbedwars.core.gui.GuiManager;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.spawner.listener.SpawnerMergeListener;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
@@ -41,7 +41,7 @@ public final class NextGenBedwars extends JavaPlugin{
         ConfigManager.initialize();
         WorldManager.initialize(this, worldReadyListener);
         GameManager.initialize(worldReadyListener);
-        ChestGuiManager.initialize();
+        GuiManager.initialize();
 
         registerListeners();
 
@@ -60,7 +60,7 @@ public final class NextGenBedwars extends JavaPlugin{
         debugCommand.shutdown();
         debugCommand = null;
 
-        ChestGuiManager.shutdown();
+        GuiManager.shutdown();
         GameManager.shutdown();
         WorldManager.shutdown();
         ConfigManager.shutdown();

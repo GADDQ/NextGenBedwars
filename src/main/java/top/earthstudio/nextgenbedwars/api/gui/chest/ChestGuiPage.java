@@ -1,36 +1,19 @@
 package top.earthstudio.nextgenbedwars.api.gui.chest;
 
-import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.kyori.adventure.text.Component;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
-public abstract class ChestGuiPage {
+public abstract class ChestGuiPage extends IGuiPage {
     public final Component title;
     public final int rowCount;
     public boolean closeAfterInteract = false;
     public boolean allowPlayerInventoryInteraction = false;
 
-    public final Map<Integer, Pair<ItemStack, ChestGuiAction>> buttons = new Int2ObjectOpenHashMap<>();
-
-    private Runnable refreshCallback;
-    private Runnable closeCallback;
-
-    /**
-     * This is NOT API, DO NOT call it!
-     * */
-    public void bindRefresh(Runnable refreshCallback) {
-        this.refreshCallback = refreshCallback;
-    }
-
-    /**
-     * This is NOT API, DO NOT call it!
-     * */
-    public void bindClose(Runnable closeCallback) {
-        this.closeCallback = closeCallback;
+    @Override
+    public IGuiHolder createHolder() {
+        return new ChestGuiHolder(this);
     }
 
     protected ChestGuiPage(Component title, int rowCount) {
@@ -41,51 +24,5 @@ public abstract class ChestGuiPage {
     protected ChestGuiPage(Component title, int rowCount, boolean closeAfterInteract) {
         this(title, rowCount);
         this.closeAfterInteract = closeAfterInteract;
-    }
-
-    protected void update() {
-        refreshCallback.run();
-    }
-
-    protected void close() {
-        closeCallback.run();
-    }
-
-
-    // ==================== Internal Helper Method ====================
-
-    protected void add(int slot, ItemStack button, ChestGuiAction action) {
-        buttons.put(slot, new ObjectObjectImmutablePair<>(button, action));
-    }
-
-    protected void add(int slot, ItemStack button, Runnable action) {
-        add(slot, button, (player, clickType) -> action.run());
-    }
-
-    protected void add(int slot, ItemStack button) {
-        buttons.put(slot, new ObjectObjectImmutablePair<>(button, null));
-    }
-
-    protected void add(int x, int y, ItemStack button, ChestGuiAction action) {
-        buttons.put(x + 9 * y, new ObjectObjectImmutablePair<>(button, action));
-    }
-
-    protected void add(int x, int y, ItemStack button, Runnable action) {
-        add(x, y, button, (player, clickType) -> action.run());
-    }
-
-    protected void add(int x, int y, ItemStack button) {
-        buttons.put(x + 9 * y, new ObjectObjectImmutablePair<>(button, null));
-    }
-
-    protected void remove(int slot) {
-        buttons.remove(slot);
-    }
-
-    protected void remove(int x, int y) {
-        buttons.remove(x + 9 * y);
-    }
-    protected void removeAll() {
-        buttons.clear();
     }
 }

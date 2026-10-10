@@ -2,16 +2,18 @@ package top.earthstudio.nextgenbedwars.core.gui.chest.page;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
+
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.util.gui.chest.ChestGuiUtil;
 
 import java.util.Random;
 
-public class TestChestPage extends ChestGuiPage {
+public class TestChestPage extends ChestGuiPage { // TODO: this need remove after docs finish, show as example in docs
     private final Random random = new Random();
 
     public TestChestPage() {

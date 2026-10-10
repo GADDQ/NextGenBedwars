@@ -25,7 +25,7 @@ import top.earthstudio.nextgenbedwars.NextGenBedwars;
 
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiOpener;
+import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
@@ -96,7 +96,7 @@ public class DebugCommand {
     }
 
     private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(ChestGuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestChestPage());
+        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestChestPage());
         return 0;
     }
 

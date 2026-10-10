@@ -1,18 +1,17 @@
-package top.earthstudio.nextgenbedwars.core.gui.chest;
+package top.earthstudio.nextgenbedwars.api.gui.chest;
 
 import it.unimi.dsi.fastutil.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiAction;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.GuiAction;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
 
-public class ChestGuiHolder implements InventoryHolder {
+public class ChestGuiHolder implements IGuiHolder {
     public final ChestGuiPage chestGuiPage;
     private final Inventory inventory;
 
@@ -28,10 +27,11 @@ public class ChestGuiHolder implements InventoryHolder {
         });
     }
 
+    @Override
     public void refreshInventory() {
         int totalSlots = chestGuiPage.rowCount * 9;
         for (int slot = 0; slot < totalSlots; slot++) {
-            Pair<ItemStack, ChestGuiAction> button = chestGuiPage.buttons.get(slot);
+            Pair<ItemStack, GuiAction> button = chestGuiPage.buttons.get(slot);
             if (button != null && button.first() != null) {
                 inventory.setItem(slot, button.first());
             } else {
@@ -40,12 +40,14 @@ public class ChestGuiHolder implements InventoryHolder {
         }
     }
 
+    @Override
     public void closeInventory() {
         inventory.close();
     }
 
+    @Override
     public void handleClick(int slot, Player player, ClickType clickType) {
-        Pair<ItemStack, ChestGuiAction> button = chestGuiPage.buttons.get(slot);
+        Pair<ItemStack, GuiAction> button = chestGuiPage.buttons.get(slot);
         if (button != null && button.second() != null) {
             button.second().execute(player, clickType);
             if (chestGuiPage.closeAfterInteract)
