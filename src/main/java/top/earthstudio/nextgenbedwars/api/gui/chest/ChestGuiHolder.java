@@ -22,9 +22,7 @@ public class ChestGuiHolder implements IGuiHolder {
         this.chestGuiPage.bindRefresh(this::refreshInventory);
         this.chestGuiPage.bindClose(this::closeInventory);
 
-        chestGuiPage.buttons.forEach((slot, button) -> {
-            inventory.setItem(slot, button.first());
-        });
+        chestGuiPage.buttons.forEach((slot, button) -> inventory.setItem(slot, button.first()));
     }
 
     @Override

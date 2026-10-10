@@ -57,7 +57,6 @@ public class GuiInteractListener implements Listener {
                     // 手动只吸附玩家自己的背包！
                     handleManualCollect(player);
                 }
-                return;
             }
         }
     }

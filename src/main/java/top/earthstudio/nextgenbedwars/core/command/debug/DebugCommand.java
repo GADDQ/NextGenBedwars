@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings("UnstableApiUsage")
 public class DebugCommand {
     private List<UUID> gameUuids = new ArrayList<>();
     private List<UUID> spawnerUuids = new ArrayList<>();

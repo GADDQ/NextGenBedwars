@@ -30,7 +30,7 @@ public class GameManager {
     private static Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> SUB_SYSTEM_TEMPLATES;
     private static WorldReadyListener worldReadyListener;
 
-    private GameManager() {};
+    private GameManager() {}
 
     static public void initialize(WorldReadyListener worldReadyListener) { // TODO: ability to edit instance map and save to template
         gameInstances = new Object2ObjectOpenHashMap<>();
@@ -47,9 +47,7 @@ public class GameManager {
     static public void shutdown() {
         SUB_SYSTEM_TEMPLATES.clear();
         SUB_SYSTEM_TEMPLATES = null;
-        gameInstances.forEach(((uuid, gameInstance) -> {
-            GlobalTicker.remove(uuid);
-        }));
+        gameInstances.forEach(((uuid, gameInstance) -> GlobalTicker.remove(uuid)));
         gameInstances.clear();
         gameInstances = null;
     }
