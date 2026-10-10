@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class ChestGuiPage {
+public abstract class ChestGuiPage {
     public final Component title;
     public final int rowCount;
     public boolean closeAfterInteract = false;
@@ -19,31 +19,40 @@ public class ChestGuiPage {
     private Runnable refreshCallback;
     private Runnable closeCallback;
 
+    /**
+     * This is NOT API, DO NOT call it!
+     * */
     public void bindRefresh(Runnable refreshCallback) {
         this.refreshCallback = refreshCallback;
     }
 
+    /**
+     * This is NOT API, DO NOT call it!
+     * */
     public void bindClose(Runnable closeCallback) {
         this.closeCallback = closeCallback;
     }
 
-    public ChestGuiPage(Component title, int rowCount) {
+    protected ChestGuiPage(Component title, int rowCount) {
         this.title = title;
         this.rowCount = rowCount;
     }
 
-    public ChestGuiPage(Component title, int rowCount, boolean closeAfterInteract) {
+    protected ChestGuiPage(Component title, int rowCount, boolean closeAfterInteract) {
         this(title, rowCount);
         this.closeAfterInteract = closeAfterInteract;
     }
 
-    public void update() {
+    protected void update() {
         refreshCallback.run();
     }
 
-    public void close() {
+    protected void close() {
         closeCallback.run();
     }
+
+
+    // ==================== Internal Helper Method ====================
 
     protected void add(int slot, ItemStack button, ChestGuiAction action) {
         buttons.put(slot, new ObjectObjectImmutablePair<>(button, action));
