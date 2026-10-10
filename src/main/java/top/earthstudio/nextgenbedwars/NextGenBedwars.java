@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 
+import org.bstats.bukkit.Metrics;
+
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,11 +19,13 @@ import top.earthstudio.nextgenbedwars.core.BedwarsAPIImpl;
 import top.earthstudio.nextgenbedwars.core.command.debug.DebugCommand;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.gui.listener.GuiInteractListener;
-import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.spawner.listener.SpawnerMergeListener;
+import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 public final class NextGenBedwars extends JavaPlugin{
+    static private Metrics metrics;
+
     static public ComponentLogger logger;
 
     static public WorldReadyListener worldReadyListener; // TODO: public for debug
@@ -31,6 +35,8 @@ public final class NextGenBedwars extends JavaPlugin{
 
     @Override
     public void onEnable() {
+        metrics = new Metrics(this, 34627); // bStats
+
         BedwarsAPI.register(new BedwarsAPIImpl(this));
 
         logger = getComponentLogger();
@@ -70,6 +76,9 @@ public final class NextGenBedwars extends JavaPlugin{
         logger = null;
 
         BedwarsAPI.unregister();
+
+        metrics.shutdown();
+        metrics = null;
     }
 
     private void registerListeners() {
