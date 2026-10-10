@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("unused")
 public final class ConfigUtil {
     private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
     private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
@@ -79,7 +80,6 @@ public final class ConfigUtil {
     // ================= Component =================
 
     public static Component parseComponent(Object raw, String tag) {
-        // 核心：若字段不存在，直接返回安全的空 Component，绝不抛异常崩溃
         if (raw == null) return Component.empty();
         String s = raw.toString();
         if (s.isEmpty()) return Component.empty();

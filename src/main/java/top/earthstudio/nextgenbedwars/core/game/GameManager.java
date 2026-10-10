@@ -12,8 +12,8 @@ import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
-
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+
 import top.earthstudio.nextgenbedwars.core.gui.GuiOpenerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;

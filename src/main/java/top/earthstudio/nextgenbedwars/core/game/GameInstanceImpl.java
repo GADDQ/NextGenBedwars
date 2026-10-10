@@ -64,9 +64,7 @@ public final class GameInstanceImpl implements GameInstance {
                     return;
                 }
 
-                worldProtector.scanWorldToProtectLater(world, game.region, v -> {
-                    setReady();
-                });
+                worldProtector.scanWorldToProtectLater(world, game.region, v -> setReady());
             }
         });
     }
@@ -139,6 +137,7 @@ public final class GameInstanceImpl implements GameInstance {
 
     /*
     *TODO LISTS:
+    * 0. Command feedback for executor
     * 1. Killer Check
     * 2. Fake Spectator mode
     * 3. Player join/leave server logic handler
