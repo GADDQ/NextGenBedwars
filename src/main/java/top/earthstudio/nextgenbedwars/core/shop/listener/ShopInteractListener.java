@@ -7,17 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
-import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
 public class ShopInteractListener implements Listener {
-    private final GameInstance gameInstance;
     private final ShopManager shopManager;
 
-    public ShopInteractListener(ShopManager shopManager, GameInstance gameInstance) {
+    public ShopInteractListener(ShopManager shopManager) {
         this.shopManager = shopManager;
-        this.gameInstance = gameInstance;
     }
 
     @EventHandler
@@ -30,7 +27,7 @@ public class ShopInteractListener implements Listener {
             return;
 
         event.setCancelled(true);
-        gameInstance.get(GuiOpener.class).openFor(event.getPlayer(), shopManager.getShopGui(entity.getUniqueId()));
+        BedwarsAPI.getInstance().getGuiManager().openFor(event.getPlayer(), shopManager.getShopGui(entity.getUniqueId()));
     }
 
     @EventHandler

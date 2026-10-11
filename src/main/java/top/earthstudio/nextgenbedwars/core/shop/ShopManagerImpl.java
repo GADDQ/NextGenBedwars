@@ -26,9 +26,9 @@ public class ShopManagerImpl implements ShopManager {
 
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
-        shopInteractListener = new ShopInteractListener(this, gameInstance);
+        shopInteractListener = new ShopInteractListener(this);
         world = gameInstance.getWorld();
-        Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().getPlugin());
+        Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().plugin());
 
         shopConfig = new ShopConfig(gameInstance);
         shopConfig.getValues().forEach(this::add);
