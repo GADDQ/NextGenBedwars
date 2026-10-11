@@ -88,6 +88,8 @@ public class GuiInteractListener implements Listener {
         if (guiHolder == null)
             return;
 
+        event.getView().getTopInventory().clear();
+
         GuiManagerImpl.close(guiHolder.inventoryView);
 
         if (event.getPlayer() instanceof Player player)

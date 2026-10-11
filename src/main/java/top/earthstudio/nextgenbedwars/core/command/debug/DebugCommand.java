@@ -32,6 +32,7 @@ import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
+import top.earthstudio.nextgenbedwars.core.gui.chest.anvil.TestAnvilPage;
 import top.earthstudio.nextgenbedwars.core.gui.chest.page.TestChestPage;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
@@ -87,7 +88,9 @@ public class DebugCommand {
                         )
                 ).then(
                         Commands.literal("gui").then(
-                                Commands.literal("showTest").executes(this::showTestGui)
+                                Commands.literal("showChestTest").executes(this::showChestTestGui)
+                        ).then(
+                                Commands.literal("showAnvilTest").executes(this::showAnvilTestGui)
                         )
                 )
         );
@@ -95,8 +98,13 @@ public class DebugCommand {
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> commands.registrar().register(root.build()));
     }
 
-    private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+    private int showChestTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
         BedwarsAPI.getInstance().getGuiManager().openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestChestPage());
+        return 0;
+    }
+
+    private int showAnvilTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        BedwarsAPI.getInstance().getGuiManager().openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestAnvilPage());
         return 0;
     }
 
