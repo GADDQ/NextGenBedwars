@@ -19,7 +19,7 @@ public final class ConfigManager {
     private ConfigManager() {}
 
     static public void initialize() {
-        plugin = BedwarsAPI.getInstance().getPlugin();
+        plugin = BedwarsAPI.getInstance().plugin();
         cache = new Object2ObjectOpenHashMap<>();
     }
 

@@ -46,7 +46,7 @@ public class WorldProtectorImpl implements WorldProtector {
         refCounts.defaultReturnValue(0);
 
         this.worldProtectListener = new WorldProtectListener(this, gameInstance.getWorld());
-        Bukkit.getPluginManager().registerEvents(worldProtectListener, BedwarsAPI.getInstance().getPlugin());
+        Bukkit.getPluginManager().registerEvents(worldProtectListener, BedwarsAPI.getInstance().plugin());
     }
 
     @Override
@@ -287,7 +287,7 @@ public class WorldProtectorImpl implements WorldProtector {
                             worldGroupUuid = addGroup(scannedBlocks);
                             consumer.accept(null);
                         }
-                    }.runTask(BedwarsAPI.getInstance().getPlugin());
+                    }.runTask(BedwarsAPI.getInstance().plugin());
                 }).exceptionally(throwable -> {
                     ComponentLogger.logger().warn("Scan chunk async failed! World protection will NOT apply!", throwable);
                     new BukkitRunnable() {
@@ -295,7 +295,7 @@ public class WorldProtectorImpl implements WorldProtector {
                         public void run() {
                             consumer.accept(null);
                         }
-                    }.runTask(BedwarsAPI.getInstance().getPlugin());
+                    }.runTask(BedwarsAPI.getInstance().plugin());
                     return null;
                 });
     }

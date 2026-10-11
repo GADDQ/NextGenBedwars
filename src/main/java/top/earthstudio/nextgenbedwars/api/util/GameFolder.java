@@ -11,7 +11,7 @@ public final class GameFolder {
     /** 返回 <dataFolder>/Game/<gameName>/ 目录（不保证存在）。 */
     public static File of(Game game) {
         return new File(
-                new File(BedwarsAPI.getInstance().getPlugin().getDataFolder(), "Game"),
+                new File(BedwarsAPI.getInstance().plugin().getDataFolder(), "Game"),
                 game.name
         );
     }

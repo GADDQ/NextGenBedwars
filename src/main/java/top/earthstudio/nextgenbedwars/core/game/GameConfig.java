@@ -20,7 +20,7 @@ public final class GameConfig {
         this.game = gameInstance.getGame();
 
         gameFolder = new File(
-                new File(BedwarsAPI.getInstance().getPlugin().getDataFolder(), "Game"),
+                new File(BedwarsAPI.getInstance().plugin().getDataFolder(), "Game"),
                 game.name
         );
         config = new Config(gameFolder, "game.yml");
