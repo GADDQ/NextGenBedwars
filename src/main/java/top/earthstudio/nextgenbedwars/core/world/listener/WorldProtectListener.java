@@ -59,11 +59,6 @@ public class WorldProtectListener implements Listener {
                 if (Tag.BEDS.isTagged(event.getBlock().getType()))
                     return;
 
-                if (!event.getBlock().getType().isCollidable()) {
-                    worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(event.getBlock()));
-                    return;
-                }
-
                 event.getPlayer().sendMessage(Component.text("你只能破坏玩家放置的方块！").color(NamedTextColor.RED));
                 event.setCancelled(true);
             }
