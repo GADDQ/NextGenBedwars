@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.api.gui.anvil;
 
 import net.kyori.adventure.text.Component;
 
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,6 +34,10 @@ public abstract class AnvilGuiPage extends IGuiPage {
         AnvilView anvilView = (AnvilView) guiHolder.inventoryView;
         anvilView.setMaximumRepairCost(0);
         anvilView.setRepairCost(0);
+    }
+
+    public String getDefaultText() {
+        return ((TextComponent) buttons.get(0).first().displayName()).content();
     }
 
     private static ItemStack buildItem(String defaultText, Material material) {

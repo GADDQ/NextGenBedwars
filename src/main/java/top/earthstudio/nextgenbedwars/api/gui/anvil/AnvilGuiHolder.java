@@ -3,8 +3,8 @@ package top.earthstudio.nextgenbedwars.api.gui.anvil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.MenuType;
-
 import org.bukkit.inventory.view.AnvilView;
+
 import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
 
 @SuppressWarnings("UnstableApiUsage")
@@ -23,7 +23,7 @@ public class AnvilGuiHolder extends IGuiHolder {
             AnvilView anvilView = (AnvilView) inventoryView;
             String text = anvilView.getRenameText();
 
-            if (text == null || text.isBlank())
+            if (text == null || text.isBlank() || text.equals(anvilGuiPage.getDefaultText()))
                 return;
             else
                 anvilGuiPage.finalText = text;
