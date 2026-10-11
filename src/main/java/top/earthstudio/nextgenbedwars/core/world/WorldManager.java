@@ -215,7 +215,7 @@ public class WorldManager {
         }
         World world = worlds.remove(uuid);
         if (world == null)
-            throw new IllegalStateException("UUID not exist!");
+            return;
         deleteTempWorld(world);
     }
 
