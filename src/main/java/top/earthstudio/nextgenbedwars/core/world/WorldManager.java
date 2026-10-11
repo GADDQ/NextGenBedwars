@@ -9,7 +9,6 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import org.bukkit.scheduler.BukkitTask;
 import org.codehaus.plexus.util.FileUtils;
 
 import org.joml.Vector3i;
@@ -44,6 +43,7 @@ public class WorldManager {
         cleanupOrphanedWorlds();
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static public UUID create(File mapTemplate) {
         UUID uuid = UUID.randomUUID();
         String worldName = "bw-" + uuid;
@@ -166,6 +166,7 @@ public class WorldManager {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void copyWorldFolderSafely(File source, File target) throws IOException {
         if (source.isDirectory()) {
             if (!target.exists()) target.mkdirs();
@@ -218,9 +219,7 @@ public class WorldManager {
     }
 
     static public void shutdown() {
-        worlds.forEach((uuid, world) -> {
-            deleteTempWorld(world);
-        });
+        worlds.forEach((uuid, world) -> deleteTempWorld(world));
         worlds.clear();
         worlds = null;
 
