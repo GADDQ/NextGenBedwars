@@ -36,6 +36,8 @@ public class GuiManagerImpl implements GuiManager {
         );
         guiPage.guiHolder.inventoryView = inventoryView;
 
+        guiPage.onOpen(player);
+
         guiPages.put(inventoryView, guiPage.guiHolder);
         player.openInventory(inventoryView);
     }

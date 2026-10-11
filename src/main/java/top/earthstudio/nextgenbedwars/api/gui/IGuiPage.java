@@ -24,6 +24,12 @@ public abstract class IGuiPage {
      * This is NOT API, DO NOT call it!
      * */
     @SuppressWarnings("unused")
+    public void onOpen(Player player) {}
+
+    /**
+     * This is NOT API, DO NOT call it!
+     * */
+    @SuppressWarnings("unused")
     public void onClose(Player player) {}
 
     protected void update() {
