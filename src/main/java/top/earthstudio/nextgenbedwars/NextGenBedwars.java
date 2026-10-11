@@ -33,7 +33,7 @@ public final class NextGenBedwars extends JavaPlugin{
 
     static public WorldReadyListener worldReadyListener; // TODO: public for debug
 
-    static public DebugCommand debugCommand;
+    static public DebugCommand debugCommand; // TODO: DEBUG ONLY
 
     @Override
     public void onEnable() {

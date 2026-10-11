@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class DebugCommand {
+public class DebugCommand { // TODO: DEBUG ONLY
     private List<UUID> gameUuids = new ArrayList<>();
     private List<UUID> spawnerUuids = new ArrayList<>();
 
