@@ -10,7 +10,8 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 public final class ConfigManager {
     static private JavaPlugin plugin;
@@ -32,7 +33,7 @@ public final class ConfigManager {
      * 强契约：value 不可为 null —— 要清除 key 请用 {@link #remove}。
      */
     static public void write(Config config, String key, Object value) {
-        Objects.requireNonNull(value, "value");
+        requireNonNull(value, "value");
         YamlConfiguration yaml = getOrLoadYaml(config);
         yaml.set(key, value);
     }
@@ -71,6 +72,7 @@ public final class ConfigManager {
         cache.put(idOf(config), new CacheEntry(yaml, file));
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static public void save(Config config) {
         String id = idOf(config);
         CacheEntry entry = cache.get(id);
@@ -116,6 +118,7 @@ public final class ConfigManager {
         return new File(baseDir, config.name);
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     static private void ensureFileExists(Config config, File file) {
         file.getParentFile().mkdirs();
 
@@ -131,13 +134,5 @@ public final class ConfigManager {
         }
     }
 
-    static private final class CacheEntry {
-        final YamlConfiguration yaml;
-        final File file;
-
-        CacheEntry(YamlConfiguration yaml, File file) {
-            this.yaml = yaml;
-            this.file = file;
-        }
-    }
+    private record CacheEntry(YamlConfiguration yaml, File file) {}
 }
