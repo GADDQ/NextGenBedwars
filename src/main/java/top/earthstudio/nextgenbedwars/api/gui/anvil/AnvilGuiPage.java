@@ -1,8 +1,8 @@
 package top.earthstudio.nextgenbedwars.api.gui.anvil;
 
 import net.kyori.adventure.text.Component;
-
 import net.kyori.adventure.text.TextComponent;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -10,9 +10,13 @@ import org.bukkit.inventory.view.AnvilView;
 
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
+import static java.util.Objects.requireNonNull;
+
 @SuppressWarnings("UnstableApiUsage")
 public abstract class AnvilGuiPage extends IGuiPage {
     public String finalText = "";
+
+    private final String defaultText;
 
     public AnvilGuiPage(Component title, String defaultText, Material material) {
         this(title, buildItem(defaultText, material));
@@ -20,6 +24,7 @@ public abstract class AnvilGuiPage extends IGuiPage {
 
     public AnvilGuiPage(Component title, ItemStack leftItem) {
         this.title = title;
+        this.defaultText = ((TextComponent) requireNonNull(leftItem.getItemMeta().displayName())).content();
 
         this.closeAfterInteract = true;
         this.allowPlayerInventoryInteraction = false;
@@ -37,7 +42,7 @@ public abstract class AnvilGuiPage extends IGuiPage {
     }
 
     public String getDefaultText() {
-        return ((TextComponent) buttons.get(0).first().displayName()).content();
+        return defaultText;
     }
 
     private static ItemStack buildItem(String defaultText, Material material) {
