@@ -11,27 +11,26 @@ import org.bukkit.inventory.ItemStack;
 
 import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
+import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 
 public class GuiInteractListener implements Listener {
     @EventHandler
     public void onGuiClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof IGuiHolder guiHolder)) {
+        IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());
+        if (guiHolder == null)
             return;
-        }
 
         IGuiPage page = guiHolder.guiPage;
 
         // 点击发生在上方 GUI 视窗内
-        if (event.getClickedInventory() == event.getInventory()) {
+        if (event.getClickedInventory() == event.getView().getTopInventory()) {
             event.setCancelled(true);
 
-            if (event.getClick() == org.bukkit.event.inventory.ClickType.DOUBLE_CLICK) {
+            if (event.getClick() == org.bukkit.event.inventory.ClickType.DOUBLE_CLICK)
                 return;
-            }
 
-            if (event.getWhoClicked() instanceof Player player) {
+            if (event.getWhoClicked() instanceof Player player)
                 guiHolder.handleClick(event.getSlot(), player, event.getClick());
-            }
 
             return;
         }
@@ -52,20 +51,19 @@ public class GuiInteractListener implements Listener {
 
             // 双击吸附收集修改
             if (event.getAction() == InventoryAction.COLLECT_TO_CURSOR) {
-                event.setCancelled(true); // 掐死原版（绝不允许它碰上方 0~53 号格子）
-                if (event.getWhoClicked() instanceof Player player) {
-                    // 手动只吸附玩家自己的背包！
+                event.setCancelled(true);
+
+                if (event.getWhoClicked() instanceof Player player)
                     handleManualCollect(player);
-                }
             }
         }
     }
 
     @EventHandler
     public void onGuiDrag(InventoryDragEvent event) {
-        if (!(event.getInventory().getHolder() instanceof IGuiHolder guiHolder)) {
+        IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());
+        if (guiHolder == null)
             return;
-        }
 
         IGuiPage page = guiHolder.guiPage;
 
@@ -86,11 +84,14 @@ public class GuiInteractListener implements Listener {
 
     @EventHandler
     public void onGuiClose(InventoryCloseEvent event) {
-        if (!(event.getInventory().getHolder() instanceof IGuiHolder guiHolder)) {
+        IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());
+        if (guiHolder == null)
             return;
-        }
 
-        IGuiPage page = guiHolder.guiPage;
+        GuiManagerImpl.close(guiHolder.inventoryView);
+
+        if (event.getPlayer() instanceof Player player)
+            guiHolder.handleClose(player);
     }
 
     private void handleManualCollect(Player player) {
@@ -99,15 +100,15 @@ public class GuiInteractListener implements Listener {
 
         int maxStack = cursor.getMaxStackSize();
         int need = maxStack - cursor.getAmount();
-        if (need <= 0) return; // 已经满了（64个），不需要吸
+        if (need <= 0) return; // 已满
 
-        // 只获取玩家的 36 格常规背包存储区（排除装备栏和副手，不干扰身上穿的衣服）
+        // 获取背包存储区
         ItemStack[] storage = player.getInventory().getStorageContents();
         boolean modified = false;
 
         for (int i = 0; i < storage.length; i++) {
             ItemStack item = storage[i];
-            // 只寻找完全相同（材质、Meta、附魔一致）的物品
+            // 寻找完全相同（材质、Meta、附魔一致）的物品
             if (item != null && !item.getType().isAir() && item.isSimilar(cursor)) {
                 int count = item.getAmount();
                 int take = Math.min(need, count);
@@ -121,11 +122,10 @@ public class GuiInteractListener implements Listener {
                 need -= take;
                 modified = true;
 
-                if (need <= 0) break; // 手里的吸满了，收工
+                if (need <= 0) break; // 吸满
             }
         }
 
-        // 一次性写回，网络发包同步给客户端
         if (modified) {
             player.getInventory().setStorageContents(storage);
             player.setItemOnCursor(cursor);

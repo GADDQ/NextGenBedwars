@@ -1,26 +1,22 @@
 package top.earthstudio.nextgenbedwars.api.gui.chest;
 
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+
 import net.kyori.adventure.text.Component;
 
-import org.bukkit.entity.Player;
-
 import org.bukkit.inventory.ItemStack;
+
 import top.earthstudio.nextgenbedwars.api.gui.GuiAction;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
 public abstract class ChestGuiPage extends IGuiPage {
-    public final Component title;
     public final int rowCount;
-
-    @Override
-    public void openFor(Player player) {
-        player.openInventory(new ChestGuiHolder(this).getInventory());
-    }
 
     protected ChestGuiPage(Component title, int rowCount) {
         this.title = title;
         this.rowCount = rowCount;
+
+        this.guiHolder = new ChestGuiHolder(this);
     }
 
     @SuppressWarnings("unused")

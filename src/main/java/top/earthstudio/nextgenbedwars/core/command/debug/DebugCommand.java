@@ -23,9 +23,9 @@ import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.NextGenBedwars;
 
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.GuiOpener;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@SuppressWarnings("UnstableApiUsage")
 public class DebugCommand {
     private List<UUID> gameUuids = new ArrayList<>();
     private List<UUID> spawnerUuids = new ArrayList<>();
@@ -97,7 +96,7 @@ public class DebugCommand {
     }
 
     private int showTestGui(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        activeGame.get(GuiOpener.class).openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestChestPage());
+        BedwarsAPI.getInstance().getGuiManager().openFor((Player) commandSourceStackCommandContext.getSource().getSender(), new TestChestPage());
         return 0;
     }
 
