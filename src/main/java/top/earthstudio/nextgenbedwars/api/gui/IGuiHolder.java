@@ -12,9 +12,9 @@ public abstract class IGuiHolder {
     public final IGuiPage guiPage;
     public InventoryView inventoryView;
 
-    protected final InventoryViewBuilder<InventoryView> builder;
+    protected final InventoryViewBuilder<? extends InventoryView> builder;
 
-    protected IGuiHolder(IGuiPage guiPage, InventoryViewBuilder<InventoryView> builder) {
+    protected IGuiHolder(IGuiPage guiPage, InventoryViewBuilder<? extends InventoryView> builder) {
         this.guiPage = guiPage;
         this.builder = builder.title(guiPage.title);
     }
@@ -37,7 +37,7 @@ public abstract class IGuiHolder {
         guiPage.onClose(player);
     }
 
-    public InventoryViewBuilder<InventoryView> getBuilder() {
+    public InventoryViewBuilder<? extends InventoryView> getBuilder() {
         return builder;
     }
 }
