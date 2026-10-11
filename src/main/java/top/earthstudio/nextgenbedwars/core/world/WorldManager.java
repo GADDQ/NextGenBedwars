@@ -89,6 +89,7 @@ public class WorldManager {
                         if (world == null) {
                             Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, null, false));
                             tryDeleteAsync(targetDir);
+                            pendingUuids.remove(uuid);
                             throw new IllegalStateException("Failed to create temp world: " + worldName);
                         }
 
