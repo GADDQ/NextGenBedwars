@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.shop;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.event.HandlerList;
@@ -14,6 +15,7 @@ import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopInteractListener;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -45,6 +47,13 @@ public class ShopManagerImpl implements ShopManager {
     @Override
     public Shop get(UUID uuid) {
         return shops.get(uuid).shop;
+    }
+
+    @Override
+    public List<Shop> getAll() {
+        List<Shop> shopList =  new ObjectArrayList<>();
+        shops.values().forEach(shopEntity -> shopList.add(shopEntity.shop));
+        return shopList;
     }
 
     @Override

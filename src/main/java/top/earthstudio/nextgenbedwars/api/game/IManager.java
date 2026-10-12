@@ -1,7 +1,6 @@
 package top.earthstudio.nextgenbedwars.api.game;
 
-import org.bukkit.World;
-
+import java.util.List;
 import java.util.UUID;
 
 public interface IManager<T> extends IGameSubSystem {
@@ -12,4 +11,5 @@ public interface IManager<T> extends IGameSubSystem {
     T get(UUID uuid);
     void remove(UUID uuid);
     void shutdown();
+    List<T> getAll();
 }
