@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.world.listener;
 
 import org.bukkit.World;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import top.earthstudio.nextgenbedwars.api.world.event.WorldReadyEvent;
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 public class WorldReadyListener implements Listener {
     private final Map<UUID, Queue<Consumer<World>>> pendingTasks = new ConcurrentHashMap<>();
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onWorldReady(WorldReadyEvent event) {
         UUID worldUUID = event.worldUUID;
         if (!event.isSuccess) {

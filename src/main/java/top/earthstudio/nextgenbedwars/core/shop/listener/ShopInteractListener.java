@@ -4,6 +4,7 @@ import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
@@ -17,7 +18,7 @@ public class ShopInteractListener implements Listener {
         this.shopManager = shopManager;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onShopUse(PlayerInteractAtEntityEvent event) {
         if (event.getHand() != org.bukkit.inventory.EquipmentSlot.HAND)
             return;
@@ -30,7 +31,7 @@ public class ShopInteractListener implements Listener {
         BedwarsAPI.getInstance().getGuiManager().openFor(event.getPlayer(), shopManager.getShopGui(entity.getUniqueId()));
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onShopWasAttacked(PrePlayerAttackEntityEvent event) {
         Entity entity = event.getAttacked();
         if (!shopManager.contains(entity.getUniqueId()))

@@ -3,16 +3,17 @@ package top.earthstudio.nextgenbedwars.core.team.listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
+
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.util.Vector;
+
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
@@ -31,7 +32,7 @@ public class TeamRespawnListener implements Listener {
         this.gameInstance = gameInstance;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPLayerFallInVoid(EntityDamageEvent event) {
         if (event.getEntityType() != EntityType.PLAYER)
             return;
@@ -51,7 +52,7 @@ public class TeamRespawnListener implements Listener {
         tryRespawn(player, teamManager.get(player), true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerDead(PlayerDeathEvent event) {
         Player player = event.getPlayer();
         if (player.getWorld() != gameInstance.getWorld())

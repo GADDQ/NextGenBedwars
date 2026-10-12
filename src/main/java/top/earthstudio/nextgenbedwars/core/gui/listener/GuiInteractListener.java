@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.gui.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,7 +15,7 @@ import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 
 public class GuiInteractListener implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onGuiClick(InventoryClickEvent event) {
         IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());
         if (guiHolder == null)
@@ -59,7 +60,7 @@ public class GuiInteractListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onGuiDrag(InventoryDragEvent event) {
         IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());
         if (guiHolder == null)
@@ -82,7 +83,7 @@ public class GuiInteractListener implements Listener {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onGuiClose(InventoryCloseEvent event) {
         IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());
         if (guiHolder == null)

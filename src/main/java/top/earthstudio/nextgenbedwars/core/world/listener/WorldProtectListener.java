@@ -25,7 +25,7 @@ public class WorldProtectListener implements Listener {
         this.world = world;
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getWorld() == world) {
             if (!Tag.AIR.isTagged(event.getBlockReplacedState().getType()) && Tag.REPLACEABLE.isTagged(event.getBlockReplacedState().getType())) {
@@ -43,7 +43,7 @@ public class WorldProtectListener implements Listener {
     /**
      * 2. 方块破坏：床放行，玩家放置的方块允许破坏，地图原方块拦截
      */
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() == world) {
             if (!event.getBlock().getType().isCollidable()) {
@@ -68,7 +68,7 @@ public class WorldProtectListener implements Listener {
     /**
      * 3. 实体爆炸（TNT、火球）
      */
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
         if (event.getLocation().getWorld() == world) {
             event.blockList().removeIf(block ->
@@ -80,7 +80,7 @@ public class WorldProtectListener implements Listener {
     /**
      * 4. 方块爆炸
      */
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockExplode(BlockExplodeEvent event) {
         if (event.getBlock().getWorld() == world) {
             event.blockList().removeIf(block ->
@@ -89,7 +89,7 @@ public class WorldProtectListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onLiquidFlow(BlockFromToEvent event) {
         if (event.getToBlock().getWorld() == world) {
             Block toBlock = event.getToBlock();
@@ -100,7 +100,7 @@ public class WorldProtectListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
         if (event.getBlock().getWorld() == world) {
             if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
@@ -109,7 +109,7 @@ public class WorldProtectListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockFade(BlockFadeEvent event) {
         if (event.getBlock().getWorld() == world) {
             if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {

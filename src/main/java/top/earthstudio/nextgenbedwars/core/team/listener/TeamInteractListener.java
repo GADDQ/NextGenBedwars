@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -35,7 +36,7 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
         this.teamManager = teamManager;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerFight(EntityDamageByEntityEvent event) { // TODO: config to enable / disable
         if (event.getEntity().getWorld() != gameInstance.getWorld()) return;
 
@@ -72,7 +73,7 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
             event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() != gameInstance.getWorld()) return;
 
@@ -112,7 +113,7 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBedUse(PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND)
             return;
