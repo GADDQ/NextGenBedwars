@@ -85,6 +85,8 @@ public final class GameInstanceImpl implements GameInstance {
             IGameSubSystem instanceSystem = constructor.construct(this);
             subSystems.put(type, instanceSystem);
         }
+
+        subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
 
     public void update() {
