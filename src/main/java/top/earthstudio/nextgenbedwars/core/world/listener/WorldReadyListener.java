@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import top.earthstudio.nextgenbedwars.api.world.event.WorldReadyEvent;
+import top.earthstudio.nextgenbedwars.api.world.event.BedwarsWorldReadyEvent;
 
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
@@ -21,7 +21,7 @@ public class WorldReadyListener implements Listener {
     private final Map<UUID, Queue<Consumer<World>>> pendingTasks = new ConcurrentHashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onWorldReady(WorldReadyEvent event) {
+    public void onWorldReady(BedwarsWorldReadyEvent event) {
         UUID worldUUID = event.worldUUID;
         if (!event.isSuccess) {
             pendingTasks.remove(worldUUID);

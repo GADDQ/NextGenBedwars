@@ -21,7 +21,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
-import top.earthstudio.nextgenbedwars.api.team.event.BedBrokenEvent;
+import top.earthstudio.nextgenbedwars.api.team.event.BedwarsBedBrokenEvent;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
@@ -106,7 +106,7 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
                 protector.removeBlockFromWorldGroup(targetTeam.bedBlockLongs.firstLong());
                 protector.removeBlockFromWorldGroup(targetTeam.bedBlockLongs.secondLong());
 
-                Bukkit.getPluginManager().callEvent(new BedBrokenEvent(gameInstance, targetTeam, player));
+                Bukkit.getPluginManager().callEvent(new BedwarsBedBrokenEvent(gameInstance, targetTeam, player));
                 player.getWorld().sendMessage(targetTeam.displayName.append(Component.text(" 的床被 ").color(NamedTextColor.RED).append(player.displayName().asComponent().append(Component.text("摧毁了！")))));
                 return;
             }

@@ -13,7 +13,7 @@ import org.codehaus.plexus.util.FileUtils;
 
 import org.joml.Vector3i;
 
-import top.earthstudio.nextgenbedwars.api.world.event.WorldReadyEvent;
+import top.earthstudio.nextgenbedwars.api.world.event.BedwarsWorldReadyEvent;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.io.File;
@@ -63,7 +63,7 @@ public class WorldManager {
                     new BukkitRunnable() {
                         @Override
                         public void run() {
-                            Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, null, false));
+                            Bukkit.getPluginManager().callEvent(new BedwarsWorldReadyEvent(uuid, null, false));
                         }
                     }.runTask(plugin);
                     throw new RuntimeException(e);
@@ -75,7 +75,7 @@ public class WorldManager {
                         if (pendingDestroyUuids.contains(uuid)) {
                             pendingDestroyUuids.remove(uuid);
                             pendingUuids.remove(uuid);
-                            Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, null, false));
+                            Bukkit.getPluginManager().callEvent(new BedwarsWorldReadyEvent(uuid, null, false));
 
                             tryDeleteAsync(targetDir);
                             return;
@@ -87,7 +87,7 @@ public class WorldManager {
                         World world = Bukkit.createWorld(creator);
 
                         if (world == null) {
-                            Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, null, false));
+                            Bukkit.getPluginManager().callEvent(new BedwarsWorldReadyEvent(uuid, null, false));
                             tryDeleteAsync(targetDir);
                             pendingUuids.remove(uuid);
                             throw new IllegalStateException("Failed to create temp world: " + worldName);
@@ -98,7 +98,7 @@ public class WorldManager {
                         worlds.put(uuid, world);
                         pendingUuids.remove(uuid);
 
-                        Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, world, true));
+                        Bukkit.getPluginManager().callEvent(new BedwarsWorldReadyEvent(uuid, world, true));
                     }
                 }.runTask(plugin);
             }
@@ -116,7 +116,7 @@ public class WorldManager {
         World world = Bukkit.createWorld(creator);
 
         if (world == null) {
-            Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, null, false));
+            Bukkit.getPluginManager().callEvent(new BedwarsWorldReadyEvent(uuid, null, false));
             throw new IllegalStateException("Failed to create temp world: " + worldName);
         }
 
@@ -134,7 +134,7 @@ public class WorldManager {
 
         worlds.put(uuid, world);
 
-        Bukkit.getPluginManager().callEvent(new WorldReadyEvent(uuid, world, true));
+        Bukkit.getPluginManager().callEvent(new BedwarsWorldReadyEvent(uuid, world, true));
         return uuid;
     }
 

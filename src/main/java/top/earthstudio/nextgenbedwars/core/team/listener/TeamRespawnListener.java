@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -12,11 +13,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
+import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
+import top.earthstudio.nextgenbedwars.api.team.event.BedwarsPlayerDeadEvent;
+import top.earthstudio.nextgenbedwars.api.team.event.BedwarsPlayerRespawnEvent;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 
@@ -70,10 +76,16 @@ public class TeamRespawnListener implements Listener {
     }
 
     private void tryRespawn(Player player, Team team, boolean teleportToSpectatorRespawnPoint) { // TODO: respawn cannot see other player, this == below TODO
+        player.setFireTicks(0);
+        player.clearActivePotionEffects();
+        player.setFallDistance(0);
         player.heal(Double.MAX_VALUE);
-        player.getInventory().clear();
+        clearInventory(player);
         player.setGameMode(GameMode.SPECTATOR); // TODO: this need replace with fake spectator mode (adventure) in the future!
         player.setVelocity(new Vector(0, 0, 0));
+
+        Bukkit.getPluginManager().callEvent(new BedwarsPlayerDeadEvent(gameInstance, player));
+
         UUID uuid = UUID.randomUUID();
 
         if (!team.isBedAlive) {
@@ -108,17 +120,60 @@ public class TeamRespawnListener implements Listener {
 
                 if (tick <= 0) {
                     GlobalTicker.remove(uuid);
+
                     player.teleport(team.respawnLocation);
                     player.setGameMode(GameMode.SURVIVAL);
+                    player.setVelocity(new Vector(0, 0, 0));
+                    player.setFallDistance(0);
                     player.showTitle(Title.title(
                             Component.text("已重生！").color(NamedTextColor.GREEN),
                             Component.text(""),
                             Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofSeconds(1))
                     ));
+
+                    Bukkit.getPluginManager().callEvent(new BedwarsPlayerRespawnEvent(gameInstance, player));
                 }
 
                 tick--;
             }
         });
+    }
+
+    private void clearInventory(Player player) {
+        PlayerInventory inventory = player.getInventory();
+
+        ItemStack[] storageContents = inventory.getStorageContents();
+        for (int i = 0; i < storageContents.length; i++) {
+            if (shouldKeep(storageContents[i])) continue;
+            if (storageContents[i] != null && !storageContents[i].getType().isAir()) {
+                inventory.clear(i);
+            }
+        }
+
+        ItemStack[] armorContents = inventory.getArmorContents();
+        boolean armorChanged = false;
+        for (int i = 0; i < armorContents.length; i++) {
+            ItemStack item = armorContents[i];
+            if (item == null || item.getType().isAir()) continue;
+            if (shouldKeep(item)) continue;
+            armorContents[i] = null;
+            armorChanged = true;
+        }
+        if (armorChanged) {
+            inventory.setArmorContents(armorContents);
+        }
+
+        ItemStack offHand = inventory.getItemInOffHand();
+        if (!offHand.getType().isAir() && !shouldKeep(offHand)) {
+            inventory.setItemInOffHand(null);
+        }
+    }
+
+    /** 带有 keepWhenDead 标记的物品在死亡时保留 */
+    private boolean shouldKeep(ItemStack item) {
+        if (item == null || item.getType().isAir()) return false;
+        var meta = item.getItemMeta();
+        if (meta == null) return false;
+        return meta.getPersistentDataContainer().has(PdcKeys.shop.keepWhenDead);
     }
 }

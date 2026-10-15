@@ -7,14 +7,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class WorldReadyEvent extends Event {
+public class BedwarsWorldReadyEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
     public final UUID worldUUID;
     public final World world;
     public final boolean isSuccess;
 
-    public WorldReadyEvent(UUID worldUUID, World world, boolean isSuccess) {
+    public BedwarsWorldReadyEvent(UUID worldUUID, World world, boolean isSuccess) {
         this.worldUUID = worldUUID;
         this.world = world;
         this.isSuccess = isSuccess;
