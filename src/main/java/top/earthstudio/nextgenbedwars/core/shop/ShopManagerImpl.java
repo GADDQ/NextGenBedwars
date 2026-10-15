@@ -1,19 +1,21 @@
 package top.earthstudio.nextgenbedwars.core.shop;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopInteractListener;
+import top.earthstudio.nextgenbedwars.core.shop.listener.ShopItemThrowListener;
 
 import java.util.List;
 import java.util.Map;
@@ -21,16 +23,22 @@ import java.util.UUID;
 
 public class ShopManagerImpl implements ShopManager {
     private Map<UUID, ShopEntity> shops;
-    private ShopInteractListener shopInteractListener;
     private World world;
+
+    private ShopInteractListener shopInteractListener;
+    private ShopItemThrowListener shopItemThrowListener;
 
     public ShopConfig shopConfig; // TODO: public DEBUG ONLY
 
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
-        shopInteractListener = new ShopInteractListener(this);
         world = gameInstance.getWorld();
+
+        shopInteractListener = new ShopInteractListener(this);
+        shopItemThrowListener = new ShopItemThrowListener(gameInstance);
+
         Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(shopItemThrowListener, BedwarsAPI.getInstance().plugin());
 
         shopConfig = new ShopConfig(gameInstance);
         shopConfig.getValues().forEach(this::add);
@@ -62,13 +70,18 @@ public class ShopManagerImpl implements ShopManager {
     }
 
     @Override
-    public ChestGuiPage getShopGui(UUID uuid) {
-        return shops.get(uuid).getGui();
+    public IGuiPage getShopGui(UUID uuid, Player player) {
+        return shops.get(uuid).getGui(player);
     }
 
     @Override
     public void remove(UUID uuid) {
         shops.remove(uuid).destroy();
+    }
+
+    @Override
+    public void save() {
+        shopConfig.save(getAll());
     }
 
     @Override
@@ -78,7 +91,9 @@ public class ShopManagerImpl implements ShopManager {
 
         world = null;
 
+        HandlerList.unregisterAll(shopItemThrowListener);
         HandlerList.unregisterAll(shopInteractListener);
+        shopItemThrowListener = null;
         shopInteractListener = null;
 
         shops.forEach((uuid, shopEntity) -> shopEntity.destroy());

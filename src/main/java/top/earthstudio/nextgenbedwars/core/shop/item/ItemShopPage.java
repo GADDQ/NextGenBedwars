@@ -1,5 +1,6 @@
 package top.earthstudio.nextgenbedwars.core.shop.item;
 
+import io.papermc.paper.persistence.PersistentDataContainerView;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.kyori.adventure.text.Component;
@@ -11,7 +12,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import top.earthstudio.nextgenbedwars.api.PdcKeys;
+import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
+import top.earthstudio.nextgenbedwars.api.shop.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
@@ -23,19 +29,30 @@ public class ItemShopPage extends ChestGuiPage {
     private int currentCategoryIconPage = 0;
     private int currentCategoryContentPage = 0;
 
-    private final List<Category> categories;
+    private final ProductTierManager productTierManager;
+    private final Player player;
 
-    public ItemShopPage(Component title, List<Category> categories) { // TODO: i18n
+    public final List<Category> categories;
+
+    public ItemShopPage(GameInstance gameInstance, Player player, Component title, List<Category> categories) { // TODO: i18n
         super(title, 6);
+        this.productTierManager = gameInstance.get(ProductTierManager.class);
+        this.player = player;
+
         this.allowPlayerInventoryInteraction = true;
 
         if (categories == null || categories.isEmpty())
             throw new IllegalStateException("ItemShopPage requires at least one category");
 
-        //TODO: FIXME: TEST ONLY
-        // test();
-
         this.categories = new ObjectArrayList<>(categories);
+        buildPage();
+    }
+
+    @Override
+    public void onOpen(Player player) {
+        activeCategoryIndex = 0;
+        currentCategoryIconPage = 0;
+        currentCategoryContentPage = 0;
         buildPage();
     }
 
@@ -46,10 +63,6 @@ public class ItemShopPage extends ChestGuiPage {
         buildPageDivider(new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         buildCategoryList(currentCategoryIconPage);
         buildCategoryContent(categories.get(activeCategoryIndex), currentCategoryContentPage, isCategoryFullSize);
-    }
-
-    public void addCategory(Category category) {
-        categories.add(category);
     }
 
     private void buildCategoryList(int page) {
@@ -117,16 +130,29 @@ public class ItemShopPage extends ChestGuiPage {
                 if (index >= category.items.size())
                     break loop;
 
-                int finalIndex = index;
+                ShopItem shopItem = category.items.get(index);
+                int currentLevel = shopItem.isUpgradeable() ? productTierManager.getTier(player, shopItem.id) : 0;
+
                 add(
                         x,
                         y,
-                        category.items.get(index).showItem,
+                        shopItem.getShowItem(currentLevel),
                         (player, clickType) -> { // TODO: add to quick buy, buy x64, buy x32
                             if (clickType != ClickType.LEFT)
                                 return;
 
-                            buyItem(player, category.items.get(finalIndex));
+                            if (shopItem.isUpgradeable() && currentLevel >= shopItem.maxLevel) {
+                                player.sendMessage(Component.text("该物品已达到最高等级！").color(NamedTextColor.RED));
+                                return;
+                            }
+
+                            if (buyItem(player, shopItem)) {
+                                if (shopItem.isUpgradeable())
+                                    productTierManager.upgradeTier(player, shopItem.id, shopItem.maxLevel);
+
+                                buildPage();
+                                update();
+                            }
                         }
                 );
                 index++;
@@ -289,26 +315,43 @@ public class ItemShopPage extends ChestGuiPage {
         }
     }
 
-    private void buyItem(Player player, ShopItem shopItem) { // TODO: i18n
+    private boolean buyItem(Player player, ShopItem shopItem) { // TODO: i18n
         ItemStack cost = new ItemStack(shopItem.coinType, shopItem.price);
 
-        // 检查货币数量
         if (!player.getInventory().containsAtLeast(cost, shopItem.price)) {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0.5f);
             player.sendMessage(Component.text("货币不足！需要 " + shopItem.price + " 个 ").color(NamedTextColor.RED).append(Component.translatable(shopItem.coinType.getItemTranslationKey())));
-            return;
+            return false;
         }
 
         ItemStack toGive;
-        if (shopItem.actualItem != null)
-            toGive = shopItem.actualItem.clone();
+        if (shopItem.actualItems != null)
+            toGive = shopItem.actualItems.get(productTierManager.getTier(player, shopItem.id)).clone();
         else
-            toGive = new ItemStack(shopItem.showItem.getType(), shopItem.showItem.getAmount());
+            toGive = new ItemStack(shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getType(), shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getAmount());
 
         if (!canFit(player, toGive, cost)) {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             player.sendMessage(Component.text("购买失败！背包已满！").color(NamedTextColor.RED));
-            return;
+            return false;
+        }
+
+        if (shopItem.isDecreaseLevelWhenPlayerDead) {
+            toGive.editMeta(itemMeta -> {
+                itemMeta.getPersistentDataContainer().set(PdcKeys.shop.downgradeWhenDead, PersistentDataType.BOOLEAN, true);
+            });
+        }
+
+        if (shopItem.isKeepWhenDead) {
+            toGive.editMeta(itemMeta -> {
+                itemMeta.getPersistentDataContainer().set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true);
+            });
+        }
+
+        if (!shopItem.isThrowable) {
+            toGive.editMeta(itemMeta -> {
+                itemMeta.getPersistentDataContainer().set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
+            });
         }
 
         player.getInventory().removeItem(cost);
@@ -316,6 +359,7 @@ public class ItemShopPage extends ChestGuiPage {
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
         player.sendMessage(Component.text("购买成功！").color(NamedTextColor.GREEN)); // TODO: replace text "你购买了 什么 多少"
+        return true;
     }
 
     private boolean canFit(Player player, ItemStack toAdd, ItemStack toRemove) {
