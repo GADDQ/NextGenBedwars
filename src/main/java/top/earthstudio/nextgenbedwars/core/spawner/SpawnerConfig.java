@@ -2,83 +2,99 @@ package top.earthstudio.nextgenbedwars.core.spawner;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import top.earthstudio.nextgenbedwars.api.config.Config;
+import org.spongepowered.configurate.CommentedConfigurationNode;
+import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.config.ConfigurateHelper;
 import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
-import top.earthstudio.nextgenbedwars.api.util.ConfigUtil;
+import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 
 public class SpawnerConfig implements IConfig<Spawner> {
-    private final Config localParams;
-    private final Config spawnersConfig;
+    private final File spawnersFile;
+    private final YamlConfigurationLoader spawnersLoader;
     private final List<Spawner> spawnerList;
+
+    private CommentedConfigurationNode effectiveTypesNode;
 
     public SpawnerConfig(GameInstance gameInstance) {
         File gameFolder = GameFolder.of(gameInstance.getGame());
-
-        Config globalParams = new Config("spawner_types.yml");
-        this.localParams = new Config(gameFolder, "spawner_types.yml", globalParams);
-        this.spawnersConfig = new Config(gameFolder, "spawners.yml");
+        this.spawnersFile = new File(gameFolder, "spawners.yml");
+        this.spawnersLoader = ConfigurateHelper.loader(spawnersFile);
         this.spawnerList = new ObjectArrayList<>();
 
-        loadFromConfig(spawnersConfig, localParams);
+        loadEffectiveSpawnerTypes(gameFolder);
+
+        loadFromConfig();
     }
 
-    private void loadFromConfig(Config spawnsConfig, Config paramsConfig) {
-        Object raw = spawnsConfig.read("spawners");
-        if (raw == null) return;
+    private void loadEffectiveSpawnerTypes(File gameFolder) {
+        JavaPlugin plugin = BedwarsAPI.getInstance().plugin();
+        File globalTypesFile = new File(plugin.getDataFolder(), "spawner_types.yml");
 
-        if (!(raw instanceof List<?> list)) {
-            throw new IllegalStateException("'spawners' must be a list in spawners.yml");
+        if (!globalTypesFile.exists()) {
+            plugin.saveResource("spawner_types.yml", false);
         }
 
-        for (int i = 0; i < list.size(); i++) {
-            if (!(list.get(i) instanceof Map<?, ?> map)) {
-                throw new IllegalStateException("spawners[" + i + "] must be a map");
-            }
-            String tag = "spawners[" + i + "]";
-            String type = ConfigUtil.parseString(map, "type", tag);
-            Location location = ConfigUtil.parseLocation(map, tag);
+        File localTypesFile = new File(gameFolder, "spawner_types.yml");
 
-            spawnerList.add(buildSpawner(type, paramsConfig, location));
+        try {
+            CommentedConfigurationNode globalNode = ConfigurateHelper.loader(globalTypesFile).load();
+            if (localTypesFile.exists()) {
+                CommentedConfigurationNode localNode = ConfigurateHelper.loader(localTypesFile).load();
+                this.effectiveTypesNode = globalNode.copy().mergeFrom(localNode);
+            } else {
+                this.effectiveTypesNode = globalNode;
+            }
+        } catch (ConfigurateException e) {
+            throw new RuntimeException("Failed to load spawner types configuration!", e);
         }
     }
 
-    private Spawner buildSpawner(String type, Config params, Location location) {
-        String prefix = type + ".";
-        Material material = ConfigUtil.parseMaterial(params.read(prefix + "material"), "spawner_types: " + type + ".material");
+    private void loadFromConfig() {
+        if (!spawnersFile.exists()) return;
 
-        Spawner spawner = new Spawner(
-                location,
-                params.read(prefix + "spawnTick", 20),
-                material
-        );
+        try {
+            CommentedConfigurationNode root = spawnersLoader.load();
+            ConfigurationNode spawnersNode = root.node("spawners");
 
-        spawner.isAllowMerge = params.read(prefix + "isAllowMerge", true);
-        spawner.maxSpawnCount = params.read(prefix + "maxSpawnCount", 0);
-        spawner.level = params.read(prefix + "level", 0);
-        spawner.isShowLevel = params.read(prefix + "isShowLevel", true);
-        spawner.isShowTimer = params.read(prefix + "isShowTimer", true);
-
-        spawner.isShowHolo = params.read(prefix + "isShowHolo", false);
-        if (spawner.isShowHolo) {
-            spawner.holoMaterial = ConfigUtil.parseMaterial(params.read(prefix + "holoMaterial"), "spawner_types: " + type + ".holoMaterial");
-
-            Object nameObj = params.read(prefix + "resourceName");
-            if (nameObj != null) {
-                spawner.resourceName = ConfigUtil.parseComponent(nameObj, "spawner_types: " + type + ".resourceName");
+            if (spawnersNode.virtual() || !spawnersNode.isList()) {
+                return;
             }
-        }
 
-        return spawner;
+            for (ConfigurationNode spawnerNode : spawnersNode.childrenList()) {
+                String typeName = spawnerNode.node("type").getString("iron");
+                CommentedConfigurationNode baseTypeNode = effectiveTypesNode.node(typeName);
+
+                if (baseTypeNode.virtual()) {
+                    throw new IllegalStateException("Unknown spawner type '" + typeName + "' defined in spawners.yml!");
+                }
+
+                CommentedConfigurationNode mergedTypeNode = baseTypeNode.copy();
+                mergedTypeNode.mergeFrom(spawnerNode);
+
+                SpawnerType effectiveType = mergedTypeNode.get(SpawnerType.class);
+
+                Spawner spawner = spawnerNode.get(Spawner.class);
+                if (spawner != null) {
+                    spawner.type = typeName;
+                    spawner.spawnerType = effectiveType;
+                    spawnerList.add(spawner);
+                }
+            }
+        } catch (ConfigurateException e) {
+            throw new RuntimeException("Failed to load spawners.yml from " + spawnersFile.getAbsolutePath(), e);
+        }
     }
 
     @Override
@@ -87,8 +103,31 @@ public class SpawnerConfig implements IConfig<Spawner> {
     }
 
     @Override
+    public void save(List<Spawner> values) {
+        try {
+            CommentedConfigurationNode root = spawnersLoader.load();
+            ConfigurationNode spawnersNode = root.node("spawners");
+
+            spawnersNode.raw(null);
+
+            for (Spawner spawner : values) {
+                ConfigurationNode node = spawnersNode.appendListNode();
+                node.set(Spawner.class, spawner);
+                node.node("type").set(spawner.type != null ? spawner.type : "iron");
+            }
+
+            spawnersLoader.save(root);
+
+            spawnerList.clear();
+            spawnerList.addAll(values);
+        } catch (ConfigurateException e) {
+            throw new RuntimeException("Failed to save spawners.yml to " + spawnersFile.getAbsolutePath(), e);
+        }
+    }
+
+    @Override
     public void release() {
-        localParams.release();
-        spawnersConfig.release();
+        spawnerList.clear();
+        effectiveTypesNode = null;
     }
 }

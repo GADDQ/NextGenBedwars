@@ -1,40 +1,28 @@
 package top.earthstudio.nextgenbedwars.api.game;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 
 import net.kyori.adventure.text.Component;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import org.joml.Vector3i;
-
-import top.earthstudio.nextgenbedwars.api.shop.Shop;
-import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
-import top.earthstudio.nextgenbedwars.api.team.Team;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
+@ConfigSerializable
 public final class Game {
-    public final String name;
+    public String name;
     public Component displayName;
-
-    public File mapTemplate;
-
     public Location waitingLobby;
     public Location spectatorRespawnPoint;
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;
 
-    public Game(String name, Component displayName, File mapTemplate, Location waitingLobby, Location spectatorRespawnPoint, ObjectObjectImmutablePair<Vector3i, Vector3i> region) {
-        this.name = name;
-        this.displayName = displayName;
-        this.mapTemplate = mapTemplate;
-        this.waitingLobby = waitingLobby;
-        this.spectatorRespawnPoint = spectatorRespawnPoint;
-        this.region = region;
-    } // TODO: due to Config System is ready, this might will be replaced to "Game(String name)" later;
+    public transient File mapTemplate;
+
+    public Game() {}
 
     public void locationsModifier(World world) {
         waitingLobby.setWorld(world);

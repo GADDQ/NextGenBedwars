@@ -87,6 +87,11 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     }
 
     @Override
+    public void save() {
+        teamConfig.save(getAll());
+    }
+
+    @Override
     public void shutdown() {
         teamConfig.release();
         teamConfig = null;

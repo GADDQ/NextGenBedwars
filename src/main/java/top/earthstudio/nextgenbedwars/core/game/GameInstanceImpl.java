@@ -120,6 +120,7 @@ public final class GameInstanceImpl implements GameInstance {
     @Override
     public void saveGame() {
         gameConfig.save(false);
+        subSystems.values().forEach(IGameSubSystem::save);
     }
 
     @Override public UUID getWorldUUID() { return worldUUID; }

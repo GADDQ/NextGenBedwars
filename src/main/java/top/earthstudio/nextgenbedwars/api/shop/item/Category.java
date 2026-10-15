@@ -4,14 +4,14 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.bukkit.inventory.ItemStack;
 
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+
 import java.util.List;
 
+@ConfigSerializable
 public final class Category {
-    public final ItemStack categoryIcon;
-    public final List<ShopItem> items;
+    public ItemStack categoryIcon;
+    public List<ShopItem> items;
 
-    public Category(ItemStack categoryIcon) {
-        this.categoryIcon = categoryIcon;
-        this.items = new ObjectArrayList<>();
-    }
+    public Category() {}
 }

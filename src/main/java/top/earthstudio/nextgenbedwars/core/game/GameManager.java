@@ -6,6 +6,7 @@ import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
+import top.earthstudio.nextgenbedwars.api.shop.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
@@ -13,6 +14,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
+import top.earthstudio.nextgenbedwars.core.shop.ProductTierManagerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
 import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
@@ -23,7 +25,6 @@ import java.util.Map;
 import java.util.UUID;
 
 public class GameManager {
-
     private static Map<UUID, GameInstance> gameInstances;
     private static Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> SUB_SYSTEM_TEMPLATES;
     private static WorldReadyListener worldReadyListener;
@@ -39,6 +40,7 @@ public class GameManager {
         registerSubSystem(WorldProtector.class, WorldProtectorImpl::new);
         registerSubSystem(TeamManager.class, TeamManagerImpl::new);
         registerSubSystem(ShopManager.class, ShopManagerImpl::new);
+        registerSubSystem(ProductTierManager.class, ProductTierManagerImpl::new);
     }
 
     static public void shutdown() {

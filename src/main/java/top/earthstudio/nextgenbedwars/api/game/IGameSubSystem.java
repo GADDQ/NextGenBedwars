@@ -4,4 +4,5 @@ public interface IGameSubSystem {
     void update();
     void shutdown();
     default void onReady() {}
+    default void save() {}
 }

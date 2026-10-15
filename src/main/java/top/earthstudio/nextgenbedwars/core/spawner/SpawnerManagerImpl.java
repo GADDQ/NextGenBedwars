@@ -24,7 +24,6 @@ public class SpawnerManagerImpl implements SpawnerManager {
         world = gameInstance.getWorld();
 
         spawnerConfig = new SpawnerConfig(gameInstance);
-
         spawnerConfig.getValues().forEach(this::add);
     }
 
@@ -56,6 +55,11 @@ public class SpawnerManagerImpl implements SpawnerManager {
     @Override
     public void remove(UUID uuid) {
         spawners.remove(uuid).destroy();
+    }
+
+    @Override
+    public void save() {
+        spawnerConfig.save(getAll());
     }
 
     @Override

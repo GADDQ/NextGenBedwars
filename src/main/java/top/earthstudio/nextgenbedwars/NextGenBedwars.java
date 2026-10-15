@@ -12,12 +12,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
-import top.earthstudio.nextgenbedwars.api.config.Config;
-import top.earthstudio.nextgenbedwars.api.config.ConfigManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 
 import top.earthstudio.nextgenbedwars.core.BedwarsAPIImpl;
-import top.earthstudio.nextgenbedwars.core.command.debug.DebugCommand;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 import top.earthstudio.nextgenbedwars.core.gui.listener.GuiInteractListener;
@@ -31,9 +28,7 @@ public final class NextGenBedwars extends JavaPlugin{
 
     static public ComponentLogger logger;
 
-    static public WorldReadyListener worldReadyListener; // TODO: public for debug
-
-    static public DebugCommand debugCommand; // TODO: DEBUG ONLY
+    static private WorldReadyListener worldReadyListener;
 
     @Override
     public void onEnable() {
@@ -47,7 +42,6 @@ public final class NextGenBedwars extends JavaPlugin{
         worldReadyListener = new WorldReadyListener();
 
         GlobalTicker.initialize(this);
-        ConfigManager.initialize();
         WorldManager.initialize(this, worldReadyListener);
         GameManager.initialize(worldReadyListener);
         GuiManagerImpl.initialize();
@@ -57,22 +51,15 @@ public final class NextGenBedwars extends JavaPlugin{
         bootstrapDefaultConfigs();
 
         logger.info(Component.text("Startup!").color(NamedTextColor.GREEN));
-
-        // --------DEBUG--------
-        debugCommand = new DebugCommand(this);
     }
 
     @Override
     public void onDisable() {
         logger.info(Component.text("NextGenBedwars is shutting down now...").color(NamedTextColor.GREEN));
 
-        debugCommand.shutdown();
-        debugCommand = null;
-
         GuiManagerImpl.shutdown();
         GameManager.shutdown();
         WorldManager.shutdown();
-        ConfigManager.shutdown();
         GlobalTicker.shutdown();
 
         HandlerList.unregisterAll(this);
@@ -98,7 +85,6 @@ public final class NextGenBedwars extends JavaPlugin{
     }
 
     private void bootstrapDefaultConfigs() {
-        ConfigManager.bootstrap(new Config("spawner_types.yml"));
-        ConfigManager.bootstrap(new Config("item_shop.yml"));
+
     }
 }

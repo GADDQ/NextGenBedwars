@@ -4,28 +4,23 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
-import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
-import java.util.function.Supplier;
+import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
+import java.util.function.Function;
+
+@ConfigSerializable
 public final class Shop {
+    public String shopType;
     public Component title;
     public Component subTitle;
     public EntityType entityType;
     public Location location;
-    public Supplier<ChestGuiPage> shopPageProvider;
 
-    public Shop(Component title, Component subTitle, EntityType entityType, Location location, Supplier<ChestGuiPage> shopPageProvider) {
-        this.title = title;
-        this.subTitle = subTitle;
-        this.entityType = entityType;
-        this.location = location;
-        this.shopPageProvider = shopPageProvider;
+    public transient Function<Player, ? extends IGuiPage> shopPageProvider;
 
-    }
-
-    public Shop(Component title, EntityType entityType, Location location, Supplier<ChestGuiPage> shopPageProvider) {
-        this(title, Component.text(""), entityType, location, shopPageProvider);
-    }
+    public Shop() {}
 }

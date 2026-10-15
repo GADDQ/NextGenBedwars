@@ -43,7 +43,7 @@ public class SpawnerAnimator {
     // ===============================================
 
     public void update(ItemDisplay itemDisplay, Spawner spawner) {
-        if (spawner.holoMaterial == null || spawner.holoMaterial == Material.AIR)
+        if (spawner.spawnerType.holoMaterial == null || spawner.spawnerType.holoMaterial == Material.AIR)
             return;
 
         frameCounter++;

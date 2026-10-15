@@ -7,37 +7,25 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.Color;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Set;
 
+@ConfigSerializable
 public final class Team { // struct Team
-    public final Component displayName;
-    public final Color teamColor;
+    public Component displayName;
+    public Color teamColor;
 
-    public final int maxPlayerCount;
+    public int maxPlayerCount;
     public int respawnTick;
 
     public Location respawnLocation;
-    public final LongLongPair bedBlockLongs;
+    public LongLongPair bedBlockLongs;
 
-    public boolean isBedAlive = true;
+    public transient boolean isBedAlive = true;
+    public transient final Set<Player> players = new ObjectOpenHashSet<>();
 
-    // TODO: upgrade struct?
-
-    public final Set<Spawner> teamSpawners = new ObjectOpenHashSet<>();
-
-    public final Set<Player> players = new ObjectOpenHashSet<>();
-
-    public Team(Component displayName, Color teamColor, int maxPlayerCount, int respawnTick, Location respawnLocation, LongLongPair bedBlockLongs) {
-        this.displayName = displayName;
-        this.teamColor = teamColor;
-        this.maxPlayerCount = maxPlayerCount;
-        this.respawnTick = respawnTick;
-        this.respawnLocation = respawnLocation;
-        this.bedBlockLongs = bedBlockLongs;
-    }
+    public Team() {}
 }

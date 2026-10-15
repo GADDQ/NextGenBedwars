@@ -7,7 +7,6 @@ copper:
   holoMaterial: COPPER_BLOCK
   resourceName: "铜锭"
   isShowTimer: true
-  level: 1
   isShowLevel: true
 
 iron:
@@ -19,7 +18,6 @@ iron:
   holoMaterial: IRON_BLOCK
   resourceName: "铁锭"
   isShowTimer: true
-  level: 1
   isShowLevel: true
 
 gold:
@@ -31,7 +29,6 @@ gold:
   holoMaterial: GOLD_BLOCK
   resourceName: "金锭"
   isShowTimer: true
-  level: 1
   isShowLevel: true
 
 diamond:
@@ -43,7 +40,6 @@ diamond:
   holoMaterial: DIAMOND_BLOCK
   resourceName: "钻石"
   isShowTimer: true
-  level: 1
   isShowLevel: true
 
 emerald:
@@ -55,7 +51,6 @@ emerald:
   holoMaterial: EMERALD_BLOCK
   resourceName: "绿宝石"
   isShowTimer: true
-  level: 1
   isShowLevel: true
 
 minimal:

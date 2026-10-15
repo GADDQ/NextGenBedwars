@@ -9,6 +9,7 @@ import org.bukkit.util.Transformation;
 
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
+
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
@@ -29,13 +30,13 @@ public class SpawnerEntity {
         spawner.location.setPitch(0);
         spawner.location.setYaw(0);
 
-        leftTick = spawner.spawnTick;
+        leftTick = spawner.spawnerType.spawnTick.get(spawner.level);
 
         itemDisplay = spawner.location.getWorld().spawn(spawner.location, ItemDisplay.class, entity -> {
             entity.setPersistent(false); // TODO: DEBUG only, remove in release
 
             entity.setBrightness(new Display.Brightness(15, 15));
-            entity.setItemStack(new ItemStack(spawner.holoMaterial == null ? Material.AIR : spawner.holoMaterial));
+            entity.setItemStack(new ItemStack(spawner.spawnerType.holoMaterial == null ? Material.AIR : spawner.spawnerType.holoMaterial));
             entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
             entity.setShadowRadius(0);
             entity.setShadowStrength(0);
@@ -58,7 +59,7 @@ public class SpawnerEntity {
     }
 
     public void update() {
-        if (leftTick % 20 == 0 || leftTick == spawner.spawnTick) {
+        if (leftTick % 20 == 0 || leftTick == spawner.spawnerType.spawnTick.get(spawner.level)) {
             int seconds = (leftTick - 1) / 20 + 1;
             textDisplay.text(SpawnerDisplayUtil.updateTextDisplay(seconds, spawner));
         }
@@ -68,20 +69,20 @@ public class SpawnerEntity {
         leftTick--;
         if (leftTick > 0)
             return;
-        leftTick = spawner.spawnTick;
+        leftTick = spawner.spawnerType.spawnTick.get(spawner.level);
 
         if (SpawnerDisplayUtil.canSpawn(spawner)) {
-            spawner.location.getWorld().dropItem(spawner.location, new ItemStack(spawner.material), entity -> {
+            spawner.location.getWorld().dropItem(spawner.location, new ItemStack(spawner.spawnerType.material), entity -> {
                 entity.setVelocity(ZERO_VELOCITY);
                 entity.getPersistentDataContainer().set(PdcKeys.spawner.drop, PersistentDataType.BOOLEAN, true);
                 entity.setUnlimitedLifetime(true);
 
-                if (!spawner.isAllowMerge)
+                if (!spawner.spawnerType.isAllowMerge)
                     entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
             });
         }
 
-        Material targetMaterial = spawner.holoMaterial == null ? Material.AIR : spawner.holoMaterial;
+        Material targetMaterial = spawner.spawnerType.holoMaterial == null ? Material.AIR : spawner.spawnerType.holoMaterial;
         if (itemDisplay.getItemStack().getType() != targetMaterial)
             itemDisplay.setItemStack(new ItemStack(targetMaterial));
     }

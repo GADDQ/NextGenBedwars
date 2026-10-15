@@ -15,14 +15,14 @@ public final class SpawnerDisplayUtil {
 
     public static Component updateTextDisplay(int seconds, Spawner spawner) { // TODO: i18n
         Component component = Component.text("");
-        if (spawner.isShowHolo) {
-            if (spawner.resourceName != null) {
-                component = component.append(spawner.resourceName);
+        if (spawner.spawnerType.isShowHolo) {
+            if (spawner.spawnerType.resourceName != null) {
+                component = component.append(spawner.spawnerType.resourceName);
             }
 
             component = component.appendNewline();
 
-            if (spawner.isShowTimer) {
+            if (spawner.spawnerType.isShowTimer) {
                 component = component.append(
                         Component.text(seconds).color(NamedTextColor.WHITE)
                                 .append(
@@ -33,11 +33,11 @@ public final class SpawnerDisplayUtil {
 
             component = component.appendNewline();
 
-            if (spawner.isShowLevel && spawner.level > 0) {
+            if (spawner.spawnerType.isShowLevel && spawner.level > 0) {
                 component = component.append(
                         Component.text("等级 ").color(NamedTextColor.GOLD)
                                 .append(
-                                        Component.text(spawner.level).color(NamedTextColor.WHITE)
+                                        Component.text(spawner.level + 1).color(NamedTextColor.WHITE)
                                 )
                 );
             }
@@ -46,18 +46,18 @@ public final class SpawnerDisplayUtil {
         return component;
     }
     public static boolean canSpawn(Spawner spawner) {
-        if (spawner.maxSpawnCount <= 0) {
+        if (spawner.spawnerType.maxSpawnCount <= 0) {
             return true;
         }
 
         int counter = 0;
         for (Entity entity : spawner.location.getNearbyEntities(0.75, 0.75, 0.75)) {
-            if (entity instanceof Item item && item.getItemStack().getType() == spawner.material && item.getPersistentDataContainer().has(PdcKeys.spawner.drop)) {
+            if (entity instanceof Item item && item.getItemStack().getType() == spawner.spawnerType.material && item.getPersistentDataContainer().has(PdcKeys.spawner.drop)) {
                 int itemAmount = item.getItemStack().getAmount();
                 counter += (itemAmount == 0 ? 1 : itemAmount);
             }
         }
 
-        return counter < spawner.maxSpawnCount;
+        return counter < spawner.spawnerType.maxSpawnCount;
     }
 }
