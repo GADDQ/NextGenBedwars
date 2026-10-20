@@ -18,10 +18,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 public class WorldReadyListener implements Listener {
-    private final Map<UUID, Queue<Consumer<World>>> pendingTasks = new ConcurrentHashMap<>();
+    static private final Map<UUID, Queue<Consumer<World>>> pendingTasks = new ConcurrentHashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onWorldReady(BedwarsWorldReadyEvent event) {
+    static public void onWorldReady(BedwarsWorldReadyEvent event) {
         UUID worldUUID = event.worldUUID;
         if (!event.isSuccess) {
             pendingTasks.remove(worldUUID);
@@ -38,7 +38,7 @@ public class WorldReadyListener implements Listener {
     /**
      * 注册一个等待指定世界就绪的任务
      */
-    public void addTask(UUID worldUUID, Consumer<World> task) {
+    static public void addTask(UUID worldUUID, Consumer<World> task) {
         // 如果注册的时候世界其实已经建好了，立即执行
         World alreadyLoaded = WorldManager.get(worldUUID);
         if (alreadyLoaded != null) {
