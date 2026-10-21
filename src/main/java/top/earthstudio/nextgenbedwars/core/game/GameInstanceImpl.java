@@ -30,7 +30,7 @@ public final class GameInstanceImpl implements GameInstance {
     private boolean isReady = false;
     private final boolean isEditMode;
 
-    public GameInstanceImpl(Game game, WorldReadyListener worldReadyListener, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
+    public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
         this.isEditMode = isEditMode;
 
@@ -44,7 +44,7 @@ public final class GameInstanceImpl implements GameInstance {
         else
             this.worldUUID = WorldManager.create(game.mapTemplate);
 
-        worldReadyListener.addTask(worldUUID, world -> {
+        WorldReadyListener.addTask(worldUUID, world -> {
             if (isShutdown) return;
 
             this.world = world;
