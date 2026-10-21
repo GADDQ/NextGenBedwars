@@ -23,7 +23,8 @@ import java.util.List;
 public class SpawnerConfig implements IConfig<Spawner> {
     private final File spawnersFile;
     private final YamlConfigurationLoader spawnersLoader;
-    private final List<Spawner> spawnerList;
+    private final List<Spawner> spawners;
+    private final List<String> spawnerTypes;
 
     private CommentedConfigurationNode effectiveTypesNode;
 
@@ -31,7 +32,8 @@ public class SpawnerConfig implements IConfig<Spawner> {
         File gameFolder = GameFolder.of(gameInstance.getGame());
         this.spawnersFile = new File(gameFolder, "spawners.yml");
         this.spawnersLoader = ConfigurateHelper.loader(spawnersFile);
-        this.spawnerList = new ObjectArrayList<>();
+        this.spawners = new ObjectArrayList<>();
+        this.spawnerTypes = new ObjectArrayList<>();
 
         loadEffectiveSpawnerTypes(gameFolder);
 
@@ -73,7 +75,13 @@ public class SpawnerConfig implements IConfig<Spawner> {
             }
 
             for (ConfigurationNode spawnerNode : spawnersNode.childrenList()) {
-                String typeName = spawnerNode.node("type").getString("iron");
+                String typeName = spawnerNode.node("type").getString();
+                if (typeName == null || typeName.isBlank()) {
+                    throw new IllegalStateException("Missing 'type' field in spawners.yml node: " + spawnerNode);
+                }
+
+                spawnerTypes.add(typeName);
+
                 CommentedConfigurationNode baseTypeNode = effectiveTypesNode.node(typeName);
 
                 if (baseTypeNode.virtual()) {
@@ -89,7 +97,7 @@ public class SpawnerConfig implements IConfig<Spawner> {
                 if (spawner != null) {
                     spawner.type = typeName;
                     spawner.spawnerType = effectiveType;
-                    spawnerList.add(spawner);
+                    spawners.add(spawner);
                 }
             }
         } catch (ConfigurateException e) {
@@ -99,8 +107,10 @@ public class SpawnerConfig implements IConfig<Spawner> {
 
     @Override
     public List<Spawner> getValues() {
-        return spawnerList;
+        return spawners;
     }
+
+    public List<String> getTypes() { return spawnerTypes; }
 
     @Override
     public void save(List<Spawner> values) {
@@ -118,8 +128,8 @@ public class SpawnerConfig implements IConfig<Spawner> {
 
             spawnersLoader.save(root);
 
-            spawnerList.clear();
-            spawnerList.addAll(values);
+            spawners.clear();
+            spawners.addAll(values);
         } catch (ConfigurateException e) {
             throw new RuntimeException("Failed to save spawners.yml to " + spawnersFile.getAbsolutePath(), e);
         }
@@ -127,7 +137,7 @@ public class SpawnerConfig implements IConfig<Spawner> {
 
     @Override
     public void release() {
-        spawnerList.clear();
+        spawners.clear();
         effectiveTypesNode = null;
     }
 }
