@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class WorldManager {
     private static JavaPlugin plugin;
-    private static WorldReadyListener worldReadyListener;
     private static Map<UUID, World> worlds;
 
     private static Set<UUID> pendingUuids;
@@ -33,9 +32,8 @@ public class WorldManager {
 
     private WorldManager() {}
 
-    static public void initialize(JavaPlugin plugin, WorldReadyListener worldReadyListener) {
+    static public void initialize(JavaPlugin plugin) {
         WorldManager.plugin = plugin;
-        WorldManager.worldReadyListener = worldReadyListener;
         pendingUuids = ConcurrentHashMap.newKeySet();
         pendingDestroyUuids = ConcurrentHashMap.newKeySet();
         worlds = new ConcurrentHashMap<>();
@@ -199,7 +197,7 @@ public class WorldManager {
         int minChunkZ = Math.min(loc1.z, loc2.z) >> 4;
         int maxChunkZ = Math.max(loc1.z, loc2.z) >> 4;
 
-        worldReadyListener.addTask(uuid, world -> {
+        WorldReadyListener.addTask(uuid, world -> {
             for (int cx = minChunkX; cx <= maxChunkX; cx++) {
                 for (int cz = minChunkZ; cz <= maxChunkZ; cz++) {
                     world.setChunkForceLoaded(cx, cz, true);
@@ -229,7 +227,6 @@ public class WorldManager {
         pendingUuids.clear();
         pendingUuids = null;
 
-        worldReadyListener = null;
         plugin = null;
     }
 
