@@ -7,3 +7,17 @@ api-version: '1.21.8'
 load: POSTWORLD
 
 authors: [ Earth Studio ]
+
+permissions:
+  nextgenbedwars.admin:
+    description: Allow to use NextGenBedwars admin commands
+    default: op
+    children:
+      nextgenbedwars.admin.create: true
+      nextgenbedwars.admin.edit: true
+      nextgenbedwars.admin.remove: true
+      nextgenbedwars.admin.toggle: true
+
+  nextgenbedwars.player:
+    description: Allow to join and play Bedwars
+    default: true
