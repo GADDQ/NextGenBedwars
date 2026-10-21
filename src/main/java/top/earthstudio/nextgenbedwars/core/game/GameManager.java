@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import org.bukkit.World;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
@@ -19,22 +20,21 @@ import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
 import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
-import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class GameManager {
     private static Map<UUID, GameInstance> gameInstances;
     private static Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> SUB_SYSTEM_TEMPLATES;
-    private static WorldReadyListener worldReadyListener;
 
     private GameManager() {}
 
-    static public void initialize(WorldReadyListener worldReadyListener) { // TODO: ability to edit instance map and save to template
+    static public void initialize() { // TODO: ability to edit instance map and save to template
         gameInstances = new Object2ObjectOpenHashMap<>();
         SUB_SYSTEM_TEMPLATES = new Object2ObjectOpenHashMap<>();
-        GameManager.worldReadyListener = worldReadyListener;
 
         registerSubSystem(SpawnerManager.class, SpawnerManagerImpl::new);
         registerSubSystem(WorldProtector.class, WorldProtectorImpl::new);
@@ -54,7 +54,7 @@ public class GameManager {
     static public UUID addInstance(Game game, boolean isEditMode) {
         UUID uuid = UUID.randomUUID();
 
-        GameInstanceImpl gameInstance = new GameInstanceImpl(game, worldReadyListener, SUB_SYSTEM_TEMPLATES, isEditMode);
+        GameInstanceImpl gameInstance = new GameInstanceImpl(game, SUB_SYSTEM_TEMPLATES, isEditMode);
 
         GlobalTicker.set(uuid, new TickerTask() {
             @Override
@@ -76,6 +76,14 @@ public class GameManager {
         return gameInstances.get(uuid);
     }
 
+    static public GameInstance getInstanceByWorld (World world) {
+        for (Map.Entry<UUID, GameInstance> entry : gameInstances.entrySet()) {
+            if (entry.getValue().getWorld() == world)
+                return entry.getValue();
+        }
+        return null;
+    }
+
     static public void saveInstance(UUID uuid) {
         gameInstances.get(uuid).saveGame();
     }
@@ -86,14 +94,24 @@ public class GameManager {
     }
 
     static public void removeInstanceByWorldUuid (UUID worldUUID) {
-        UUID found = null;
         for (Map.Entry<UUID, GameInstance> entry : gameInstances.entrySet()) {
             if (worldUUID.equals(entry.getValue().getWorldUUID())) {
-                found = entry.getKey();
-                break;
+                removeInstance(entry.getKey());
+                return;
             }
         }
-        removeInstance(found);
+    }
+
+    static public void removeInstanceByName (String name) {
+        List<UUID> removes = new ArrayList<>();
+
+        for (Map.Entry<UUID, GameInstance> entry : gameInstances.entrySet()) {
+            if (entry.getValue().getGame().name.equals(name))
+                removes.add(entry.getKey());
+        }
+
+        removes.forEach(GameManager::removeInstance);
+        removes.clear();
     }
 
     public static <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor) {
