@@ -31,6 +31,8 @@ public class WorldManager {
 
     private static Set<UUID> pendingUuids;
     private static Set<UUID> pendingDestroyUuids;
+    private static Set<UUID> exportingUuids;
+    private static Map<UUID, File> pendingDestroyAfterExport;
 
     private WorldManager() {}
 
@@ -38,6 +40,8 @@ public class WorldManager {
         WorldManager.plugin = plugin;
         pendingUuids = ConcurrentHashMap.newKeySet();
         pendingDestroyUuids = ConcurrentHashMap.newKeySet();
+        exportingUuids = ConcurrentHashMap.newKeySet();
+        pendingDestroyAfterExport = new ConcurrentHashMap<>();
         worlds = new ConcurrentHashMap<>();
 
         cleanupOrphanedWorlds();
@@ -144,14 +148,23 @@ public class WorldManager {
 
     public static void exportWorld(UUID uuid, File targetTemplateDir) { // TODO: reference count to fix delete problem
         World world = worlds.get(uuid);
+        if (world == null) return;
 
         world.save();
+        exportingUuids.add(uuid);
 
         Runnable baseExport = () -> {
             try {
                 copyWorldFolderSafely(world.getWorldFolder(), targetTemplateDir);
             } catch (IOException e) {
                 plugin.getLogger().warning("Failed to export world!\n" + e);
+            } finally {
+                exportingUuids.remove(uuid);
+
+                File folderToDelete = pendingDestroyAfterExport.remove(uuid);
+                if (folderToDelete != null) {
+                    tryDeleteAsync(folderToDelete);
+                }
             }
         };
 
@@ -229,26 +242,52 @@ public class WorldManager {
         });
     }
 
-    static public void destroy(UUID uuid) {
+    public static void destroy(UUID uuid) {
         if (pendingUuids.contains(uuid)) {
             pendingDestroyUuids.add(uuid);
             return;
         }
+
         World world = worlds.remove(uuid);
-        if (world == null)
-            return;
-        deleteTempWorld(world);
+        if (world == null) return;
+
+        File worldFolder = world.getWorldFolder();
+
+        Location fallbackLobby = Bukkit.getWorlds().getFirst().getSpawnLocation();
+        for (Player player : world.getPlayers()) {
+            player.teleport(fallbackLobby);
+        }
+        for (Chunk chunk : world.getLoadedChunks()) {
+            if (chunk.isForceLoaded()) chunk.setForceLoaded(false);
+        }
+        Bukkit.unloadWorld(world, false);
+
+        if (exportingUuids.contains(uuid)) {
+            pendingDestroyAfterExport.put(uuid, worldFolder);
+        } else {
+            tryDeleteAsync(worldFolder);
+        }
     }
 
-    static public void shutdown() {
+    static public void shutdown() { // TODO: auto save editing game
         worlds.forEach((uuid, world) -> deleteTempWorld(world));
+
+        while (!pendingUuids.isEmpty() || !exportingUuids.isEmpty()) {
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+
         worlds.clear();
         worlds = null;
-
-        pendingDestroyUuids.clear();
-        pendingDestroyUuids = null;
         pendingUuids.clear();
         pendingUuids = null;
+        exportingUuids.clear();
+        exportingUuids = null;
+        pendingDestroyAfterExport.clear();
+        pendingDestroyAfterExport = null;
 
         plugin = null;
     }
