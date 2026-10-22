@@ -139,6 +139,7 @@ public class AdminCommand {
             Location targetLoc = (game.waitingLobby != null) ? game.waitingLobby : ((game.spectatorRespawnPoint != null) ? game.spectatorRespawnPoint : world.getSpawnLocation());
             player.teleport(targetLoc);
             player.sendMessage(Component.text("您正在编辑游戏: " + name).color(NamedTextColor.GREEN));
+            player.updateCommands();
         });
 
         return Command.SINGLE_SUCCESS;
