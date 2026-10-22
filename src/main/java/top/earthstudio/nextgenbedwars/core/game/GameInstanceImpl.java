@@ -52,11 +52,11 @@ public final class GameInstanceImpl implements GameInstance {
 
             buildSubSystems(subSystemTemplates);
 
-            WorldManager.forceLoadRegions(worldUUID, game.region);
-
             if (isEditMode) {
                 gameState = GameState.EDITING;
             } else {
+                WorldManager.forceLoadRegions(worldUUID, game.region);
+
                 WorldProtector worldProtector = get(WorldProtector.class);
 
                 if (game.region.equals(new ObjectObjectImmutablePair<>(new Vector3i(0, 0, 0), new Vector3i(0, 0, 0)))) { // TODO: Config allow set no protection
