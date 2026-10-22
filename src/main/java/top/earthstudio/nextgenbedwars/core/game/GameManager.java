@@ -84,10 +84,6 @@ public class GameManager {
         return null;
     }
 
-    static public void saveInstance(UUID uuid) {
-        gameInstances.get(uuid).saveGame();
-    }
-
     static public void removeInstance(UUID uuid) {
         gameInstances.remove(uuid);
         GlobalTicker.remove(uuid);
