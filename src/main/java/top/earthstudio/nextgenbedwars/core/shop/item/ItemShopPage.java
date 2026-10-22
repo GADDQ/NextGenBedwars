@@ -19,9 +19,10 @@ import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
 import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
-import top.earthstudio.nextgenbedwars.core.game.GameManager;
 
 import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 public class ItemShopPage extends ChestGuiPage {
     private final boolean isCategoryFullSize = false;
@@ -60,7 +61,7 @@ public class ItemShopPage extends ChestGuiPage {
 
     private void buildPage() {
         clearCategoryIconSlots();
-        clearCategoryContentSlots(isCategoryFullSize);
+        clearCategoryContentSlots();
         clearPageDivider();
         buildPageDivider(new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         buildCategoryList(currentCategoryIconPage);
@@ -309,7 +310,7 @@ public class ItemShopPage extends ChestGuiPage {
         }
     }
 
-    private void clearCategoryContentSlots(boolean isFullSize) {
+    private void clearCategoryContentSlots() {
         for (int x = 0; x <= 8; x++) {
             for (int y = 2; y <= 4; y++) {
                 remove(x, y);
@@ -322,7 +323,7 @@ public class ItemShopPage extends ChestGuiPage {
 
         if (!player.getInventory().containsAtLeast(cost, shopItem.price)) {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0.5f);
-            player.sendMessage(Component.text("货币不足！需要 " + shopItem.price + " 个 ").color(NamedTextColor.RED).append(Component.translatable(shopItem.coinType.getItemTranslationKey())));
+            player.sendMessage(Component.text("货币不足！需要 " + shopItem.price + " 个 ").color(NamedTextColor.RED).append(Component.translatable(requireNonNull(shopItem.coinType.getItemTranslationKey()))));
             return false;
         }
 
@@ -338,23 +339,14 @@ public class ItemShopPage extends ChestGuiPage {
             return false;
         }
 
-        if (shopItem.isDecreaseLevelWhenPlayerDead) {
-            toGive.editMeta(itemMeta -> {
-                itemMeta.getPersistentDataContainer().set(PdcKeys.shop.downgradeWhenDead, PersistentDataType.BOOLEAN, true);
-            });
-        }
+        if (shopItem.isDecreaseLevelWhenPlayerDead)
+            toGive.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PdcKeys.shop.downgradeWhenDead, PersistentDataType.BOOLEAN, true));
 
-        if (shopItem.isKeepWhenDead) {
-            toGive.editMeta(itemMeta -> {
-                itemMeta.getPersistentDataContainer().set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true);
-            });
-        }
+        if (shopItem.isKeepWhenDead)
+            toGive.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true));
 
-        if (!shopItem.isThrowable) {
-            toGive.editMeta(itemMeta -> {
-                itemMeta.getPersistentDataContainer().set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
-            });
-        }
+        if (!shopItem.isThrowable)
+            toGive.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false));
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
             if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem)) {
