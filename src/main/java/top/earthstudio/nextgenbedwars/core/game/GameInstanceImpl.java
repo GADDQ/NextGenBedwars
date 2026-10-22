@@ -30,6 +30,8 @@ public final class GameInstanceImpl implements GameInstance {
     private boolean isReady = false;
     private final boolean isEditMode;
 
+    private volatile boolean isSaving = false;
+
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
         this.isEditMode = isEditMode;
@@ -97,14 +99,11 @@ public final class GameInstanceImpl implements GameInstance {
     }
 
     public void shutdown() {
-        if (gameState == GameState.EDITING)
-            gameConfig.save(true); // World should be saved in any time, but configs not.
+        isShutdown = true;
+        gameState = null;
 
         gameConfig.release();
         gameConfig = null;
-
-        gameState = null;
-        isShutdown = true;
 
         if (subSystems != null) {
             subSystems.values().forEach(IGameSubSystem::shutdown);
@@ -119,8 +118,14 @@ public final class GameInstanceImpl implements GameInstance {
 
     @Override
     public void saveGame() {
+        if (isSaving || isShutdown) return;
+
+        isSaving = true;
+
         gameConfig.save(false);
         subSystems.values().forEach(IGameSubSystem::save);
+
+        isSaving = false;
     }
 
     @Override public UUID getWorldUUID() { return worldUUID; }
