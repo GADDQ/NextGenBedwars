@@ -1,14 +1,17 @@
 package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import org.bukkit.World;
+
+import org.bukkit.entity.Player;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
-import top.earthstudio.nextgenbedwars.api.shop.ProductTierManager;
+import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
+import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
@@ -16,7 +19,8 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
-import top.earthstudio.nextgenbedwars.core.shop.ProductTierManagerImpl;
+import top.earthstudio.nextgenbedwars.core.shop.executor.ShopExecutorImpl;
+import top.earthstudio.nextgenbedwars.core.shop.tier.ProductTierManagerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
 import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
@@ -42,6 +46,7 @@ public class GameManager {
         registerSubSystem(TeamManager.class, TeamManagerImpl::new);
         registerSubSystem(ShopManager.class, ShopManagerImpl::new);
         registerSubSystem(ProductTierManager.class, ProductTierManagerImpl::new);
+        registerSubSystem(ShopExecutor.class, ShopExecutorImpl::new);
     }
 
     static public void shutdown() {

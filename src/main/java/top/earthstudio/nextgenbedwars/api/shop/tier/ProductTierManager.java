@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.shop;
+package top.earthstudio.nextgenbedwars.api.shop.tier;
 
 import org.bukkit.entity.Player;
 

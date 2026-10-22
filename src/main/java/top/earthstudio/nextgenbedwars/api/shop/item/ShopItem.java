@@ -16,6 +16,8 @@ public final class ShopItem { // struct ShopItem // TODO: Material Only, not Ite
 
     public int maxLevel = 0;
 
+    public String executorId;
+
     public boolean isDecreaseLevelWhenPlayerDead = false;
     public boolean isKeepWhenDead = false;
     public boolean isThrowable = true;

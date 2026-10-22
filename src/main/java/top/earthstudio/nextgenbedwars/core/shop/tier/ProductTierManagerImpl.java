@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.shop;
+package top.earthstudio.nextgenbedwars.core.shop.tier;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.shop.ProductTierManager;
+import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ProductTierListener;
 
 import java.util.Map;

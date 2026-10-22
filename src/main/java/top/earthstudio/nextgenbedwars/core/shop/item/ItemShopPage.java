@@ -15,9 +15,11 @@ import org.bukkit.persistence.PersistentDataType;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
-import top.earthstudio.nextgenbedwars.api.shop.ProductTierManager;
+import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
+import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
+import top.earthstudio.nextgenbedwars.core.game.GameManager;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class ItemShopPage extends ChestGuiPage {
     private int currentCategoryContentPage = 0;
 
     private final ProductTierManager productTierManager;
+    private final ShopExecutor shopExecutor;
     private final Player player;
 
     public final List<Category> categories;
@@ -35,6 +38,7 @@ public class ItemShopPage extends ChestGuiPage {
     public ItemShopPage(GameInstance gameInstance, Player player, Component title, List<Category> categories) { // TODO: i18n
         super(title, 6);
         this.productTierManager = gameInstance.get(ProductTierManager.class);
+        this.shopExecutor = gameInstance.get(ShopExecutor.class);
         this.player = player;
 
         this.allowPlayerInventoryInteraction = true;
@@ -324,7 +328,7 @@ public class ItemShopPage extends ChestGuiPage {
 
         ItemStack toGive;
         if (shopItem.actualItems != null)
-            toGive = shopItem.actualItems.get(productTierManager.getTier(player, shopItem.id)).clone();
+            toGive = shopItem.getActualItem(productTierManager.getTier(player, shopItem.id)).clone();
         else
             toGive = new ItemStack(shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getType(), shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getAmount());
 
@@ -350,6 +354,13 @@ public class ItemShopPage extends ChestGuiPage {
             toGive.editMeta(itemMeta -> {
                 itemMeta.getPersistentDataContainer().set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
             });
+        }
+
+        if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
+            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem)) {
+                player.sendMessage(Component.text("购买失败！").color(NamedTextColor.RED));
+                return false;
+            }
         }
 
         player.getInventory().removeItem(cost);

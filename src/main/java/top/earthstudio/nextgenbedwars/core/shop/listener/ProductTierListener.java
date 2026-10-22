@@ -5,7 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.shop.ProductTierManager;
+import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.team.event.BedwarsPlayerDeadEvent;
 
 public class ProductTierListener implements Listener {
