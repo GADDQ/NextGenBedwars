@@ -15,6 +15,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 
 import top.earthstudio.nextgenbedwars.core.BedwarsAPIImpl;
+import top.earthstudio.nextgenbedwars.core.command.BedwarsCommand;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 import top.earthstudio.nextgenbedwars.core.gui.listener.GuiInteractListener;
@@ -42,13 +43,15 @@ public final class NextGenBedwars extends JavaPlugin{
         worldReadyListener = new WorldReadyListener();
 
         GlobalTicker.initialize(this);
-        WorldManager.initialize(this, worldReadyListener);
-        GameManager.initialize(worldReadyListener);
+        WorldManager.initialize(this);
+        GameManager.initialize();
         GuiManagerImpl.initialize();
 
         registerListeners();
 
         bootstrapDefaultConfigs();
+
+        new BedwarsCommand(this);
 
         logger.info(Component.text("Startup!").color(NamedTextColor.GREEN));
     }
@@ -85,6 +88,7 @@ public final class NextGenBedwars extends JavaPlugin{
     }
 
     private void bootstrapDefaultConfigs() {
-
+        saveResource("spawner_types.yml", false);
+        saveResource("item_shop.yml", false);
     }
 }

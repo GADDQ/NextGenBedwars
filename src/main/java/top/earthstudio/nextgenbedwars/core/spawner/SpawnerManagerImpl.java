@@ -8,6 +8,7 @@ import org.bukkit.World;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
+import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,16 @@ public class SpawnerManagerImpl implements SpawnerManager {
         List<Spawner> spanwerList =  new ObjectArrayList<>();
         spawners.values().forEach(spawnerEntity -> spanwerList.add(spawnerEntity.spawner));
         return spanwerList;
+    }
+
+    @Override
+    public List<String> getTypes() {
+        return spawnerConfig.getTypes();
+    }
+
+    @Override
+    public SpawnerType getSpawnerType(String typeName) {
+        return spawnerConfig.getType(typeName);
     }
 
     @Override

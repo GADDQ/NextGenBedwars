@@ -58,6 +58,11 @@ public class SpawnerConfig implements IConfig<Spawner> {
             } else {
                 this.effectiveTypesNode = globalNode;
             }
+
+            this.spawnerTypes.clear();
+            for (Object key : this.effectiveTypesNode.childrenMap().keySet()) {
+                this.spawnerTypes.add(key.toString());
+            }
         } catch (ConfigurateException e) {
             throw new RuntimeException("Failed to load spawner types configuration!", e);
         }
@@ -79,8 +84,6 @@ public class SpawnerConfig implements IConfig<Spawner> {
                 if (typeName == null || typeName.isBlank()) {
                     throw new IllegalStateException("Missing 'type' field in spawners.yml node: " + spawnerNode);
                 }
-
-                spawnerTypes.add(typeName);
 
                 CommentedConfigurationNode baseTypeNode = effectiveTypesNode.node(typeName);
 
@@ -110,7 +113,19 @@ public class SpawnerConfig implements IConfig<Spawner> {
         return spawners;
     }
 
-    public List<String> getTypes() { return spawnerTypes; }
+    public SpawnerType getType(String typeName) {
+        if (effectiveTypesNode == null) return null;
+        try {
+            CommentedConfigurationNode node = effectiveTypesNode.node(typeName);
+            return node.virtual() ? null : node.get(SpawnerType.class);
+        } catch (ConfigurateException e) {
+            return null;
+        }
+    }
+
+    public List<String> getTypes() {
+        return spawnerTypes;
+    }
 
     @Override
     public void save(List<Spawner> values) {
@@ -138,6 +153,7 @@ public class SpawnerConfig implements IConfig<Spawner> {
     @Override
     public void release() {
         spawners.clear();
+        spawnerTypes.clear();
         effectiveTypesNode = null;
     }
 }

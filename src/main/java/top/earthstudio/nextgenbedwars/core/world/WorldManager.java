@@ -18,6 +18,8 @@ import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -167,20 +169,41 @@ public class WorldManager {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static void copyWorldFolderSafely(File source, File target) throws IOException {
+        if (!source.exists()) return;
+
         if (source.isDirectory()) {
+            String dirName = source.getName();
+            if (dirName.equals("playerdata") || dirName.equals("stats") || dirName.equals("advancements")) {
+                return;
+            }
+
             if (!target.exists()) target.mkdirs();
             File[] files = source.listFiles();
             if (files == null) return;
 
             for (File file : files) {
                 String name = file.getName();
-                if (name.equals("session.lock") || name.equals("uid.dat")) {
+                if (name.equals("session.lock")
+                        || name.equals("uid.dat")
+                        || name.endsWith(".tmp")
+                        || name.equals("raids.dat")
+                        || name.equals("raids_end.dat")
+                        || name.equals("scoreboard.dat")
+                        || name.equals("chunks.dat")
+                        || name.equals("world_border.dat")) {
                     continue;
                 }
                 copyWorldFolderSafely(file, new File(target, name));
             }
         } else {
-            FileUtils.copyFile(source, target);
+            File parent = target.getParentFile();
+            if (parent != null && !parent.exists()) {
+                parent.mkdirs();
+            }
+
+            try {
+                Files.copy(source.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            } catch (java.nio.file.NoSuchFileException | java.io.FileNotFoundException ignored) {}
         }
     }
 

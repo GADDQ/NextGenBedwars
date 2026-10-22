@@ -11,7 +11,9 @@ import org.bukkit.inventory.ItemStack;
 
 import org.joml.Vector3i;
 
+import org.spongepowered.configurate.objectmapping.ObjectMapper;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
+import org.spongepowered.configurate.util.NamingSchemes;
 
 import top.earthstudio.nextgenbedwars.api.config.serializer.*;
 
@@ -20,6 +22,9 @@ public final class ConfigurateSerializers {
 
     public static TypeSerializerCollection createCollection() {
         return TypeSerializerCollection.defaults().childBuilder()
+                .registerAnnotatedObjects(ObjectMapper.factoryBuilder()
+                        .defaultNamingScheme(NamingSchemes.PASSTHROUGH)
+                        .build())
                 .register(Component.class, new ComponentSerializer())
                 .register(Location.class, new LocationSerializer())
                 .register(Color.class, new ColorSerializer())
@@ -27,6 +32,7 @@ public final class ConfigurateSerializers {
                 .register(LongLongPair.class, new LongLongPairSerializer())
                 .register(ItemStack.class, new ItemStackSerializer())
                 .register(ObjectObjectImmutablePair.class, new RegionSerializer())
+                .register(type -> type instanceof Class<?> clazz && clazz.isEnum(), new EnumSerializer())
                 .build();
     }
 }

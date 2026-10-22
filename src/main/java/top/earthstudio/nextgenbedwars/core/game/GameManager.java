@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.World;
 import top.earthstudio.nextgenbedwars.api.game.Game;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
@@ -82,6 +83,18 @@ public class GameManager {
                 return entry.getValue();
         }
         return null;
+    }
+
+    public static List<GameInstance> getInstancesByName(String name) {
+        if (name == null) return null;
+
+        List<GameInstance> instances = new ObjectArrayList<>();
+        for (GameInstance instance : gameInstances.values()) {
+            if (name.equals(instance.getGame().name)) {
+                instances.add(instance);
+            }
+        }
+        return instances.isEmpty() ? null : instances;
     }
 
     static public void removeInstance(UUID uuid) {

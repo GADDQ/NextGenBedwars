@@ -1,370 +1,452 @@
-title: 物品商店
+title: "<gold>物品商店"
 
 categories:
   # ==================== 1. 方块 ====================
-  - icon:
+  - categoryIcon:
       material: ORANGE_TERRACOTTA
-      name: 方块
-
+      name: "<gold>方块"
     items:
-      - show:
-          material: WHITE_WOOL
-          amount: 16
-          name: 羊毛
-          lore:
-            - 16 个
-        coin: IRON_INGOT
+      - showItems:
+          - material: WHITE_WOOL
+            amount: 16
+            name: "<white>羊毛"
+            lore:
+              - "<gray>数量: <yellow>16"
+        coinType: IRON_INGOT
         price: 4
 
-      - show:
-          material: ORANGE_TERRACOTTA
-          amount: 16
-          name: 陶土
-          lore:
-            - 16 个
-        coin: IRON_INGOT
+      - showItems:
+          - material: ORANGE_TERRACOTTA
+            amount: 16
+            name: "<gold>硬化陶土"
+            lore:
+              - "<gray>数量: <yellow>16"
+        coinType: IRON_INGOT
         price: 12
 
-      - show:
-          material: GLASS
-          amount: 4
-          name: 玻璃
-          lore:
-            - 4 个
-        coin: IRON_INGOT
+      - showItems:
+          - material: GLASS
+            amount: 4
+            name: "<white>防爆玻璃"
+            lore:
+              - "<gray>数量: <yellow>4"
+        coinType: IRON_INGOT
         price: 12
 
-      - show:
-          material: END_STONE
-          amount: 16
-          name: 末地石
-          lore:
-            - 16 个
-        coin: IRON_INGOT
+      - showItems:
+          - material: END_STONE
+            amount: 16
+            name: "<yellow>末地石"
+            lore:
+              - "<gray>数量: <yellow>16"
+        coinType: IRON_INGOT
         price: 24
 
-      - show:
-          material: LADDER
-          amount: 16
-          name: 梯子
-          lore:
-            - 16 个
-        coin: IRON_INGOT
+      - showItems:
+          - material: LADDER
+            amount: 16
+            name: "<yellow>梯子"
+            lore:
+              - "<gray>数量: <yellow>16"
+        coinType: IRON_INGOT
         price: 4
 
-      - show:
-          material: OAK_PLANKS
-          amount: 16
-          name: 木板
-          lore:
-            - 16 个
-        coin: GOLD_INGOT
+      - showItems:
+          - material: OAK_PLANKS
+            amount: 16
+            name: "<gold>橡木木板"
+            lore:
+              - "<gray>数量: <yellow>16"
+        coinType: GOLD_INGOT
         price: 4
 
-      - show:
-          material: OBSIDIAN
-          amount: 4
-          name: 黑曜石
-          lore:
-            - 4 个
-        coin: EMERALD
+      - showItems:
+          - material: OBSIDIAN
+            amount: 4
+            name: "<dark_purple>黑曜石"
+            lore:
+              - "<gray>数量: <yellow>4"
+        coinType: EMERALD
         price: 4
 
-  # ==================== 2. 近战 ====================
-  - icon:
+  # ==================== 2. 近战武器 ====================
+  - categoryIcon:
       material: GOLDEN_SWORD
-      name: 近战
-
+      name: "<gold>近战武器"
     items:
-      - show:
-          material: STICK
-          name: 击退棒 I
-          lore:
-            - 击退 I
-        actual:
-          material: STICK
-          name: 击退棒 I
-        coin: IRON_INGOT
-        price: 5
-
-      - show:
-          material: STICK
-          name: 击退棒 II
-          lore:
-            - 击退 II
-        actual:
-          material: STICK
-          name: 击退棒 II
-        coin: GOLD_INGOT
-        price: 5
-
-      - show:
-          material: STONE_SWORD
-          name: 石剑
-        coin: IRON_INGOT
+      - showItems:
+          - material: STONE_SWORD
+            name: "<white>石剑"
+            unbreakable: true
+        coinType: IRON_INGOT
         price: 10
 
-      - show:
-          material: IRON_SWORD
-          name: 铁剑
-        coin: GOLD_INGOT
+      - showItems:
+          - material: IRON_SWORD
+            name: "<white>铁剑"
+            unbreakable: true
+        coinType: GOLD_INGOT
         price: 7
 
-      - show:
-          material: DIAMOND_SWORD
-          name: 钻石剑
-        coin: EMERALD
+      - showItems:
+          - material: DIAMOND_SWORD
+            name: "<aqua>钻石剑"
+            unbreakable: true
+        coinType: EMERALD
         price: 4
 
+      - showItems:
+          - material: STICK
+            name: "<gold>击退棒 I"
+            lore:
+              - "<gray>击退 I"
+        actualItems:
+          - material: STICK
+            name: "<gold>击退棒 I"
+            enchantments:
+              knockback: 1
+            unbreakable: true
+        coinType: IRON_INGOT
+        price: 5
+
+      - showItems:
+          - material: STICK
+            name: "<gold>击退棒 II"
+            lore:
+              - "<gray>击退 II"
+        actualItems:
+          - material: STICK
+            name: "<gold>击退棒 II"
+            enchantments:
+              knockback: 2
+            unbreakable: true
+        coinType: GOLD_INGOT
+        price: 5
+
   # ==================== 3. 护甲 ====================
-  - icon:
+  - categoryIcon:
       material: CHAINMAIL_BOOTS
-      name: 护甲
-
+      name: "<gold>护甲"
     items:
-      - show:
-          material: CHAINMAIL_BOOTS
-          name: 锁链靴子
-        coin: IRON_INGOT
+      - id: chainmail
+        isKeepWhenDead: true
+        isThrowable: false
+        showItems:
+          - material: CHAINMAIL_BOOTS
+            name: "<white>锁链护甲"
+            lore:
+              - "<gray>死后永久保留"
+        actualItems:
+          - material: CHAINMAIL_BOOTS
+            name: "<white>锁链靴子"
+            unbreakable: true
+        coinType: IRON_INGOT
         price: 40
 
-      - show:
-          material: CHAINMAIL_LEGGINGS
-          name: 锁链护腿
-        coin: IRON_INGOT
-        price: 40
-
-      - show:
-          material: IRON_BOOTS
-          name: 铁靴子
-        coin: GOLD_INGOT
+      - id: iron_armor
+        isKeepWhenDead: true
+        isThrowable: false
+        showItems:
+          - material: IRON_BOOTS
+            name: "<white>铁护甲"
+            lore:
+              - "<gray>死后永久保留"
+        actualItems:
+          - material: IRON_BOOTS
+            name: "<white>铁靴子"
+            unbreakable: true
+        coinType: GOLD_INGOT
         price: 12
 
-      - show:
-          material: IRON_LEGGINGS
-          name: 铁护腿
-        coin: GOLD_INGOT
-        price: 12
-
-      - show:
-          material: DIAMOND_BOOTS
-          name: 钻石靴子
-        coin: EMERALD
+      - id: diamond_armor
+        isKeepWhenDead: true
+        isThrowable: false
+        showItems:
+          - material: DIAMOND_BOOTS
+            name: "<aqua>钻石护甲"
+            lore:
+              - "<gray>死后永久保留"
+        actualItems:
+          - material: DIAMOND_BOOTS
+            name: "<aqua>钻石靴子"
+            unbreakable: true
+        coinType: EMERALD
         price: 6
 
-      - show:
-          material: DIAMOND_LEGGINGS
-          name: 钻石护腿
-        coin: EMERALD
-        price: 6
-
-  # ==================== 4. 工具 ====================
-  - icon:
+  # ==================== 4. 升级工具 (ProductTierManager) ====================
+  - categoryIcon:
       material: STONE_PICKAXE
-      name: 工具
-
+      name: "<gold>工具"
     items:
-      - show:
-          material: SHEARS
-          name: 剪刀
-        coin: IRON_INGOT
+      - id: shears
+        isKeepWhenDead: true
+        isThrowable: false
+        showItems:
+          - material: SHEARS
+            name: "<white>永久剪刀"
+            lore:
+              - "<gray>死后永久保留"
+        actualItems:
+          - material: SHEARS
+            name: "<white>剪刀"
+            unbreakable: true
+        coinType: IRON_INGOT
         price: 20
 
-      - show:
-          material: WOODEN_PICKAXE
-          name: 木镐
-        coin: IRON_INGOT
+      - id: pickaxe
+        maxLevel: 3
+        isDecreaseLevelWhenPlayerDead: true
+        isKeepWhenDead: true
+        isThrowable: false
+        coinType: IRON_INGOT
         price: 10
+        showItems:
+          - material: WOODEN_PICKAXE
+            name: "<gray>木镐 (I级)"
+            lore:
+              - "<gray>死亡掉落 1 级"
+          - material: IRON_PICKAXE
+            name: "<white>铁镐 (II级)"
+            lore:
+              - "<gray>效率 II"
+              - "<gray>死亡掉落 1 级"
+          - material: GOLDEN_PICKAXE
+            name: "<gold>金镐 (III级)"
+            lore:
+              - "<gray>效率 III, 锋利 II"
+              - "<gray>死亡掉落 1 级"
+          - material: DIAMOND_PICKAXE
+            name: "<aqua>钻石镐 (IV级)"
+            lore:
+              - "<gray>效率 III"
+              - "<gray>已达到满级"
+        actualItems:
+          - material: WOODEN_PICKAXE
+            name: "<gray>木镐"
+            unbreakable: true
+          - material: IRON_PICKAXE
+            name: "<white>铁镐"
+            unbreakable: true
+            enchantments:
+              efficiency: 2
+          - material: GOLDEN_PICKAXE
+            name: "<gold>金镐"
+            unbreakable: true
+            enchantments:
+              efficiency: 3
+              sharpness: 2
+          - material: DIAMOND_PICKAXE
+            name: "<aqua>钻石镐"
+            unbreakable: true
+            enchantments:
+              efficiency: 3
 
-      - show:
-          material: IRON_PICKAXE
-          name: 铁镐
-          lore:
-            - 效率 II
-        coin: IRON_INGOT
+      - id: axe
+        maxLevel: 3
+        isDecreaseLevelWhenPlayerDead: true
+        isKeepWhenDead: true
+        isThrowable: false
+        coinType: IRON_INGOT
         price: 10
+        showItems:
+          - material: WOODEN_AXE
+            name: "<gray>木斧 (I级)"
+            lore:
+              - "<gray>效率 I"
+              - "<gray>死亡掉落 1 级"
+          - material: IRON_AXE
+            name: "<white>铁斧 (II级)"
+            lore:
+              - "<gray>效率 I"
+              - "<gray>死亡掉落 1 级"
+          - material: GOLDEN_AXE
+            name: "<gold>金斧 (III级)"
+            lore:
+              - "<gray>效率 II"
+              - "<gray>死亡掉落 1 级"
+          - material: DIAMOND_AXE
+            name: "<aqua>钻石斧 (IV级)"
+            lore:
+              - "<gray>效率 III"
+              - "<gray>已达到满级"
+        actualItems:
+          - material: WOODEN_AXE
+            name: "<gray>木斧"
+            unbreakable: true
+            enchantments:
+              efficiency: 1
+          - material: IRON_AXE
+            name: "<white>铁斧"
+            unbreakable: true
+            enchantments:
+              efficiency: 1
+          - material: GOLDEN_AXE
+            name: "<gold>金斧"
+            unbreakable: true
+            enchantments:
+              efficiency: 2
+          - material: DIAMOND_AXE
+            name: "<aqua>钻石斧"
+            unbreakable: true
+            enchantments:
+              efficiency: 3
 
-      - show:
-          material: GOLDEN_PICKAXE
-          name: 金镐
-          lore:
-            - 效率 III
-            - 锋利 II
-        coin: GOLD_INGOT
-        price: 3
-
-      - show:
-          material: DIAMOND_PICKAXE
-          name: 钻石镐
-          lore:
-            - 效率 III
-        coin: GOLD_INGOT
-        price: 6
-
-      - show:
-          material: WOODEN_AXE
-          name: 木斧
-          lore:
-            - 效率 I
-        coin: IRON_INGOT
-        price: 10
-
-      - show:
-          material: IRON_AXE
-          name: 铁斧
-          lore:
-            - 效率 I
-        coin: IRON_INGOT
-        price: 10
-
-      - show:
-          material: GOLDEN_AXE
-          name: 金斧
-          lore:
-            - 效率 II
-        coin: GOLD_INGOT
-        price: 3
-
-      - show:
-          material: DIAMOND_AXE
-          name: 钻石斧
-          lore:
-            - 效率 III
-        coin: GOLD_INGOT
-        price: 6
-
-  # ==================== 5. 远程 ====================
-  - icon:
+  # ==================== 5. 远程武器 ====================
+  - categoryIcon:
       material: BOW
-      name: 远程
-
+      name: "<gold>远程武器"
     items:
-      - show:
-          material: ARROW
-          amount: 8
-          name: 箭
-          lore:
-            - 8 支
-        coin: GOLD_INGOT
+      - showItems:
+          - material: ARROW
+            amount: 8
+            name: "<white>箭"
+            lore:
+              - "<gray>数量: <yellow>8"
+        coinType: GOLD_INGOT
         price: 2
 
-      - show:
-          material: BOW
-          name: 弓
-        coin: GOLD_INGOT
+      - showItems:
+          - material: BOW
+            name: "<white>普通弓"
+            unbreakable: true
+        coinType: GOLD_INGOT
         price: 12
 
-      - show:
-          material: BOW
-          name: 弓（力量 I）
-          lore:
-            - 力量 I
-        coin: GOLD_INGOT
+      - showItems:
+          - material: BOW
+            name: "<yellow>强化弓 (力量 I)"
+            lore:
+              - "<gray>力量 I"
+        actualItems:
+          - material: BOW
+            name: "<yellow>强化弓"
+            unbreakable: true
+            enchantments:
+              power: 1
+        coinType: GOLD_INGOT
         price: 24
 
-      - show:
-          material: BOW
-          name: 弓（力量 I + 冲击 I）
-          lore:
-            - 力量 I
-            - 冲击 I
-        coin: EMERALD
+      - showItems:
+          - material: BOW
+            name: "<aqua>神射手之弓 (力量 I + 冲击 I)"
+            lore:
+              - "<gray>力量 I, 冲击 I"
+        actualItems:
+          - material: BOW
+            name: "<aqua>神射手之弓"
+            unbreakable: true
+            enchantments:
+              power: 1
+              punch: 1
+        coinType: EMERALD
         price: 6
 
   # ==================== 6. 药水 ====================
-  - icon:
+  - categoryIcon:
       material: BREWING_STAND
-      name: 药水
-
+      name: "<gold>魔法药水"
     items:
-      - show:
-          material: POTION
-          name: 跳跃药水
-          lore:
-            - 跳跃提升 45 秒
-        coin: EMERALD
+      - showItems:
+          - material: POTION
+            name: "<aqua>速度 II 药水 (45秒)"
+            lore:
+              - "<gray>速度提升 II (0:45)"
+        actualItems:
+          - material: POTION
+            name: "<aqua>速度 II 药水 (45秒)"
+        coinType: EMERALD
         price: 1
 
-      - show:
-          material: POTION
-          name: 速度药水
-          lore:
-            - 速度 II 45 秒
-        coin: EMERALD
+      - showItems:
+          - material: POTION
+            name: "<green>跳跃提升 V 药水 (45秒)"
+            lore:
+              - "<gray>跳跃提升 V (0:45)"
+        actualItems:
+          - material: POTION
+            name: "<green>跳跃提升 V 药水 (45秒)"
+        coinType: EMERALD
         price: 1
 
-      - show:
-          material: POTION
-          name: 隐身药水
-          lore:
-            - 隐身 30 秒
-        coin: EMERALD
+      - showItems:
+          - material: POTION
+            name: "<light_purple>隐身药水 (30秒)"
+            lore:
+              - "<gray>隐身术 (0:30)"
+        actualItems:
+          - material: POTION
+            name: "<light_purple>隐身药水 (30秒)"
+        coinType: EMERALD
         price: 2
 
-  # ==================== 7. 实用 ====================
-  - icon:
+  # ==================== 7. 实用道具 ====================
+  - categoryIcon:
       material: TNT
-      name: 实用
-
+      name: "<gold>实用道具"
     items:
-      - show:
-          material: GOLDEN_APPLE
-          name: 金苹果
-        coin: GOLD_INGOT
+      - showItems:
+          - material: GOLDEN_APPLE
+            name: "<gold>金苹果"
+        coinType: GOLD_INGOT
         price: 3
 
-      - show:
-          material: SNOWBALL
-          name: 蠹虫蛋
-          lore:
-            - 召唤蠹虫
-        coin: IRON_INGOT
+      - showItems:
+          - material: SNOWBALL
+            name: "<white>蠹虫蛋"
+        coinType: IRON_INGOT
         price: 40
 
-      - show:
-          material: FIRE_CHARGE
-          name: 火球
-        coin: IRON_INGOT
+      - showItems:
+          - material: IRON_GOLEM_SPAWN_EGG
+            name: "<white>梦想守护者 (铁傀儡)"
+        coinType: IRON_INGOT
+        price: 120
+
+      - showItems:
+          - material: FIRE_CHARGE
+            name: "<gold>烈焰火球"
+        coinType: IRON_INGOT
         price: 40
 
-      - show:
-          material: TNT
-          name: TNT
-        coin: GOLD_INGOT
+      - showItems:
+          - material: TNT
+            name: "<red>TNT 炸药"
+        coinType: GOLD_INGOT
         price: 4
 
-      - show:
-          material: ENDER_PEARL
-          name: 末影珍珠
-        coin: EMERALD
+      - showItems:
+          - material: ENDER_PEARL
+            name: "<dark_aqua>末影珍珠"
+        coinType: EMERALD
         price: 4
 
-      - show:
-          material: WATER_BUCKET
-          name: 水桶
-        coin: GOLD_INGOT
+      - showItems:
+          - material: WATER_BUCKET
+            name: "<blue>水桶"
+        coinType: GOLD_INGOT
         price: 4
 
-      - show:
-          material: EGG
-          name: 搭桥蛋
-        coin: EMERALD
+      - showItems:
+          - material: EGG
+            name: "<aqua>搭桥蛋"
+        coinType: EMERALD
         price: 3
 
-      - show:
-          material: MILK_BUCKET
-          name: 魔法牛奶
-        coin: GOLD_INGOT
+      - showItems:
+          - material: MILK_BUCKET
+            name: "<yellow>魔法牛奶"
+        coinType: GOLD_INGOT
         price: 4
 
-      - show:
-          material: SPONGE
-          name: 海绵
-        coin: GOLD_INGOT
+      - showItems:
+          - material: SPONGE
+            amount: 4
+            name: "<yellow>吸水海绵"
+        coinType: GOLD_INGOT
         price: 3
 
-      - show:
-          material: CHEST
-          name: 防御塔
-        coin: IRON_INGOT
+      - showItems:
+          - material: CHEST
+            name: "<yellow>紧凑防御塔"
+        coinType: IRON_INGOT
         price: 24

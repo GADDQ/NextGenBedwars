@@ -25,7 +25,10 @@ public final class Game {
     public Game() {}
 
     public void locationsModifier(World world) {
-        waitingLobby.setWorld(world);
-        spectatorRespawnPoint.setWorld(world);
+        if (waitingLobby != null)
+            waitingLobby.setWorld(world);
+
+        if (spectatorRespawnPoint != null)
+            spectatorRespawnPoint.setWorld(world);
     }
 }
