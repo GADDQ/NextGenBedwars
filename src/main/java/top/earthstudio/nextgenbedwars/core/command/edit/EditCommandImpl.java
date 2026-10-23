@@ -49,6 +49,7 @@ public class EditCommandImpl implements EditCommand {
         subCommandBuilder.requires(source ->
                 handler.requireInEditingWorld(source) && (existingReq == null || existingReq.test(source))
         );
+        root.addChild(subCommandBuilder.build());
         notifyEditingPlayers();
     }
 
