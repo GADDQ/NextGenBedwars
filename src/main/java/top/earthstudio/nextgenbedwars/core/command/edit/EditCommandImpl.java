@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
@@ -17,6 +18,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import top.earthstudio.nextgenbedwars.api.command.edit.EditCommand;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
@@ -26,35 +28,26 @@ import top.earthstudio.nextgenbedwars.core.game.GameManager;
 
 import java.util.concurrent.CompletableFuture;
 
-public class EditCommand {
+public class EditCommandImpl implements EditCommand {
+    public static LiteralCommandNode<CommandSourceStack> root;
+
+    private static EditCommandImpl handler;
+
+    public EditCommandImpl() {
+        EditCommand.set(this);
+        handler = this;
+    }
+
+    @Override
+    public void addSubCommand(LiteralArgumentBuilder<CommandSourceStack> subCommandBuilder) {
+        root.addChild(subCommandBuilder.requires(handler::requireInEditingWorld).build());
+        notifyEditingPlayers();
+    }
 
     public static void build(LiteralArgumentBuilder<CommandSourceStack> root) {
-        EditCommand handler = new EditCommand();
+        handler.registerInternalSubCommands(root);
 
         root.then(
-                Commands.literal("spawner")
-                        .requires(handler::requireInEditingWorld)
-                        .then(
-                                Commands.literal("add").then(
-                                        Commands.argument("type", StringArgumentType.word())
-                                                .suggests(handler::suggestSpawnerTypes)
-                                                .executes(handler::executeAddSpawner)
-                                )
-                        )
-                        .then(Commands.literal("remove").executes(handler::executeRemoveSpawner))
-        ).then(
-                Commands.literal("team")
-                        .requires(handler::requireInEditingWorld)
-                        .then(Commands.literal("add").executes(handler::stub))
-                        .then(Commands.literal("remove").executes(handler::stub))
-                        .then(Commands.literal("setBed").executes(handler::stub))
-                        .then(Commands.literal("setRespawn").executes(handler::stub))
-        ).then(
-                Commands.literal("shop")
-                        .requires(handler::requireInEditingWorld)
-                        .then(Commands.literal("add").executes(handler::stub))
-                        .then(Commands.literal("remove").executes(handler::stub))
-        ).then(
                 Commands.literal("setLobby")
                         .requires(handler::requireInEditingWorld)
                         .executes(handler::executeSetLobby)
@@ -71,6 +64,76 @@ public class EditCommand {
                         .requires(handler::requireInEditingWorld)
                         .executes(handler::executeExit)
         );
+    }
+
+    private void registerInternalSubCommands(LiteralArgumentBuilder<CommandSourceStack> root) {
+        root.then(
+                Commands.literal("spawner")
+                        .requires(handler::requireInEditingWorld)
+                        .then(
+                        Commands.literal("add").then(
+                                Commands.argument("type", StringArgumentType.word())
+                                        .suggests(this::suggestSpawnerTypes)
+                                        .executes(this::executeAddSpawner)
+                        )
+                ).then(
+                        Commands.literal("remove").executes(this::executeRemoveSpawner)
+                )
+        ).then(
+                Commands.literal("shop")
+                        .requires(handler::requireInEditingWorld)
+                        .then(
+                                Commands.literal("add").executes(this::executeAddShop)
+                        ).then(
+                                Commands.literal("remove").executes(this::executeRemoveShop)
+                        )
+        ).then(
+                Commands.literal("team")
+                        .requires(handler::requireInEditingWorld)
+                        .then(
+                                Commands.literal("add").then(
+                                        Commands.argument("color", StringArgumentType.word())
+                                                .suggests(this::suggestColors)
+                                                .executes(this::executeAddTeam)
+                                )
+                        ).then(
+                                Commands.literal("remove").then(
+                                        Commands.argument("color", StringArgumentType.word())
+                                                .suggests(this::suggestExistingTeams)
+                                                .executes(this::executeRemoveTeam)
+                                )
+                        )
+        );
+    }
+
+    private int executeRemoveTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        // TODO;
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private CompletableFuture<Suggestions> suggestExistingTeams(CommandContext<CommandSourceStack> commandSourceStackCommandContext, SuggestionsBuilder suggestionsBuilder) {
+        // TODO;
+        return new CompletableFuture<>();
+    }
+
+    private int executeAddTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        // TODO;
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private CompletableFuture<Suggestions> suggestColors(CommandContext<CommandSourceStack> commandSourceStackCommandContext, SuggestionsBuilder suggestionsBuilder) {
+        // TODO;
+        return new CompletableFuture<>();
+    }
+
+    private int executeRemoveShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        // TODO;
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int executeAddShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        // TODO;
+        return Command.SINGLE_SUCCESS;
     }
 
     private boolean requireInEditingWorld(CommandSourceStack source) {
@@ -174,7 +237,12 @@ public class EditCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int stub(CommandContext<CommandSourceStack> ctx) {
-        return Command.SINGLE_SUCCESS;
+    private void notifyEditingPlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+            if (instance != null && instance.isEditMode()) {
+                player.updateCommands();
+            }
+        }
     }
 }

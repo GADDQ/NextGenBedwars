@@ -9,7 +9,7 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import top.earthstudio.nextgenbedwars.core.command.admin.AdminCommand;
-import top.earthstudio.nextgenbedwars.core.command.edit.EditCommand;
+import top.earthstudio.nextgenbedwars.core.command.edit.EditCommandImpl;
 
 public class BedwarsCommand {
 
@@ -17,11 +17,15 @@ public class BedwarsCommand {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("bw");
 
         AdminCommand.build(root);
-        EditCommand.build(root);
+        EditCommandImpl.build(root);
+
+        var node = root.build();
+
+        EditCommandImpl.root = node;
 
         plugin.getLifecycleManager().registerEventHandler(
                 LifecycleEvents.COMMANDS,
-                commands -> commands.registrar().register(root.build())
+                commands -> commands.registrar().register(node)
         );
     }
 }
