@@ -40,11 +40,16 @@ public class EditCommandImpl implements EditCommand {
 
     @Override
     public void addSubCommand(LiteralArgumentBuilder<CommandSourceStack> subCommandBuilder) {
-        root.addChild(subCommandBuilder.requires(handler::requireInEditingWorld).build());
+        var existingReq = subCommandBuilder.getRequirement();
+        subCommandBuilder.requires(source ->
+                handler.requireInEditingWorld(source) && (existingReq == null || existingReq.test(source))
+        );
         notifyEditingPlayers();
     }
 
     public static void build(LiteralArgumentBuilder<CommandSourceStack> root) {
+        new EditCommandImpl();
+
         handler.registerInternalSubCommands(root);
 
         root.then(
@@ -113,7 +118,7 @@ public class EditCommandImpl implements EditCommand {
 
     private CompletableFuture<Suggestions> suggestExistingTeams(CommandContext<CommandSourceStack> commandSourceStackCommandContext, SuggestionsBuilder suggestionsBuilder) {
         // TODO;
-        return new CompletableFuture<>();
+        return suggestionsBuilder.buildFuture();
     }
 
     private int executeAddTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
@@ -123,7 +128,7 @@ public class EditCommandImpl implements EditCommand {
 
     private CompletableFuture<Suggestions> suggestColors(CommandContext<CommandSourceStack> commandSourceStackCommandContext, SuggestionsBuilder suggestionsBuilder) {
         // TODO;
-        return new CompletableFuture<>();
+        return suggestionsBuilder.buildFuture();
     }
 
     private int executeRemoveShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
