@@ -6,8 +6,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-
 import com.mojang.brigadier.tree.LiteralCommandNode;
+
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
@@ -16,14 +16,19 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import top.earthstudio.nextgenbedwars.api.command.edit.EditCommand;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
+import top.earthstudio.nextgenbedwars.api.shop.Shop;
+import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 
+import top.earthstudio.nextgenbedwars.api.team.Team;
+import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 
 import java.util.concurrent.CompletableFuture;
@@ -122,7 +127,20 @@ public class EditCommandImpl implements EditCommand {
     }
 
     private int executeAddTeam(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        // TODO;
+        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+
+        TeamManager teamManager = instance.get(TeamManager.class);
+        Team team = new Team();
+
+        // team.teamColor = // TODO: Set Team Color
+        // team.displayName = // TODO: set Team displayName
+
+        teamManager.add(team);
+        // ATTENTION: This is fine because TeamManager will not identify the data in team, only Listener will use these data.
+        // BUT Listener will NOT work in Edit Mode, because Listener need proper data in Team struct at first, but they are not exist for now.
+        // So, Listener have nothing, which mean it can't figure out what condition it is now and when to work.
+
         return Command.SINGLE_SUCCESS;
     }
 
@@ -136,8 +154,21 @@ public class EditCommandImpl implements EditCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int executeAddShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        // TODO;
+    private int executeAddShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) { // TODO: type settings support
+        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+
+        ShopManager shopManager = instance.get(ShopManager.class);
+        Shop shop = new Shop();
+
+        shop.entityType = EntityType.VILLAGER;
+        shop.location = player.getLocation();
+        shop.shopType = "item_shop";
+        // shop.shopPageProvider = ; // TODO: set provider
+        shop.title = Component.text("物品商店");
+        shop.subTitle = Component.text("右键打开");
+
+        shopManager.add(shop);
         return Command.SINGLE_SUCCESS;
     }
 
