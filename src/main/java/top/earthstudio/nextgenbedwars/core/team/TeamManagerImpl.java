@@ -49,7 +49,9 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     public UUID add(Team team) {
         UUID uuid = UUID.randomUUID();
 
-        team.respawnLocation.setWorld(world);
+        if (team.respawnLocation != null)
+            team.respawnLocation.setWorld(world);
+
         teams.put(uuid, team);
         teamsByColor.put(team.teamColor, team);
         return uuid;
