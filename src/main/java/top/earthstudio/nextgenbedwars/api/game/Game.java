@@ -11,6 +11,7 @@ import org.joml.Vector3i;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.io.File;
+import java.util.UUID;
 
 @ConfigSerializable
 public final class Game {
@@ -21,6 +22,7 @@ public final class Game {
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;
 
     public transient File mapTemplate;
+    public transient UUID uuid;
 
     public Game() {}
 

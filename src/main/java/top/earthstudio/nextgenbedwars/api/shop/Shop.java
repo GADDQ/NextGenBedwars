@@ -10,6 +10,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 @ConfigSerializable
@@ -21,6 +22,7 @@ public final class Shop {
     public Location location;
 
     public transient Function<Player, ? extends IGuiPage> shopPageProvider;
+    public transient UUID uuid;
 
     public Shop() {}
 }

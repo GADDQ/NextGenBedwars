@@ -48,6 +48,7 @@ public class ShopManagerImpl implements ShopManager {
     public UUID add(Shop shop) {
         shop.location.setWorld(world);
         ShopEntity shopEntity = new ShopEntity(shop);
+        shop.uuid = shopEntity.getUuid();
         shops.put(shopEntity.getUuid(), shopEntity);
         return shopEntity.getUuid();
     }

@@ -59,6 +59,8 @@ public class GameManager {
     static public UUID addInstance(Game game, boolean isEditMode) {
         UUID uuid = UUID.randomUUID();
 
+        game.uuid = uuid;
+
         GameInstanceImpl gameInstance = new GameInstanceImpl(game, SUB_SYSTEM_TEMPLATES, isEditMode);
 
         GlobalTicker.set(uuid, new TickerTask() {

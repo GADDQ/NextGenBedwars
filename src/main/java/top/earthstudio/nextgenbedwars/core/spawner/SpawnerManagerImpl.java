@@ -37,6 +37,7 @@ public class SpawnerManagerImpl implements SpawnerManager {
     public UUID add(Spawner spawner) {
         spawner.location.setWorld(world);
         UUID uuid = UUID.randomUUID();
+        spawner.uuid = uuid;
         spawners.put(uuid, new SpawnerEntity(spawner));
         return uuid;
     }
