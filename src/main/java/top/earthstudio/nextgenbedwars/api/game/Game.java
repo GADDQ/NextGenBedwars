@@ -17,6 +17,7 @@ import java.util.UUID;
 public final class Game {
     public String name;
     public Component displayName;
+    public int maxPlayers;
     public Location waitingLobby;
     public Location spectatorRespawnPoint;
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;

@@ -75,8 +75,7 @@ public final class GameInstanceImpl implements GameInstance {
         if (isShutdown) return;
         isReady = true;
 
-        this.gameState = GameState.PLAYING; // TODO: DEBUG ONLY
-        // gameState = GameState.WAITING; // TODO
+        gameState = GameState.WAITING;
     }
 
     private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
@@ -131,6 +130,8 @@ public final class GameInstanceImpl implements GameInstance {
     @Override public UUID getWorldUUID() { return worldUUID; }
     @Override public Component getDisplayName() { return game.displayName; }
     @Override public Game getGame() { return game; }
+    @Override public GameState getGameState() { return gameState; }
+
     @Override public World getWorld() { return world; }
     @Override public boolean isEditMode() { return isEditMode; }
 

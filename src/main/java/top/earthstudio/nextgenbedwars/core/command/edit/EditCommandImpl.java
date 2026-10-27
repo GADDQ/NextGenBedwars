@@ -1,6 +1,7 @@
 package top.earthstudio.nextgenbedwars.core.command.edit;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -31,7 +32,6 @@ import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
-
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public class EditCommandImpl implements EditCommand {
+public class EditCommandImpl implements EditCommand { // TODO: i18n
     public static LiteralCommandNode<CommandSourceStack> root;
 
     private static EditCommandImpl handler;
@@ -69,6 +69,13 @@ public class EditCommandImpl implements EditCommand {
         handler.registerInternalSubCommands(root);
 
         root.then(
+                Commands.literal("setMaxPlayers")
+                        .requires(handler::requireInEditingWorld)
+                        .then(
+                                Commands.argument("number", IntegerArgumentType.integer())
+                                        .executes(handler::executeSetMaxPlayers)
+                        )
+        ).then(
                 Commands.literal("setLobby")
                         .requires(handler::requireInEditingWorld)
                         .executes(handler::executeSetLobby)
@@ -462,6 +469,17 @@ public class EditCommandImpl implements EditCommand {
     }
 
     // ============ Game ============
+
+    private int executeSetMaxPlayers(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        int value = IntegerArgumentType.getInteger(commandSourceStackCommandContext, "value");
+        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+
+        assert instance != null;
+        instance.getGame().maxPlayers = value;
+
+        return Command.SINGLE_SUCCESS;
+    }
 
     private int executeSetLobby(CommandContext<CommandSourceStack> ctx) {
         Player player = (Player) ctx.getSource().getSender();
