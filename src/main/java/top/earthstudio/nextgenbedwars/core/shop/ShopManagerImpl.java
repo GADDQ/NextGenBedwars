@@ -28,13 +28,16 @@ public class ShopManagerImpl implements ShopManager {
     private ShopInteractListener shopInteractListener;
     private ShopItemThrowListener shopItemThrowListener;
 
+    private GameInstance gameInstance;
+
     public ShopConfig shopConfig; // TODO: public DEBUG ONLY
 
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
+        this.gameInstance = gameInstance;
 
-        shopInteractListener = new ShopInteractListener(this);
+        shopInteractListener = new ShopInteractListener(this, gameInstance);
         shopItemThrowListener = new ShopItemThrowListener(gameInstance);
 
         Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().plugin());
@@ -46,11 +49,15 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public UUID add(Shop shop) {
+        UUID uuid = UUID.randomUUID();
         shop.location.setWorld(world);
+        shop.uuid = uuid;
+        shop.shopPageProvider = shopConfig.providerFor(shop.shopType);
+
         ShopEntity shopEntity = new ShopEntity(shop);
-        shop.uuid = shopEntity.getUuid();
-        shops.put(shopEntity.getUuid(), shopEntity);
-        return shopEntity.getUuid();
+        shops.put(uuid, shopEntity);
+
+        return uuid;
     }
 
     @Override
@@ -89,6 +96,8 @@ public class ShopManagerImpl implements ShopManager {
     public void shutdown() {
         shopConfig.release();
         shopConfig = null;
+
+        gameInstance = null;
 
         world = null;
 

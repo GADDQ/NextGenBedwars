@@ -185,25 +185,13 @@ public class WorldManager {
         if (!source.exists()) return;
 
         if (source.isDirectory()) {
-            String dirName = source.getName();
-            if (dirName.equals("playerdata") || dirName.equals("stats") || dirName.equals("advancements")) {
-                return;
-            }
-
             if (!target.exists()) target.mkdirs();
             File[] files = source.listFiles();
             if (files == null) return;
 
             for (File file : files) {
                 String name = file.getName();
-                if (name.equals("session.lock")
-                        || name.equals("uid.dat")
-                        || name.endsWith(".tmp")
-                        || name.equals("raids.dat")
-                        || name.equals("raids_end.dat")
-                        || name.equals("scoreboard.dat")
-                        || name.equals("chunks.dat")
-                        || name.equals("world_border.dat")) {
+                if (name.equals("session.lock") || name.equals("uid.dat")) {
                     continue;
                 }
                 copyWorldFolderSafely(file, new File(target, name));

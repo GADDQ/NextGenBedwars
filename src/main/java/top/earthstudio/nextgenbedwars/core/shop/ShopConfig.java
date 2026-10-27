@@ -57,7 +57,7 @@ public class ShopConfig implements IConfig<Shop> {
         }
     }
 
-    private Function<org.bukkit.entity.Player, ? extends IGuiPage> providerFor(String type) {
+    public Function<org.bukkit.entity.Player, ? extends IGuiPage> providerFor(String type) {
         return switch (type) {
             case "item_shop" -> {
                 File globalItemShop = new File(BedwarsAPI.getInstance().plugin().getDataFolder(), "item_shop.yml");

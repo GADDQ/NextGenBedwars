@@ -18,11 +18,14 @@ public class SpawnerManagerImpl implements SpawnerManager {
     private Map<UUID, SpawnerEntity> spawners;
     private World world;
 
+    private GameInstance gameInstance;
+
     private SpawnerConfig spawnerConfig;
 
     public SpawnerManagerImpl(GameInstance gameInstance) {
         spawners = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
+        this.gameInstance = gameInstance;
 
         spawnerConfig = new SpawnerConfig(gameInstance);
         spawnerConfig.getValues().forEach(this::add);
@@ -78,6 +81,8 @@ public class SpawnerManagerImpl implements SpawnerManager {
     public void shutdown() {
         spawnerConfig.release();
         spawnerConfig = null;
+
+        gameInstance = null;
 
         world = null;
         spawners.values().forEach(SpawnerEntity::destroy);

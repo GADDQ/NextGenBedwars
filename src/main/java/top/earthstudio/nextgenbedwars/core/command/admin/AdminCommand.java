@@ -107,7 +107,7 @@ public class AdminCommand {
         game.name = name;
 
         WorldReadyListener.addTask(GameManager.getInstance(GameManager.addInstance(game, true)).getWorldUUID(), world -> {
-            player.teleport(world.getSpawnLocation());
+            player.teleport(new Location(world, 0.5, 65, 0.5));
             player.sendMessage(Component.text("游戏已创建！已自动进入编辑模式").color(NamedTextColor.GREEN));
             player.updateCommands();
         });

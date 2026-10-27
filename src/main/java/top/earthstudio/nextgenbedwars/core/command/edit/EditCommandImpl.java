@@ -104,7 +104,13 @@ public class EditCommandImpl implements EditCommand {
                 Commands.literal("shop")
                         .requires(handler::requireInEditingWorld)
                         .then(
-                                Commands.literal("add").executes(this::executeAddShop)
+                                Commands.literal("add")
+                                        .executes(this::executeAddShopDefault)
+                                        .then(
+                                                Commands.argument("type", StringArgumentType.word())
+                                                        .suggests(this::suggestShopTypes)
+                                                        .executes(this::executeAddShopWithType)
+                                        )
                         ).then(
                                 Commands.literal("remove").executes(this::executeRemoveShop)
                         )
@@ -205,6 +211,17 @@ public class EditCommandImpl implements EditCommand {
 
         for (String type : spawnerManager.getTypes()) {
             if (type.toLowerCase().startsWith(remaining)) {
+                builder.suggest(type);
+            }
+        }
+        return builder.buildFuture();
+    }
+
+    private CompletableFuture<Suggestions> suggestShopTypes(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) { // TODO: more type
+        String remaining = builder.getRemaining().toLowerCase();
+        List<String> types = List.of("item_shop");
+        for (String type : types) {
+            if (type.startsWith(remaining)) {
                 builder.suggest(type);
             }
         }
@@ -347,22 +364,33 @@ public class EditCommandImpl implements EditCommand {
 
     // ============ Shop ============
 
-    private int executeAddShop(CommandContext<CommandSourceStack> commandSourceStackCommandContext) { // TODO: type settings support
-        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
-        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+    private int executeAddShopDefault(CommandContext<CommandSourceStack> ctx) {
+        return doAddShop(ctx, "item_shop");
+    }
 
+    private int executeAddShopWithType(CommandContext<CommandSourceStack> ctx) {
+        String type = StringArgumentType.getString(ctx, "type");
+        return doAddShop(ctx, type);
+    }
+
+    private int doAddShop(CommandContext<CommandSourceStack> ctx, String shopType) {
+        Player player = (Player) ctx.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
         assert instance != null;
+
         ShopManager shopManager = instance.get(ShopManager.class);
         Shop shop = new Shop();
+        Location location = player.getLocation();
+        location.setPitch(0);
 
         shop.entityType = EntityType.VILLAGER;
-        shop.location = player.getLocation();
-        shop.shopType = "item_shop";
-        // shop.shopPageProvider = ; // TODO: set provider
+        shop.location = location;
+        shop.shopType = shopType;
         shop.title = Component.text("物品商店");
         shop.subTitle = Component.text("右键打开");
 
         shopManager.add(shop);
+        player.sendMessage(Component.text("成功放置商店村民 (" + shopType + ")！").color(NamedTextColor.GREEN));
         return Command.SINGLE_SUCCESS;
     }
 
@@ -374,7 +402,7 @@ public class EditCommandImpl implements EditCommand {
         ShopManager shopManager = instance.get(ShopManager.class);
         List<Shop> allShops = shopManager.getAll();
 
-        Shop target = findNearestIn3x3(player.getLocation(), allShops, s -> s.location);
+        Shop target = findNearestIn3x3(player.getLocation(), allShops, shop -> shop.location);
 
         if (target == null) {
             player.sendMessage(Component.text("附近 3x3 空间内未找到任何商店！").color(NamedTextColor.RED));
@@ -382,7 +410,7 @@ public class EditCommandImpl implements EditCommand {
         }
 
         shopManager.remove(target.uuid);
-        player.sendMessage(Component.text("已成功移除附近的商店村民！").color(NamedTextColor.GREEN));
+        player.sendMessage(Component.text("已成功移除附近的商店！").color(NamedTextColor.GREEN));
         return Command.SINGLE_SUCCESS;
     }
 
