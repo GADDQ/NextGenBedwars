@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.Set;
+import java.util.UUID;
 
 @ConfigSerializable
 public final class Team { // struct Team
@@ -26,6 +27,7 @@ public final class Team { // struct Team
 
     public transient boolean isBedAlive = true;
     public transient final Set<Player> players = new ObjectOpenHashSet<>();
+    public transient UUID uuid;
 
     public Team() {}
 }

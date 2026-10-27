@@ -49,6 +49,9 @@ public class TeamRespawnListener implements Listener {
         Player player = (Player) event.getEntity();
         if (player.getWorld() != gameInstance.getWorld())
             return;
+
+        if (gameInstance.isEditMode())
+            return;
         // TODO: spectator logic
 
         if (teamManager.get(player) == null)
@@ -62,6 +65,9 @@ public class TeamRespawnListener implements Listener {
     public void onPlayerDead(PlayerDeathEvent event) {
         Player player = event.getPlayer();
         if (player.getWorld() != gameInstance.getWorld())
+            return;
+
+        if (gameInstance.isEditMode())
             return;
 
         if (teamManager.get(player) == null)
