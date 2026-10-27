@@ -49,12 +49,12 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public UUID add(Shop shop) {
-        UUID uuid = UUID.randomUUID();
         shop.location.setWorld(world);
-        shop.uuid = uuid;
         shop.shopPageProvider = shopConfig.providerFor(shop.shopType);
 
         ShopEntity shopEntity = new ShopEntity(shop);
+        UUID uuid = shopEntity.getUuid();
+        shop.uuid = uuid;
         shops.put(uuid, shopEntity);
 
         return uuid;
