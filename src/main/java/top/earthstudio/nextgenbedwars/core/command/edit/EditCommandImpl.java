@@ -471,7 +471,7 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
     // ============ Game ============
 
     private int executeSetMaxPlayers(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        int value = IntegerArgumentType.getInteger(commandSourceStackCommandContext, "value");
+        int value = IntegerArgumentType.getInteger(commandSourceStackCommandContext, "number");
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
 
