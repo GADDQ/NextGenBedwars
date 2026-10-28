@@ -73,7 +73,7 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
                 Commands.literal("setDisplayName")
                         .requires(handler::requireInEditingWorld)
                         .then(
-                                Commands.argument("name", StringArgumentType.word())
+                                Commands.argument("name", StringArgumentType.greedyString())
                                         .executes(handler::executeSetDisplayName)
                         )
         ).then(
@@ -500,6 +500,11 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
 
         player.sendMessage(Component.text("最低人数已设置为：").color(NamedTextColor.GREEN).append(Component.text(number)));
 
+        if (number > instance.getGame().maxPlayers) {
+            instance.getGame().maxPlayers = number;
+            player.sendMessage(Component.text("由于最小人数超过最大人数，最大人数已设置为：").color(NamedTextColor.YELLOW).append(Component.text(number)));
+        }
+
         return Command.SINGLE_SUCCESS;
     }
 
@@ -524,7 +529,17 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         assert instance != null;
         instance.getGame().maxPlayers = number;
 
+        if (number < 2) {
+            player.sendMessage(Component.text("最大人数不能小于 2！").color(NamedTextColor.RED));
+            return 0;
+        }
+
         player.sendMessage(Component.text("最大人数已设置为：").color(NamedTextColor.GREEN).append(Component.text(number)));
+
+        if (number < instance.getGame().minPlayers) {
+            instance.getGame().minPlayers = number;
+            player.sendMessage(Component.text("由于最大人数少于最小人数，最小人数已设置为：").color(NamedTextColor.YELLOW).append(Component.text(number)));
+        }
 
         return Command.SINGLE_SUCCESS;
     }

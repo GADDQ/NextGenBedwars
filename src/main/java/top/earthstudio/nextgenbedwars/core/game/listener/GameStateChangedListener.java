@@ -18,7 +18,7 @@ public class GameStateChangedListener implements Listener { // TODO: detect conn
     }
 
     @EventHandler
-    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) { // TODO: advanced starting countdown logic
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) { // TODO: advanced starting countdown logic, disconnect event listener
         Player player = event.getPlayer();
 
         if (event.getPlayer().getWorld() == gameInstance.getWorld()) { // JOIN
@@ -56,7 +56,7 @@ public class GameStateChangedListener implements Listener { // TODO: detect conn
                 case WAITING:
                     break;
                 case STARTING:
-                    if (event.getPlayer().getWorld().getPlayerCount() < gameInstance.getGame().minPlayers) {
+                    if (event.getFrom().getPlayerCount() < gameInstance.getGame().minPlayers) {
                         gameInstance.setGameState(GameState.WAITING);
                         // TODO: show title and cancel timer
                     }

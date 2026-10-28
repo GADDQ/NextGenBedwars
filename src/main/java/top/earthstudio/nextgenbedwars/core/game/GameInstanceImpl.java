@@ -110,8 +110,10 @@ public final class GameInstanceImpl implements GameInstance {
         isShutdown = true;
         gameState = null;
 
-        HandlerList.unregisterAll(gameStateChangedListener);
-        gameStateChangedListener = null;
+        if (!isEditMode) {
+            HandlerList.unregisterAll(gameStateChangedListener);
+            gameStateChangedListener = null;
+        }
 
         gameConfig.release();
         gameConfig = null;

@@ -35,6 +35,8 @@ public final class GameConfig {
             CommentedConfigurationNode root = loader.load();
             Game loaded = root.get(Game.class);
             if (loaded != null) {
+                game.maxPlayers = loaded.maxPlayers;
+                game.minPlayers = loaded.minPlayers;
                 game.displayName = loaded.displayName;
                 game.waitingLobby = loaded.waitingLobby;
                 game.spectatorRespawnPoint = loaded.spectatorRespawnPoint;
