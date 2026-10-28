@@ -6,20 +6,15 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import top.earthstudio.nextgenbedwars.api.util.ColorUtil;
+
 import java.lang.reflect.Type;
 
 public class ColorSerializer implements TypeSerializer<Color> {
+
     @Override
     public Color deserialize(Type type, ConfigurationNode node) {
-        String hex = node.getString("#FFFFFF");
-        if (hex.startsWith("#")) {
-            hex = hex.substring(1);
-        }
-        try {
-            return Color.fromRGB(Integer.parseInt(hex, 16));
-        } catch (NumberFormatException e) {
-            return Color.WHITE;
-        }
+        return ColorUtil.parseColor(node.getString("#FFFFFF"), Color.WHITE);
     }
 
     @Override
@@ -27,7 +22,7 @@ public class ColorSerializer implements TypeSerializer<Color> {
         if (obj == null) {
             node.set("#FFFFFF");
         } else {
-            node.set(String.format("#%02X%02X%02X", obj.getRed(), obj.getGreen(), obj.getBlue()));
+            node.set(ColorUtil.colorToHex(obj));
         }
     }
 }
