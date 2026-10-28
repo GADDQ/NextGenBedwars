@@ -30,7 +30,7 @@ public class GameStateChangedListener implements Listener { // TODO: detect conn
                     }
                     break;
                 case STARTING:
-                    if (event.getPlayer().getWorld().getPlayerCount() >= gameInstance.getGame().maxPlayers) {
+                    if (event.getPlayer().getWorld().getPlayerCount() > gameInstance.getGame().maxPlayers) {
                         player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
                         player.sendMessage(Component.text("由于房间已满，您已被传送回大厅！").color(NamedTextColor.RED));
                         return;
