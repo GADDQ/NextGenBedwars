@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.api.util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,20 +53,6 @@ public final class ColorUtil {
             return tc;
         }
         return Component.text().append(component).build();
-    }
-
-    /**
-     * 将混合了传统颜色代码 (& / §) 与 MiniMessage 标签的字符串解析为 {@link Component}。
-     *
-     * @param input 包含颜色或格式标记的文本
-     * @return 解析后的 Component（若 input 为空则返回 {@link Component#empty()}）
-     */
-    @NotNull
-    public static Component toComponent(@Nullable String input) {
-        if (input == null || input.isEmpty()) {
-            return Component.empty();
-        }
-        return MINI_MESSAGE.deserialize(legacyToMiniMessage(input));
     }
 
     /**
