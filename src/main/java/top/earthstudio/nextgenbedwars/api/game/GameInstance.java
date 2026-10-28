@@ -10,6 +10,7 @@ public interface GameInstance {
     UUID getWorldUUID();
     Component getDisplayName();
     Game getGame();
+    void setGameState(GameState gameState);
     GameState getGameState();
     World getWorld();
     boolean isEditMode();

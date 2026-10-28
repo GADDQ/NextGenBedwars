@@ -8,10 +8,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
+import top.earthstudio.nextgenbedwars.api.game.GameState;
 
 public class GameStateChangedListener implements Listener { // TODO: detect connect instead of change world due to plugin is planned to support proxy only
     private final GameInstance gameInstance;
-    private int playerCount = 0;
 
     public GameStateChangedListener(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
@@ -21,13 +21,26 @@ public class GameStateChangedListener implements Listener { // TODO: detect conn
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) { // TODO: advanced starting countdown logic
         Player player = event.getPlayer();
 
-        if (event.getFrom() == gameInstance.getWorld()) {
+        if (event.getPlayer().getWorld() == gameInstance.getWorld()) { // JOIN
             switch (gameInstance.getGameState()) {
                 case WAITING:
-                    playerCount--;
+                    if (event.getPlayer().getWorld().getPlayerCount() >= gameInstance.getGame().minPlayers) {
+                        gameInstance.setGameState(GameState.STARTING);
+                        // TODO: show title and start timer
+                    }
                     break;
                 case STARTING:
-                    playerCount--;
+                    if (event.getPlayer().getWorld().getPlayerCount() >= gameInstance.getGame().maxPlayers) {
+                        player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
+                        player.sendMessage(Component.text("由于房间已满，您已被传送回大厅！").color(NamedTextColor.RED));
+                        return;
+                    }
+
+                    if (event.getPlayer().getWorld().getPlayerCount() == gameInstance.getGame().maxPlayers) {
+                        // TODO: switch to 5s startup
+                        return;
+                    }
+
                     break;
                 case PLAYING:
                     break;
@@ -38,19 +51,15 @@ public class GameStateChangedListener implements Listener { // TODO: detect conn
             }
         }
 
-        if (event.getPlayer().getWorld() == gameInstance.getWorld()) {
+        if (event.getFrom() == gameInstance.getWorld()) { // LEAVE
             switch (gameInstance.getGameState()) {
                 case WAITING:
-                    playerCount++;
                     break;
                 case STARTING:
-                    if (playerCount >= gameInstance.getGame().maxPlayers) {
-                        player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
-                        player.sendMessage(Component.text("由于房间已满，您已被传送回大厅！").color(NamedTextColor.RED));
-                        return;
+                    if (event.getPlayer().getWorld().getPlayerCount() < gameInstance.getGame().minPlayers) {
+                        gameInstance.setGameState(GameState.WAITING);
+                        // TODO: show title and cancel timer
                     }
-
-                    playerCount++;
                     break;
                 case PLAYING:
                     break;

@@ -5,12 +5,16 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import net.kyori.adventure.text.Component;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import org.bukkit.event.HandlerList;
 import org.joml.Vector3i;
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
+import top.earthstudio.nextgenbedwars.core.game.listener.GameStateChangedListener;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
@@ -31,6 +35,8 @@ public final class GameInstanceImpl implements GameInstance {
     private final boolean isEditMode;
 
     private volatile boolean isSaving = false;
+
+    private GameStateChangedListener gameStateChangedListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -76,6 +82,9 @@ public final class GameInstanceImpl implements GameInstance {
         isReady = true;
 
         gameState = GameState.WAITING;
+
+        gameStateChangedListener = new GameStateChangedListener(this);
+        Bukkit.getPluginManager().registerEvents(gameStateChangedListener, BedwarsAPI.getInstance().plugin());
     }
 
     private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
@@ -100,6 +109,9 @@ public final class GameInstanceImpl implements GameInstance {
     public void shutdown() {
         isShutdown = true;
         gameState = null;
+
+        HandlerList.unregisterAll(gameStateChangedListener);
+        gameStateChangedListener = null;
 
         gameConfig.release();
         gameConfig = null;
@@ -130,6 +142,7 @@ public final class GameInstanceImpl implements GameInstance {
     @Override public UUID getWorldUUID() { return worldUUID; }
     @Override public Component getDisplayName() { return game.displayName; }
     @Override public Game getGame() { return game; }
+    @Override public void setGameState(GameState gameState) { this.gameState = gameState; }
     @Override public GameState getGameState() { return gameState; }
 
     @Override public World getWorld() { return world; }
