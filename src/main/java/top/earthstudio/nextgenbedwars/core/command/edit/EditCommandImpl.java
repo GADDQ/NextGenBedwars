@@ -526,6 +526,11 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
 
+        if (number < 2) {
+            player.sendMessage(Component.text("最大人数不能小于 2！").color(NamedTextColor.RED));
+            return 0;
+        }
+
         assert instance != null;
         instance.getGame().maxPlayers = number;
 
