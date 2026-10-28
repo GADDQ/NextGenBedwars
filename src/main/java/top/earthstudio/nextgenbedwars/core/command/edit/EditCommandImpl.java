@@ -534,11 +534,6 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         assert instance != null;
         instance.getGame().maxPlayers = number;
 
-        if (number < 2) {
-            player.sendMessage(Component.text("最大人数不能小于 2！").color(NamedTextColor.RED));
-            return 0;
-        }
-
         player.sendMessage(Component.text("最大人数已设置为：").color(NamedTextColor.GREEN).append(Component.text(number)));
 
         if (number < instance.getGame().minPlayers) {
