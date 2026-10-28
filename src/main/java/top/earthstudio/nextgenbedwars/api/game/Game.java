@@ -18,6 +18,7 @@ public final class Game {
     public String name;
     public Component displayName;
     public int maxPlayers;
+    public int minPlayers = 2;
     public Location waitingLobby;
     public Location spectatorRespawnPoint;
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;

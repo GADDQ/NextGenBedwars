@@ -36,6 +36,7 @@ import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
 
+import top.earthstudio.nextgenbedwars.api.util.ColorUtil;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 
 import java.util.Collection;
@@ -69,11 +70,25 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         handler.registerInternalSubCommands(root);
 
         root.then(
+                Commands.literal("setDisplayName")
+                        .requires(handler::requireInEditingWorld)
+                        .then(
+                                Commands.argument("name", StringArgumentType.word())
+                                        .executes(handler::executeSetDisplayName)
+                        )
+        ).then(
                 Commands.literal("setMaxPlayers")
                         .requires(handler::requireInEditingWorld)
                         .then(
                                 Commands.argument("number", IntegerArgumentType.integer())
                                         .executes(handler::executeSetMaxPlayers)
+                        )
+        ).then(
+                Commands.literal("setMinPlayers")
+                        .requires(handler::requireInEditingWorld)
+                        .then(
+                                Commands.argument("number", IntegerArgumentType.integer())
+                                        .executes(handler::executeSetMinPlayers)
                         )
         ).then(
                 Commands.literal("setLobby")
@@ -470,13 +485,46 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
 
     // ============ Game ============
 
-    private int executeSetMaxPlayers(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
-        int value = IntegerArgumentType.getInteger(commandSourceStackCommandContext, "number");
+    private int executeSetMinPlayers(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        int number = IntegerArgumentType.getInteger(commandSourceStackCommandContext, "number");
+        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+
+        if (number < 2) {
+            player.sendMessage(Component.text("最低人数不能小于 2！").color(NamedTextColor.RED));
+            return 0;
+        }
+
+        assert instance != null;
+        instance.getGame().minPlayers = number;
+
+        player.sendMessage(Component.text("最低人数已设置为：").color(NamedTextColor.GREEN).append(Component.text(number)));
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int executeSetDisplayName(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        String name = StringArgumentType.getString(commandSourceStackCommandContext, "name");
         Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
         GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
 
         assert instance != null;
-        instance.getGame().maxPlayers = value;
+        instance.getGame().displayName = ColorUtil.toTextComponent(name);
+
+        player.sendMessage(Component.text("实例显示名称已设置为：").color(NamedTextColor.GREEN).append(instance.getGame().displayName));
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int executeSetMaxPlayers(CommandContext<CommandSourceStack> commandSourceStackCommandContext) {
+        int number = IntegerArgumentType.getInteger(commandSourceStackCommandContext, "number");
+        Player player = (Player) commandSourceStackCommandContext.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+
+        assert instance != null;
+        instance.getGame().maxPlayers = number;
+
+        player.sendMessage(Component.text("最大人数已设置为：").color(NamedTextColor.GREEN).append(Component.text(number)));
 
         return Command.SINGLE_SUCCESS;
     }
