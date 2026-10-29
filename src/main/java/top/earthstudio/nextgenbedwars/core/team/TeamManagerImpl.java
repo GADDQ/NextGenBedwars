@@ -94,13 +94,14 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
     @Override
     public void randomAssignTeam(List<Player> players) {
+        List<Player> playerList = new ObjectArrayList<>(players);
         List<Team> teamList = getAll();
         shuffle(teamList);
-        shuffle(players);
+        shuffle(playerList);
 
         int i = 0;
         for (Player player : players) {
-            teamList.get(i % 4).players.add(player);
+            teamList.get(i % teamList.size()).players.add(player);
             i++;
         }
     }
