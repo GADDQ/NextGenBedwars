@@ -40,6 +40,12 @@ public class SpawnerEntity {
             entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
             entity.setShadowRadius(0);
             entity.setShadowStrength(0);
+            entity.setTransformation(new Transformation(
+                    new Vector3f(0, 2.3f, 0),
+                    new AxisAngle4f(0, 0, 1, 0),
+                    new Vector3f(0.75f, 0.75f, 0.75f),
+                    new AxisAngle4f(0, 0, 0, 0)
+            ));
         });
 
         textDisplay = spawner.location.getWorld().spawn(spawner.location, TextDisplay.class, entity -> {
@@ -71,7 +77,7 @@ public class SpawnerEntity {
             return;
         leftTick = spawner.spawnerType.spawnTick.get(spawner.level);
 
-        if (SpawnerDisplayUtil.canSpawn(spawner)) {
+        if (canSpawn(spawner)) {
             spawner.location.getWorld().dropItem(spawner.location, new ItemStack(spawner.spawnerType.material), entity -> {
                 entity.setVelocity(ZERO_VELOCITY);
                 entity.getPersistentDataContainer().set(PdcKeys.spawner.drop, PersistentDataType.BOOLEAN, true);
@@ -92,5 +98,21 @@ public class SpawnerEntity {
         textDisplay.remove();
         animator = null;
         spawner = null;
+    }
+
+    public static boolean canSpawn(Spawner spawner) {
+        if (spawner.spawnerType.maxSpawnCount <= 0) {
+            return true;
+        }
+
+        int counter = 0;
+        for (Entity entity : spawner.location.getNearbyEntities(0.75, 0.75, 0.75)) {
+            if (entity instanceof Item item && item.getItemStack().getType() == spawner.spawnerType.material && item.getPersistentDataContainer().has(PdcKeys.spawner.drop)) {
+                int itemAmount = item.getItemStack().getAmount();
+                counter += (itemAmount == 0 ? 1 : itemAmount);
+            }
+        }
+
+        return counter < spawner.spawnerType.maxSpawnCount;
     }
 }

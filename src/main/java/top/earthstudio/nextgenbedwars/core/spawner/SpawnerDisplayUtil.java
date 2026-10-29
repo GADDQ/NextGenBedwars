@@ -45,19 +45,4 @@ public final class SpawnerDisplayUtil {
 
         return component;
     }
-    public static boolean canSpawn(Spawner spawner) {
-        if (spawner.spawnerType.maxSpawnCount <= 0) {
-            return true;
-        }
-
-        int counter = 0;
-        for (Entity entity : spawner.location.getNearbyEntities(0.75, 0.75, 0.75)) {
-            if (entity instanceof Item item && item.getItemStack().getType() == spawner.spawnerType.material && item.getPersistentDataContainer().has(PdcKeys.spawner.drop)) {
-                int itemAmount = item.getItemStack().getAmount();
-                counter += (itemAmount == 0 ? 1 : itemAmount);
-            }
-        }
-
-        return counter < spawner.spawnerType.maxSpawnCount;
-    }
 }
