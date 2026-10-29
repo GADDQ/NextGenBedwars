@@ -30,18 +30,20 @@ public class ShopManagerImpl implements ShopManager {
 
     private GameInstance gameInstance;
 
-    public ShopConfig shopConfig; // TODO: public DEBUG ONLY
+    private ShopConfig shopConfig;
 
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
         this.gameInstance = gameInstance;
 
-        shopInteractListener = new ShopInteractListener(this, gameInstance);
-        shopItemThrowListener = new ShopItemThrowListener(gameInstance);
+        if (!gameInstance.isEditMode()) {
+            shopInteractListener = new ShopInteractListener(this, gameInstance);
+            shopItemThrowListener = new ShopItemThrowListener(gameInstance);
 
-        Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().plugin());
-        Bukkit.getPluginManager().registerEvents(shopItemThrowListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(shopItemThrowListener, BedwarsAPI.getInstance().plugin());
+        }
 
         shopConfig = new ShopConfig(gameInstance);
         shopConfig.getValues().forEach(this::add);
@@ -97,14 +99,16 @@ public class ShopManagerImpl implements ShopManager {
         shopConfig.release();
         shopConfig = null;
 
-        gameInstance = null;
-
         world = null;
 
-        HandlerList.unregisterAll(shopItemThrowListener);
-        HandlerList.unregisterAll(shopInteractListener);
-        shopItemThrowListener = null;
-        shopInteractListener = null;
+        if (!gameInstance.isEditMode()) {
+            HandlerList.unregisterAll(shopItemThrowListener);
+            HandlerList.unregisterAll(shopInteractListener);
+            shopItemThrowListener = null;
+            shopInteractListener = null;
+        }
+
+        gameInstance = null;
 
         shops.forEach((uuid, shopEntity) -> shopEntity.destroy());
         shops.clear();
