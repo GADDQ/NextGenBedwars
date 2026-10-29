@@ -33,8 +33,6 @@ public class SpawnerEntity {
         leftTick = spawner.spawnerType.spawnTick.get(spawner.level);
 
         itemDisplay = spawner.location.getWorld().spawn(spawner.location, ItemDisplay.class, entity -> {
-            entity.setPersistent(false); // TODO: DEBUG only, remove in release
-
             entity.setBrightness(new Display.Brightness(15, 15));
             entity.setItemStack(new ItemStack(spawner.spawnerType.holoMaterial == null ? Material.AIR : spawner.spawnerType.holoMaterial));
             entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
@@ -49,8 +47,6 @@ public class SpawnerEntity {
         });
 
         textDisplay = spawner.location.getWorld().spawn(spawner.location, TextDisplay.class, entity -> {
-            entity.setPersistent(false); // TODO: DEBUG only, remove in release
-
             entity.setBrightness(new Display.Brightness(15, 15));
             entity.setBillboard(Display.Billboard.VERTICAL);
             entity.setShadowed(true);

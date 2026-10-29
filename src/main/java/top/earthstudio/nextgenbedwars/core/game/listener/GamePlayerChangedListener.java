@@ -6,6 +6,7 @@ import net.kyori.adventure.title.Title;
 
 import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -49,14 +50,17 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                     second = leftTick / 20;
 
                                     if (second % 10 == 0 || second < 10) {
-                                        gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title(
-                                                Component.text("游戏即将开始").color(NamedTextColor.GREEN),
-                                                Component.text("倒计时 ").append(Component.text(second)).append(Component.text("秒")),
-                                                Title.Times.times(
-                                                        Ticks.duration(0),
-                                                        Ticks.duration(30),
-                                                        Ticks.duration(10))
-                                        )));
+                                        gameInstance.getWorld().getPlayers().forEach(player1 -> {
+                                            player1.showTitle(Title.title(
+                                                    Component.text("游戏即将开始").color(NamedTextColor.GREEN),
+                                                    Component.text("倒计时 ").append(Component.text(second)).append(Component.text(" 秒")),
+                                                    Title.Times.times(
+                                                            Ticks.duration(0),
+                                                            Ticks.duration(30),
+                                                            Ticks.duration(10))
+                                            ));
+                                            player1.playSound(player1, Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+                                        });
                                     }
                                 }
 
