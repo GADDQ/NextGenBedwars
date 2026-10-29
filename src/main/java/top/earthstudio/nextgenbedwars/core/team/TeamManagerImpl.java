@@ -42,13 +42,15 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         teamsByColor = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
 
-        teamInteractListener = new TeamInteractListener(this, gameInstance);
-        teamRespawnListener = new TeamRespawnListener(this, gameInstance);
-        teamChatListener = new TeamChatListener(this, gameInstance);
+        if (!gameInstance.isEditMode()) {
+            teamInteractListener = new TeamInteractListener(this, gameInstance);
+            teamRespawnListener = new TeamRespawnListener(this, gameInstance);
+            teamChatListener = new TeamChatListener(this, gameInstance);
 
-        Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().plugin());
-        Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().plugin());
-        Bukkit.getPluginManager().registerEvents(teamChatListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(teamChatListener, BedwarsAPI.getInstance().plugin());
+        }
 
         this.gameInstance = gameInstance;
 
