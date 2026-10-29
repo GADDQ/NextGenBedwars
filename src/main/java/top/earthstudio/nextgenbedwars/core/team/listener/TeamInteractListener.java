@@ -39,9 +39,6 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
     public void onPlayerFight(EntityDamageByEntityEvent event) { // TODO: config to enable / disable
         if (event.getEntity().getWorld() != gameInstance.getWorld()) return;
 
-        if (gameInstance.isEditMode())
-            return;
-
         Player attacker;
 
         if (event.getDamager() instanceof Player p) {
@@ -78,9 +75,6 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() != gameInstance.getWorld()) return;
-
-        if (gameInstance.isEditMode())
-            return;
 
         Player player = event.getPlayer();
         Team team = teamManager.get(player);
@@ -128,9 +122,6 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
             return;
 
         if (event.getPlayer().getWorld() != gameInstance.getWorld())
-            return;
-
-        if (gameInstance.isEditMode())
             return;
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
