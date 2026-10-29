@@ -85,6 +85,8 @@ public final class GameInstanceImpl implements GameInstance {
 
         gamePlayerChangedListener = new GamePlayerChangedListener(this);
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
+
+        subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
 
     private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
@@ -95,8 +97,6 @@ public final class GameInstanceImpl implements GameInstance {
             IGameSubSystem instanceSystem = constructor.construct(this);
             subSystems.put(type, instanceSystem);
         }
-
-        subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
 
     public void update() {

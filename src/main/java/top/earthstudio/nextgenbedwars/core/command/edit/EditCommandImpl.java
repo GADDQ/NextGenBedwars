@@ -13,6 +13,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
 import it.unimi.dsi.fastutil.longs.LongLongPair;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import net.kyori.adventure.text.Component;
@@ -25,6 +26,7 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import org.joml.Vector3i;
 import top.earthstudio.nextgenbedwars.api.command.edit.EditCommand;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
@@ -90,6 +92,14 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
                                 Commands.argument("number", IntegerArgumentType.integer())
                                         .executes(handler::executeSetMinPlayers)
                         )
+        ).then(
+                Commands.literal("setPos1")
+                        .requires(handler::requireInEditingWorld)
+                        .executes(handler::executeSetPos1)
+        ).then(
+                Commands.literal("setPos2")
+                        .requires(handler::requireInEditingWorld)
+                        .executes(handler::executeSetPos2)
         ).then(
                 Commands.literal("setLobby")
                         .requires(handler::requireInEditingWorld)
@@ -250,7 +260,7 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         return builder.buildFuture();
     }
 
-    // ============ Team ============
+    // ============ Team ============ // TODO: displayName
 
     private int executeAddTeam(CommandContext<CommandSourceStack> ctx) {
         Player player = (Player) ctx.getSource().getSender();
@@ -454,7 +464,11 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
 
         Spawner spawner = new Spawner();
         spawner.type = typeName;
+
         spawner.location = player.getLocation();
+        spawner.location.setPitch(0);
+        spawner.location.setYaw(0);
+
         spawner.level = 0;
         spawner.spawnerType = spawnerType;
 
@@ -559,6 +573,44 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         assert instance != null;
         instance.getGame().spectatorRespawnPoint = player.getLocation();
         player.sendMessage(Component.text("已将当前位置设为观察者重生点 (spectatorRespawnPoint)！").color(NamedTextColor.GREEN));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int executeSetPos1(CommandContext<CommandSourceStack> ctx) {
+        Player player = (Player) ctx.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+        assert instance != null;
+
+        Location loc = player.getLocation();
+        Vector3i pos1 = new Vector3i(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+
+        // 若已有 pos2 则保留，否则暂时以当前点占位
+        Vector3i pos2 = (instance.getGame().region != null && instance.getGame().region.right() != null)
+                ? instance.getGame().region.right()
+                : pos1;
+
+        instance.getGame().region = new ObjectObjectImmutablePair<>(pos1, pos2);
+
+        player.sendMessage(Component.text("已设置保护区域 Pos1: (" + pos1.x + ", " + pos1.y + ", " + pos1.z + ")").color(NamedTextColor.GREEN));
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private int executeSetPos2(CommandContext<CommandSourceStack> ctx) {
+        Player player = (Player) ctx.getSource().getSender();
+        GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
+        assert instance != null;
+
+        Location loc = player.getLocation();
+        Vector3i pos2 = new Vector3i(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+
+        // 若已有 pos1 则保留，否则暂时以当前点占位
+        Vector3i pos1 = (instance.getGame().region != null && instance.getGame().region.left() != null)
+                ? instance.getGame().region.left()
+                : pos2;
+
+        instance.getGame().region = new ObjectObjectImmutablePair<>(pos1, pos2);
+
+        player.sendMessage(Component.text("已设置保护区域 Pos2: (" + pos2.x + ", " + pos2.y + ", " + pos2.z + ")").color(NamedTextColor.GREEN));
         return Command.SINGLE_SUCCESS;
     }
 
