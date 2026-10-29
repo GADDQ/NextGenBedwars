@@ -129,6 +129,15 @@ public class GameManager {
         removes.clear();
     }
 
+    public static List<GameInstance> getRunningInstances() {
+        List<GameInstance> gameInstanceList = new ObjectArrayList<>();
+        for (GameInstance instance : gameInstances.values()) {
+            if (!instance.isEditMode())
+                gameInstanceList.add(instance);
+        }
+        return gameInstanceList;
+    }
+
     public static <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor) {
         SUB_SYSTEM_TEMPLATES.put(type, constructor);
     }

@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 public class AdminCommand {
-
     public static void build(LiteralArgumentBuilder<CommandSourceStack> root) {
         AdminCommand handler = new AdminCommand();
 
@@ -167,7 +166,7 @@ public class AdminCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int executeEnable(CommandContext<CommandSourceStack> ctx) {
+    private int executeEnable(CommandContext<CommandSourceStack> ctx) { // TODO: auto open new Instance?
         String name = StringArgumentType.getString(ctx, "game");
         Player player = (Player) ctx.getSource().getSender();
 
