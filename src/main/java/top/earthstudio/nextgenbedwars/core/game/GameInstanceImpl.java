@@ -14,7 +14,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
-import top.earthstudio.nextgenbedwars.core.game.listener.GameStateChangedListener;
+import top.earthstudio.nextgenbedwars.core.game.listener.GamePlayerChangedListener;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
@@ -36,7 +36,7 @@ public final class GameInstanceImpl implements GameInstance {
 
     private volatile boolean isSaving = false;
 
-    private GameStateChangedListener gameStateChangedListener;
+    private GamePlayerChangedListener gamePlayerChangedListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -83,8 +83,8 @@ public final class GameInstanceImpl implements GameInstance {
 
         gameState = GameState.WAITING;
 
-        gameStateChangedListener = new GameStateChangedListener(this);
-        Bukkit.getPluginManager().registerEvents(gameStateChangedListener, BedwarsAPI.getInstance().plugin());
+        gamePlayerChangedListener = new GamePlayerChangedListener(this);
+        Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
     }
 
     private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
@@ -110,9 +110,9 @@ public final class GameInstanceImpl implements GameInstance {
         isShutdown = true;
         gameState = null;
 
-        if (gameStateChangedListener != null) {
-            HandlerList.unregisterAll(gameStateChangedListener);
-            gameStateChangedListener = null;
+        if (gamePlayerChangedListener != null) {
+            HandlerList.unregisterAll(gamePlayerChangedListener);
+            gamePlayerChangedListener = null;
         }
 
         gameConfig.release();
