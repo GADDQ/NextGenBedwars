@@ -111,6 +111,7 @@ public final class GameInstanceImpl implements GameInstance {
         gameState = null;
 
         if (gamePlayerChangedListener != null) {
+            gamePlayerChangedListener.shutdown();
             HandlerList.unregisterAll(gamePlayerChangedListener);
             gamePlayerChangedListener = null;
         }

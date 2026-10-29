@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 
+import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -46,9 +47,13 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                     second = leftTick / 20;
 
                                     if (second % 10 == 0 || second < 10) {
-                                        player.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title(
+                                        gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title(
                                                 Component.text("游戏即将开始").color(NamedTextColor.GREEN),
-                                                Component.text("倒计时 ").append(Component.text(second)).append(Component.text("秒"))
+                                                Component.text("倒计时 ").append(Component.text(second)).append(Component.text("秒")),
+                                                Title.Times.times(
+                                                        Ticks.duration(0),
+                                                        Ticks.duration(30),
+                                                        Ticks.duration(10))
                                         )));
                                     }
                                 }
@@ -56,6 +61,14 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                 if (leftTick <= 0) {
                                     GlobalTicker.remove(uuid);
                                     gameInstance.setGameState(GameState.PLAYING);
+                                    gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title( // TODO: isShowStartTitle
+                                            Component.text("游戏开始").color(NamedTextColor.GREEN),
+                                            Component.text("保护你的床！").color(NamedTextColor.RED),
+                                            Title.Times.times(
+                                                    Ticks.duration(0),
+                                                    Ticks.duration(20),
+                                                    Ticks.duration(10))
+                                    )));
                                     return;
                                 }
 
@@ -91,7 +104,7 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                 case STARTING:
                     if (event.getFrom().getPlayerCount() < gameInstance.getGame().minPlayers) {
                         gameInstance.setGameState(GameState.WAITING);
-                        event.getFrom().getPlayers().forEach(player1 -> player1.showTitle(Title.title(
+                        gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title(
                                 Component.text("启动已暂停").color(NamedTextColor.RED),
                                 Component.text("玩家数量不足")
                         )));
@@ -101,5 +114,9 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                     break;
             }
         }
+    }
+
+    public void shutdown() {
+        GlobalTicker.remove(uuid);
     }
 }
