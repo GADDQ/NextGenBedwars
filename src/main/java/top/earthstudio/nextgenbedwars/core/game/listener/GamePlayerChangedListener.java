@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.GameState;
+import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 
@@ -61,6 +62,17 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
 
                                 if (leftTick <= 0) {
                                     GlobalTicker.remove(uuid);
+
+                                    TeamManager teamManager = gameInstance.get(TeamManager.class);
+
+                                    teamManager.randomAssignTeam(gameInstance.getWorld().getPlayers());
+
+                                    teamManager.getAll().forEach(team ->
+                                            team.players.forEach(player1 ->
+                                                    player1.teleport(team.respawnLocation)
+                                            )
+                                    );
+
                                     gameInstance.setGameState(GameState.PLAYING);
                                     gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title( // TODO: isShowStartTitle
                                             Component.text("游戏开始").color(NamedTextColor.GREEN),

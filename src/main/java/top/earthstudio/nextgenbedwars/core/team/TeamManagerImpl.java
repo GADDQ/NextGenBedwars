@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.shuffle;
+
 public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejoin player support
     private Map<UUID, Team> teams;
     private Map<Color, Team> teamsByColor;
@@ -88,6 +90,19 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
                 return team;
         }
         return null;
+    }
+
+    @Override
+    public void randomAssignTeam(List<Player> players) {
+        List<Team> teamList = getAll();
+        shuffle(teamList);
+        shuffle(players);
+
+        int i = 0;
+        for (Player player : players) {
+            teamList.get(i % 4).players.add(player);
+            i++;
+        }
     }
 
     @Override
