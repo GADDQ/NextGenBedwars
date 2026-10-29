@@ -15,6 +15,7 @@ import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+import top.earthstudio.nextgenbedwars.core.team.listener.TeamChatListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamRespawnListener;
 
@@ -28,6 +29,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
     private TeamInteractListener teamInteractListener;
     private TeamRespawnListener teamRespawnListener;
+    private TeamChatListener teamChatListener;
 
     private World world;
 
@@ -38,11 +40,15 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
+        world = gameInstance.getWorld();
+
         teamInteractListener = new TeamInteractListener(this, gameInstance);
         teamRespawnListener = new TeamRespawnListener(this, gameInstance);
-        world = gameInstance.getWorld();
+        teamChatListener = new TeamChatListener(this, gameInstance);
+
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(teamChatListener, BedwarsAPI.getInstance().plugin());
 
         this.gameInstance = gameInstance;
 
@@ -104,14 +110,18 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         teamConfig.release();
         teamConfig = null;
 
-        this.gameInstance = null;
-
         world = null;
 
-        HandlerList.unregisterAll(teamRespawnListener);
-        HandlerList.unregisterAll(teamInteractListener);
-        teamRespawnListener = null;
-        teamInteractListener = null;
+        if (!gameInstance.isEditMode()) {
+            HandlerList.unregisterAll(teamChatListener);
+            HandlerList.unregisterAll(teamRespawnListener);
+            HandlerList.unregisterAll(teamInteractListener);
+            teamChatListener = null;
+            teamRespawnListener = null;
+            teamInteractListener = null;
+        }
+
+        this.gameInstance = null;
 
         teamsByColor.clear();
         teamsByColor = null;

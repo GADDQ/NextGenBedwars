@@ -39,7 +39,7 @@ public class TeamRespawnListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPLayerFallInVoid(EntityDamageEvent event) {
+    public void onPLayerFallInVoid(EntityDamageEvent event) { // TODO: Send event with uncancelled property
         if (event.getEntityType() != EntityType.PLAYER)
             return;
 

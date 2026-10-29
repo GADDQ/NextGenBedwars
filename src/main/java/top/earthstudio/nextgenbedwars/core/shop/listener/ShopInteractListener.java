@@ -12,7 +12,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
-public class ShopInteractListener implements Listener {
+public class ShopInteractListener implements Listener { // TODO: Listener should not check isEditMode, Listener should be enable by Manager, if isEditMode is true, Listener should not be enable.
     private final ShopManager shopManager;
     private final GameInstance gameInstance;
 
