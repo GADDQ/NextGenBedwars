@@ -77,6 +77,11 @@ public class TeamRespawnListener implements Listener {
         event.deathMessage(null);
 
         // TODO: kill message
+        BedwarsPlayerDeadEvent sendEvent = new BedwarsPlayerDeadEvent(gameInstance, player);
+        Bukkit.getPluginManager().callEvent(sendEvent);
+
+        if (sendEvent.isCancelled())
+            return;
 
         tryRespawn(player, teamManager.get(player), true);
     }
@@ -89,8 +94,6 @@ public class TeamRespawnListener implements Listener {
         clearInventory(player);
         player.setGameMode(GameMode.SPECTATOR); // TODO: this need replace with fake spectator mode (adventure) in the future!
         player.setVelocity(new Vector(0, 0, 0));
-
-        Bukkit.getPluginManager().callEvent(new BedwarsPlayerDeadEvent(gameInstance, player));
 
         UUID uuid = UUID.randomUUID();
 

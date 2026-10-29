@@ -14,6 +14,7 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
+import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamRespawnListener;
 
@@ -32,6 +33,8 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
     private TeamConfig teamConfig;
 
+    private GameInstance gameInstance;
+
     public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
@@ -40,6 +43,8 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         world = gameInstance.getWorld();
         Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().plugin());
+
+        this.gameInstance = gameInstance;
 
         this.teamConfig = new TeamConfig(gameInstance);
         teamConfig.getValues().forEach(this::add);
@@ -99,6 +104,8 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         teamConfig.release();
         teamConfig = null;
 
+        this.gameInstance = null;
+
         world = null;
 
         HandlerList.unregisterAll(teamRespawnListener);
@@ -110,5 +117,18 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         teamsByColor = null;
         teams.clear();
         teams = null;
+    }
+
+    @Override
+    public void onReady() {
+        if (gameInstance.isEditMode())
+            return;
+
+        WorldProtector protector = gameInstance.get(WorldProtector.class);
+
+        for (Team team: teams.values()) {
+            protector.removeBlockFromWorldGroup(team.bedBlockLongs.firstLong());
+            protector.removeBlockFromWorldGroup(team.bedBlockLongs.secondLong());
+        }
     }
 }

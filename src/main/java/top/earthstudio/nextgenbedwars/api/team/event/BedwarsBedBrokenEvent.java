@@ -1,6 +1,7 @@
 package top.earthstudio.nextgenbedwars.api.team.event;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
@@ -9,12 +10,14 @@ import org.jetbrains.annotations.NotNull;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 
-public class BedwarsBedBrokenEvent extends Event {
+public class BedwarsBedBrokenEvent extends Event implements Cancellable {
     private static final HandlerList HANDLERS = new HandlerList();
 
     public GameInstance gameInstance;
     public Team team;
     public Player bedBreaker;
+
+    private boolean isCancelled = false;
 
     public BedwarsBedBrokenEvent(GameInstance gameInstance, Team team, Player bedBreaker) {
         this.gameInstance = gameInstance;
@@ -27,7 +30,18 @@ public class BedwarsBedBrokenEvent extends Event {
         return HANDLERS;
     }
 
+    @SuppressWarnings("unused")
     public static HandlerList getHandlerList() {
         return HANDLERS;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return isCancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        isCancelled = cancel;
     }
 }
