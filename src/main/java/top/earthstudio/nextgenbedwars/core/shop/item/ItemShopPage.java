@@ -358,7 +358,7 @@ public class ItemShopPage extends ChestGuiPage {
         player.getInventory().removeItem(cost);
         player.getInventory().addItem(toGive);
 
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 1f);
+        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
         player.sendMessage(Component.text("购买成功！").color(NamedTextColor.GREEN)); // TODO: replace text "你购买了 什么 多少"
         return true;
     }

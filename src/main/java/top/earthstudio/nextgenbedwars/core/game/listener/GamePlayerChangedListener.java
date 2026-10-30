@@ -89,7 +89,7 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                     teamManager.getAll().forEach(team ->
                                             team.players.forEach(player1 -> {
                                                 player1.teleport(team.respawnLocation);
-                                                player.setScoreboard(scoreboard);
+                                                player1.setScoreboard(scoreboard);
                                                 scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player1.getName());
                                             })
                                     );

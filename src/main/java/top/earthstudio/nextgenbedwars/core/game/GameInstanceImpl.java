@@ -14,6 +14,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
+import top.earthstudio.nextgenbedwars.core.game.listener.GameCraftingListener;
 import top.earthstudio.nextgenbedwars.core.game.listener.GamePlayerChangedListener;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
@@ -37,6 +38,7 @@ public final class GameInstanceImpl implements GameInstance {
     private volatile boolean isSaving = false;
 
     private GamePlayerChangedListener gamePlayerChangedListener;
+    private GameCraftingListener gameCraftingListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -84,7 +86,9 @@ public final class GameInstanceImpl implements GameInstance {
         gameState = GameState.WAITING;
 
         gamePlayerChangedListener = new GamePlayerChangedListener(this);
+        gameCraftingListener = new GameCraftingListener(this);
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gameCraftingListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
@@ -112,8 +116,10 @@ public final class GameInstanceImpl implements GameInstance {
 
         if (!isEditMode) {
             gamePlayerChangedListener.shutdown();
+            HandlerList.unregisterAll(gameCraftingListener);
             HandlerList.unregisterAll(gamePlayerChangedListener);
             gamePlayerChangedListener = null;
+            gameCraftingListener = null;
         }
 
         gameConfig.release();

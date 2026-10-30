@@ -86,6 +86,8 @@ public class TeamRespawnListener implements Listener {
         player.clearActivePotionEffects();
         player.setFallDistance(0);
         player.heal(Double.MAX_VALUE);
+        player.setFoodLevel(20);
+        player.setSaturation(0);
         clearInventory(player);
         player.setGameMode(GameMode.SPECTATOR); // TODO: this need replace with fake spectator mode (adventure) in the future!
         player.setVelocity(new Vector(0, 0, 0));
