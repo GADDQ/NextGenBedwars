@@ -34,7 +34,13 @@ public class SpawnerEntity {
 
         itemDisplay = spawner.location.getWorld().spawn(spawner.location, ItemDisplay.class, entity -> {
             entity.setBrightness(new Display.Brightness(15, 15));
-            entity.setItemStack(new ItemStack(spawner.spawnerType.holoMaterial == null ? Material.AIR : spawner.spawnerType.holoMaterial));
+
+            entity.setItemStack(new ItemStack(
+                    (spawner.spawnerType.holoMaterial == null || !spawner.spawnerType.isShowHolo) ?
+                            Material.AIR :
+                            spawner.spawnerType.holoMaterial
+            ));
+
             entity.setItemDisplayTransform(ItemDisplay.ItemDisplayTransform.FIXED);
             entity.setShadowRadius(0);
             entity.setShadowStrength(0);
@@ -42,7 +48,7 @@ public class SpawnerEntity {
                     new Vector3f(0, 2.3f, 0),
                     new AxisAngle4f(0, 0, 1, 0),
                     new Vector3f(0.75f, 0.75f, 0.75f),
-                    new AxisAngle4f(0, 0, 0, 0)
+                    new AxisAngle4f()
             ));
         });
 
@@ -53,10 +59,11 @@ public class SpawnerEntity {
             entity.setBackgroundColor(Color.fromARGB(0, 0, 0, 0));
             entity.setTransformation(new Transformation(
                     new Vector3f(0, 1.375f, 0), // translation
-                    new AxisAngle4f(0, 0, 0, 0), // leftRotation
+                    new AxisAngle4f(0, 0, 1, 0), // leftRotation
                     new Vector3f(0.75f, 0.75f, 0.75f), // scale
-                    new AxisAngle4f(0, 0, 0, 0) // rightRotation
+                    new AxisAngle4f() // rightRotation
             ));
+            entity.text(SpawnerDisplayUtil.updateTextDisplay((leftTick - 1) / 20 + 1, spawner));
         });
     }
 
@@ -83,6 +90,9 @@ public class SpawnerEntity {
                     entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
             });
         }
+
+        if (!spawner.spawnerType.isShowHolo)
+            return;
 
         Material targetMaterial = spawner.spawnerType.holoMaterial == null ? Material.AIR : spawner.spawnerType.holoMaterial;
         if (itemDisplay.getItemStack().getType() != targetMaterial)

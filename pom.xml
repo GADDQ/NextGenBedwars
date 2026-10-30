@@ -6,7 +6,7 @@
 
     <groupId>top.earthstudio</groupId>
     <artifactId>NextGenBedwars</artifactId>
-    <version>1.0.0</version>
+    <version>0.1.0-Alpha</version>
     <packaging>jar</packaging>
 
     <name>NextGenBedwars</name>

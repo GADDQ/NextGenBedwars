@@ -328,7 +328,7 @@ public class ItemShopPage extends ChestGuiPage {
         }
 
         ItemStack toGive;
-        if (shopItem.actualItems != null)
+        if (shopItem.actualItems != null && !shopItem.actualItems.isEmpty())
             toGive = shopItem.getActualItem(productTierManager.getTier(player, shopItem.id)).clone();
         else
             toGive = new ItemStack(shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getType(), shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getAmount());

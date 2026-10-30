@@ -3,9 +3,10 @@ package top.earthstudio.nextgenbedwars.core.spawner;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemDisplay;
 import org.bukkit.util.Transformation;
-import org.bukkit.util.Vector;
+
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
+
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 public class SpawnerAnimator {
@@ -21,14 +22,14 @@ public class SpawnerAnimator {
                     new Vector3f(0, 2.3f, 0),
                     new AxisAngle4f(0, 0, 1, 0),
                     new Vector3f(0.75f, 0.75f, 0.75f),
-                    new AxisAngle4f(0, 0, 0, 0)
+                    new AxisAngle4f()
             ),
 
             new Transformation(
                     new Vector3f(0, 2.3f, 0),
                     new AxisAngle4f(0, 0, 1, 0),
                     new Vector3f(0.75f, 0.75f, 0.75f),
-                    new AxisAngle4f(0, 0, 0, 0)
+                    new AxisAngle4f()
             )
     };
 

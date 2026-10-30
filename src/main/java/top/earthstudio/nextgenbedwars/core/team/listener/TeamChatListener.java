@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.team.listener;
 import io.papermc.paper.event.player.AsyncChatEvent;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,9 +42,9 @@ public class TeamChatListener implements Listener { // TODO: global chat
         for (Player player : team.players) { // TODO: allow config how message are presented, is allow to use color
             player.sendMessage(
                     event.getPlayer().displayName().color(TextColor.color(team.teamColor.asARGB())).append(
-                            Component.text(" : ")
+                            Component.text(" : ").color(NamedTextColor.WHITE)
                     ).append(
-                            event.originalMessage()
+                            event.originalMessage().color(NamedTextColor.WHITE)
                     )
             );
         }

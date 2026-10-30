@@ -20,7 +20,7 @@ import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 import java.io.File;
 import java.util.List;
 
-public class SpawnerConfig implements IConfig<Spawner> {
+public class SpawnerConfig implements IConfig<Spawner> { // TODO: FIXME!!! Local config didn't override global config!!!!
     private final File spawnersFile;
     private final YamlConfigurationLoader spawnersLoader;
     private final List<Spawner> spawners;

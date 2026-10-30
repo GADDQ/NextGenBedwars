@@ -2,9 +2,10 @@
 The next-generation plugin for BedWars.
 
 # Status
-NextGenBedwars now is on **Pre-Alpha**.
+NextGenBedwars now is on **Alpha**.
 
-Basic functions were all ready. **BUT** map edit function is not ready yet, **which mean you must write config by your hand.**
+**Basic functions were all ready!**
 
-**Also, you need to write some temporary code to start game manually for now. Game will not over because check logic is 
-not ready yet!**
+**BUT, game will not over because check logic is not ready yet! you need to write some temporary code!**
+
+**AND it's seriously lack of polishment! You might meet a tons of bugs while running the plugin!**

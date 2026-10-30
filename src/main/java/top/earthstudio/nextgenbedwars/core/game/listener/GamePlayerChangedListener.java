@@ -1,10 +1,12 @@
 package top.earthstudio.nextgenbedwars.core.game.listener;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
-
 import net.kyori.adventure.util.Ticks;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -12,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.scoreboard.Scoreboard;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.GameState;
@@ -26,8 +29,11 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
     private final GameInstance gameInstance;
     private final UUID uuid = UUID.randomUUID();
 
+    private final Scoreboard scoreboard;
+
     public GamePlayerChangedListener(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
+        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -72,9 +78,20 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                     teamManager.randomAssignTeam(gameInstance.getWorld().getPlayers());
 
                                     teamManager.getAll().forEach(team ->
-                                            team.players.forEach(player1 ->
-                                                    player1.teleport(team.respawnLocation)
-                                            )
+                                            scoreboard.registerNewTeam(((TextComponent) team.displayName).content())
+                                                    .prefix(
+                                                            Component.text().color(
+                                                                    TextColor.color(team.teamColor.asARGB())
+                                                            ).build()
+                                                    )
+                                    );
+
+                                    teamManager.getAll().forEach(team ->
+                                            team.players.forEach(player1 -> {
+                                                player1.teleport(team.respawnLocation);
+                                                player.setScoreboard(scoreboard);
+                                                scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player1.getName());
+                                            })
                                     );
 
                                     gameInstance.setGameState(GameState.PLAYING);
