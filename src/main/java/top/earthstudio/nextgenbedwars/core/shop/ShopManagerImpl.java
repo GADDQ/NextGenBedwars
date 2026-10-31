@@ -14,6 +14,7 @@ import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
+import top.earthstudio.nextgenbedwars.core.shop.listener.ShopEntityProtectListener;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopInteractListener;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopItemThrowListener;
 
@@ -27,6 +28,7 @@ public class ShopManagerImpl implements ShopManager {
 
     private ShopInteractListener shopInteractListener;
     private ShopItemThrowListener shopItemThrowListener;
+    private ShopEntityProtectListener shopEntityProtectListener;
 
     private GameInstance gameInstance;
 
@@ -40,9 +42,11 @@ public class ShopManagerImpl implements ShopManager {
         if (!gameInstance.isEditMode()) {
             shopInteractListener = new ShopInteractListener(this, gameInstance);
             shopItemThrowListener = new ShopItemThrowListener(gameInstance);
+            shopEntityProtectListener = new ShopEntityProtectListener(this, gameInstance);
 
             Bukkit.getPluginManager().registerEvents(shopInteractListener, BedwarsAPI.getInstance().plugin());
             Bukkit.getPluginManager().registerEvents(shopItemThrowListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(shopEntityProtectListener, BedwarsAPI.getInstance().plugin());
         }
 
         shopConfig = new ShopConfig(gameInstance);
@@ -104,8 +108,10 @@ public class ShopManagerImpl implements ShopManager {
         if (!gameInstance.isEditMode()) {
             HandlerList.unregisterAll(shopItemThrowListener);
             HandlerList.unregisterAll(shopInteractListener);
+            HandlerList.unregisterAll(shopEntityProtectListener);
             shopItemThrowListener = null;
             shopInteractListener = null;
+            shopEntityProtectListener = null;
         }
 
         gameInstance = null;

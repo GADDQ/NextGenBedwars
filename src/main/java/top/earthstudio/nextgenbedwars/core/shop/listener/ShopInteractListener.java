@@ -1,7 +1,5 @@
 package top.earthstudio.nextgenbedwars.core.shop.listener;
 
-import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
-
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,17 +34,5 @@ public class ShopInteractListener implements Listener {
             return;
 
         BedwarsAPI.getInstance().getGuiManager().openFor(event.getPlayer(), shopManager.getShopGui(entity.getUniqueId(), event.getPlayer()));
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onShopWasAttacked(PrePlayerAttackEntityEvent event) {
-        if (event.getPlayer().getWorld() != gameInstance.getWorld())
-            return;
-
-        Entity entity = event.getAttacked();
-        if (!shopManager.contains(entity.getUniqueId()))
-            return;
-
-        event.setCancelled(true);
     }
 }
