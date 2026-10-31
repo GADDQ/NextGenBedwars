@@ -22,7 +22,7 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.team.event.BedwarsBedBrokenEvent;
-import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 
 import java.util.List;
 
@@ -85,7 +85,7 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
         if (!Tag.BEDS.isTagged(block.getType()))
             return;
 
-        long blockLong = BlockPosUtil.asLong(block);
+        long blockLong = BlockUtil.asLong(block);
         if (team.bedBlockLongs.firstLong() == blockLong || team.bedBlockLongs.secondLong() == blockLong) {
             player.sendMessage(Component.text("你不能破坏自己的床！").color(NamedTextColor.RED));
             event.setCancelled(true);

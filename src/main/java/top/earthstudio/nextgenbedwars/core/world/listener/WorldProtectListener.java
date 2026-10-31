@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 public class WorldProtectListener implements Listener {
@@ -29,11 +29,11 @@ public class WorldProtectListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getWorld() == world) {
             if (!Tag.AIR.isTagged(event.getBlockReplacedState().getType()) && Tag.REPLACEABLE.isTagged(event.getBlockReplacedState().getType())) {
-                worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(event.getBlockPlaced()));
+                worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(event.getBlockPlaced()));
                 return;
             }
 
-            if (worldProtector.contains(BlockPosUtil.asLong(event.getBlockPlaced()))) {
+            if (worldProtector.contains(BlockUtil.asLong(event.getBlockPlaced()))) {
                 event.getPlayer().sendMessage(Component.text("你不允许在这里放置方块！").color(NamedTextColor.RED));
                 event.setCancelled(true);
             }
@@ -47,15 +47,15 @@ public class WorldProtectListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() == world) {
             if (!event.getBlock().getType().isCollidable()) {
-                if (!worldProtector.contains(BlockPosUtil.asLong(event.getBlock())))
+                if (!worldProtector.contains(BlockUtil.asLong(event.getBlock())))
                     return;
 
                 event.setDropItems(false);
-                worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(event.getBlock()));
+                worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(event.getBlock()));
                 return;
             }
 
-            if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
+            if (worldProtector.contains(BlockUtil.asLong(event.getBlock()))) {
                 if (Tag.BEDS.isTagged(event.getBlock().getType()))
                     return;
 
@@ -72,7 +72,7 @@ public class WorldProtectListener implements Listener {
     public void onEntityExplode(EntityExplodeEvent event) {
         if (event.getLocation().getWorld() == world) {
             event.blockList().removeIf(block ->
-                    worldProtector.contains(BlockPosUtil.asLong(block))
+                    worldProtector.contains(BlockUtil.asLong(block)) || Tag.BEDS.isTagged(block.getType())
             );
         }
     }
@@ -84,7 +84,7 @@ public class WorldProtectListener implements Listener {
     public void onBlockExplode(BlockExplodeEvent event) {
         if (event.getBlock().getWorld() == world) {
             event.blockList().removeIf(block ->
-                    worldProtector.contains(BlockPosUtil.asLong(block))
+                    worldProtector.contains(BlockUtil.asLong(block)) || Tag.BEDS.isTagged(block.getType())
             );
         }
     }
@@ -95,7 +95,7 @@ public class WorldProtectListener implements Listener {
             Block toBlock = event.getToBlock();
 
             if (!toBlock.getType().isAir() && !toBlock.isLiquid() && !toBlock.getType().isCollidable()) {
-                worldProtector.removeBlockFromWorldGroup(BlockPosUtil.asLong(toBlock));
+                worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(toBlock));
             }
         }
     }
@@ -103,7 +103,7 @@ public class WorldProtectListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBurn(BlockBurnEvent event) {
         if (event.getBlock().getWorld() == world) {
-            if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
+            if (worldProtector.contains(BlockUtil.asLong(event.getBlock()))) {
                 event.setCancelled(true);
             }
         }
@@ -112,8 +112,32 @@ public class WorldProtectListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockFade(BlockFadeEvent event) {
         if (event.getBlock().getWorld() == world) {
-            if (worldProtector.contains(BlockPosUtil.asLong(event.getBlock()))) {
+            if (worldProtector.contains(BlockUtil.asLong(event.getBlock()))) {
                 event.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonExtend(BlockPistonExtendEvent event) {
+        if (event.getBlock().getWorld() == world) {
+            for (Block block : event.getBlocks()) {
+                if (worldProtector.contains(BlockUtil.asLong(block)) || Tag.BEDS.isTagged(block.getType())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onPistonRetract(BlockPistonRetractEvent event) {
+        if (event.getBlock().getWorld() == world) {
+            for (Block block : event.getBlocks()) {
+                if (worldProtector.contains(BlockUtil.asLong(block)) || Tag.BEDS.isTagged(block.getType())) {
+                    event.setCancelled(true);
+                    return;
+                }
             }
         }
     }

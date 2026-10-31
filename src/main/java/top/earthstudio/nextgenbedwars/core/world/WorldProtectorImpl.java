@@ -1,10 +1,7 @@
 package top.earthstudio.nextgenbedwars.core.world;
 
 import it.unimi.dsi.fastutil.Pair;
-import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongIterator;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.longs.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
@@ -18,7 +15,7 @@ import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldProtectListener;
@@ -132,7 +129,7 @@ public class WorldProtectorImpl implements WorldProtector {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    long block = BlockPosUtil.asLong(x, y, z);
+                    long block = BlockUtil.asLong(x, y, z);
                     if (group.add(block))
                         refCounts.addTo(block, 1);
                 }
@@ -198,7 +195,7 @@ public class WorldProtectorImpl implements WorldProtector {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    long block = BlockPosUtil.asLong(x, y, z);
+                    long block = BlockUtil.asLong(x, y, z);
                     if (group.remove(block)) {
                         int currentCount = refCounts.addTo(block, -1);
                         if (currentCount <= 1)
@@ -272,7 +269,7 @@ public class WorldProtectorImpl implements WorldProtector {
                                             if (worldX < minX || worldX > maxX || currentY < minY || currentY > maxY || worldZ < minZ || worldZ > maxZ)
                                                 continue;
 
-                                            long posKey = BlockPosUtil.asLong(baseBlockX + x, currentY, baseBlockZ + z);
+                                            long posKey = BlockUtil.asLong(baseBlockX + x, currentY, baseBlockZ + z);
                                             scannedBlocks.add(posKey);
                                         }
                                     }
@@ -298,6 +295,22 @@ public class WorldProtectorImpl implements WorldProtector {
                     }.runTask(BedwarsAPI.getInstance().plugin());
                     return null;
                 });
+    }
+
+    @Override
+    public List<Long> getAllProtectBlockLongs() {
+        List<Long> blockLongs = new LongArrayList();
+        for (LongSet groupBlockLongs : protectGroups.values()) {
+            blockLongs.addAll(groupBlockLongs);
+        }
+        return blockLongs;
+    }
+
+    @Override
+    public List<Long> getGroupProtectBlockLongs(UUID uuid) {
+        List<Long> blockLongs = new LongArrayList();
+        blockLongs.addAll(protectGroups.get(uuid));
+        return blockLongs;
     }
 
     @Override

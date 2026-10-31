@@ -36,7 +36,7 @@ import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
-import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 
 import top.earthstudio.nextgenbedwars.api.util.ColorUtil;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
@@ -356,8 +356,8 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
                 ? block
                 : block.getRelative(bedData.getFacing().getOppositeFace());
 
-        long headLong = BlockPosUtil.asLong(headBlock);
-        long footLong = BlockPosUtil.asLong(footBlock);
+        long headLong = BlockUtil.asLong(headBlock);
+        long footLong = BlockUtil.asLong(footBlock);
 
         team.bedBlockLongs = LongLongPair.of(headLong, footLong);
         team.isBedAlive = true;

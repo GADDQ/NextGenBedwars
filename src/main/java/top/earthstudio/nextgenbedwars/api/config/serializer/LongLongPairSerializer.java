@@ -6,7 +6,7 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
-import top.earthstudio.nextgenbedwars.api.util.BlockPosUtil;
+import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -36,7 +36,7 @@ public class LongLongPairSerializer implements TypeSerializer<LongLongPair> {
     }
 
     private long toLong(ConfigurationNode n) {
-        return BlockPosUtil.asLong(
+        return BlockUtil.asLong(
                 n.node("x").getInt(0),
                 n.node("y").getInt(0),
                 n.node("z").getInt(0)
@@ -44,8 +44,8 @@ public class LongLongPairSerializer implements TypeSerializer<LongLongPair> {
     }
 
     private void writeLong(ConfigurationNode n, long packed) throws SerializationException {
-        n.node("x").set(BlockPosUtil.getX(packed));
-        n.node("y").set(BlockPosUtil.getY(packed));
-        n.node("z").set(BlockPosUtil.getZ(packed));
+        n.node("x").set(BlockUtil.getX(packed));
+        n.node("y").set(BlockUtil.getY(packed));
+        n.node("z").set(BlockUtil.getZ(packed));
     }
 }

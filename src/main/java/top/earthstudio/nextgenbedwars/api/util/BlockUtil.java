@@ -1,11 +1,17 @@
 package top.earthstudio.nextgenbedwars.api.util;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.World;
 import org.bukkit.block.Block;
+
 import org.joml.Vector3i;
 
-public final class BlockPosUtil {
+import java.util.List;
 
-    private BlockPosUtil() {}
+@SuppressWarnings("unused")
+public final class BlockUtil {
+
+    private BlockUtil() {}
 
     // ================= 压缩：将 (x, y, z) 压成 64 位 long =================
 
@@ -46,5 +52,17 @@ public final class BlockPosUtil {
      */
     public static int getZ(long packed) {
         return (int) ((packed << 38) >> 38);
+    }
+
+    public static Block getBlock(World world, long blockLong) {
+        return world.getBlockAt(getX(blockLong), getY(blockLong), getZ(blockLong));
+    }
+
+    public static List<Block> getBlocks(World world, List<Long> blockLongs) {
+        List<Block> blocks = new ObjectArrayList<>();
+        for (long blockLong : blockLongs) {
+            blocks.add(getBlock(world, blockLong));
+        }
+        return blocks;
     }
 }

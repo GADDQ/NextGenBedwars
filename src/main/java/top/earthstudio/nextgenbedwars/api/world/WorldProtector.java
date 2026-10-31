@@ -7,11 +7,13 @@ import org.bukkit.World;
 import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
+import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public interface WorldProtector extends IGameSubSystem {
     @Override
     default void update() {
@@ -48,7 +50,7 @@ public interface WorldProtector extends IGameSubSystem {
      * }
      * }</pre>
      *
-     * @param blockLong 由 {@link top.earthstudio.nextgenbedwars.api.util.BlockPosUtil#asLong}
+     * @param blockLong 由 {@link BlockUtil#asLong}
      *                  压缩后的方块坐标
      * @return 持有该方块的所有保护组 UUID，保证非 null 且非空
      */
@@ -64,4 +66,6 @@ public interface WorldProtector extends IGameSubSystem {
     void removeBlocksFromWorldGroup(LongSet blockLongs);
     void removeRegionFromWorldGroup(Pair<Vector3i, Vector3i> region);
     void scanWorldToProtectLater(World world, Pair<Vector3i, Vector3i> region, Consumer<Void> consumer);
+    List<Long> getAllProtectBlockLongs();
+    List<Long> getGroupProtectBlockLongs(UUID uuid);
 }
