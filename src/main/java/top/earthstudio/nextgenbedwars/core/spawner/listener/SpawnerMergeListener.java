@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class SpawnerMergeListener implements Listener {
+public final class SpawnerMergeListener implements Listener {
     private final GameInstance gameInstance;
 
     public SpawnerMergeListener(GameInstance gameInstance) {

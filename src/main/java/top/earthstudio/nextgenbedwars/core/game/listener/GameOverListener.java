@@ -22,7 +22,7 @@ import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import java.time.Duration;
 import java.util.UUID;
 
-public class GameOverListener implements Listener {
+public final class GameOverListener implements Listener {
     public final GameInstance gameInstance;
 
     public GameOverListener(GameInstance gameInstance) {

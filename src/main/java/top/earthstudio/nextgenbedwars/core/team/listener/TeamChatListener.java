@@ -15,7 +15,7 @@ import top.earthstudio.nextgenbedwars.api.game.GameState;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
-public class TeamChatListener implements Listener { // TODO: global chat
+public final class TeamChatListener implements Listener { // TODO: global chat
     private final GameInstance gameInstance;
     private final TeamManager teamManager;
 
@@ -41,8 +41,10 @@ public class TeamChatListener implements Listener { // TODO: global chat
 
         for (Player player : team.players) { // TODO: allow config how message are presented, is allow to use color
             player.sendMessage(
-                    event.getPlayer().displayName().color(TextColor.color(team.teamColor.asARGB())).append(
-                            Component.text(" : ").color(NamedTextColor.WHITE)
+                    Component.text("<").color(NamedTextColor.WHITE).append(
+                                    event.getPlayer().displayName().color(TextColor.color(team.teamColor.asARGB()))
+                    ).append(
+                            Component.text("> ").color(NamedTextColor.WHITE)
                     ).append(
                             event.originalMessage().color(NamedTextColor.WHITE)
                     )

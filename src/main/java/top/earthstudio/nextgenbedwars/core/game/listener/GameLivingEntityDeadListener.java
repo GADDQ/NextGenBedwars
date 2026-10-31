@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class GameLivingEntityDeadListener implements Listener {
+public final class GameLivingEntityDeadListener implements Listener {
     private final GameInstance gameInstance;
 
     public GameLivingEntityDeadListener(GameInstance gameInstance) {

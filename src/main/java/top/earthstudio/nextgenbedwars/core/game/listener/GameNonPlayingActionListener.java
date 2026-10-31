@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.GameState;
 
-public class GameNonPlayingActionListener implements Listener {
+public final class GameNonPlayingActionListener implements Listener {
     private final GameInstance gameInstance;
 
     public GameNonPlayingActionListener(GameInstance gameInstance) {

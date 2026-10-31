@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class GameCraftingListener implements Listener {
+public final class GameCraftingListener implements Listener {
     private final GameInstance gameInstance;
 
     public GameCraftingListener(GameInstance gameInstance) {

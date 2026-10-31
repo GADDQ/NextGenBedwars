@@ -1,6 +1,5 @@
 package top.earthstudio.nextgenbedwars.api.util.ticker;
 
-import io.papermc.paper.util.Tick;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;

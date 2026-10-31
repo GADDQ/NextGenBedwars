@@ -15,7 +15,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
-public class WorldProtectListener implements Listener {
+public final class WorldProtectListener implements Listener {
     // TODO: i18n
     private final WorldProtector worldProtector;
     private final World world;

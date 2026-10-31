@@ -9,7 +9,7 @@ import org.joml.Vector3f;
 
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
-public class SpawnerAnimator {
+public final class SpawnerAnimator {
 
     // ================= 补间动画相关 =================
     private static final int ANIM_PERIOD = 160;

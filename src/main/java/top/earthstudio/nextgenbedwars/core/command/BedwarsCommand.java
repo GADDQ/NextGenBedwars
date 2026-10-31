@@ -12,7 +12,7 @@ import top.earthstudio.nextgenbedwars.core.command.admin.AdminCommand;
 import top.earthstudio.nextgenbedwars.core.command.common.CommonCommand;
 import top.earthstudio.nextgenbedwars.core.command.edit.EditCommandImpl;
 
-public class BedwarsCommand {
+public final class BedwarsCommand {
 
     public BedwarsCommand(JavaPlugin plugin) {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("bw");

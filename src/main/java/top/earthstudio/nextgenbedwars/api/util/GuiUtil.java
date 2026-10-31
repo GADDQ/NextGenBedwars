@@ -7,14 +7,12 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class GuiUtil {
+public final class GuiUtil {
     private GuiUtil() {}
 
     static public ItemStack button(Material material, Component name) {
         ItemStack itemStack = new ItemStack(material);
-        itemStack.editMeta(meta -> {
-            meta.displayName(name);
-        });
+        itemStack.editMeta(meta -> meta.displayName(name));
         return itemStack;
     }
 

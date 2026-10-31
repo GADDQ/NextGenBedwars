@@ -10,7 +10,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
-public class ShopInteractListener implements Listener {
+public final class ShopInteractListener implements Listener {
     private final ShopManager shopManager;
     private final GameInstance gameInstance;
 

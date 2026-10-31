@@ -11,7 +11,7 @@ import org.bukkit.persistence.PersistentDataType;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class ShopItemThrowListener implements Listener {
+public final class ShopItemThrowListener implements Listener {
     public final GameInstance gameInstance;
 
     public ShopItemThrowListener(GameInstance gameInstance) {

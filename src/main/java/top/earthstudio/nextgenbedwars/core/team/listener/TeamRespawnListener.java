@@ -29,7 +29,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 import java.time.Duration;
 import java.util.UUID;
 
-public class TeamRespawnListener implements Listener {
+public final class TeamRespawnListener implements Listener {
     private final TeamManager teamManager;
     private final GameInstance gameInstance;
 

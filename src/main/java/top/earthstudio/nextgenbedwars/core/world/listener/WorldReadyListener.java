@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
-public class WorldReadyListener implements Listener {
+public final class WorldReadyListener implements Listener {
     static private final Map<UUID, Queue<Consumer<World>>> pendingTasks = new ConcurrentHashMap<>();
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

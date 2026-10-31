@@ -28,7 +28,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 import java.util.UUID;
 
 // TODO: this might need be moved to proxy connector later
-public class GamePlayerChangedListener implements Listener { // TODO: detect connect instead of change world due to plugin is planned to support proxy only
+public final class GamePlayerChangedListener implements Listener { // TODO: detect connect instead of change world due to plugin is planned to support proxy only
     private final GameInstance gameInstance;
     private final UUID uuid = UUID.randomUUID();
 

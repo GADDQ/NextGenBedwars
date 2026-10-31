@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-public class AdminCommand {
+public final class AdminCommand {
     public static void build(LiteralArgumentBuilder<CommandSourceStack> root) {
         AdminCommand handler = new AdminCommand();
 

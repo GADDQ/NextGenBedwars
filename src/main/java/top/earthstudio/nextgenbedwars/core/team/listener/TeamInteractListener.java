@@ -27,7 +27,7 @@ import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 
 import java.util.List;
 
-public class TeamInteractListener implements Listener {  // TODO: i18n
+public final class TeamInteractListener implements Listener {  // TODO: i18n
     private final GameInstance gameInstance;
     private final TeamManager teamManager;
 

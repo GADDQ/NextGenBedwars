@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class CommonCommand {
+public final class CommonCommand {
 
     public static void build(LiteralArgumentBuilder<CommandSourceStack> root) {
         CommonCommand handler = new CommonCommand();

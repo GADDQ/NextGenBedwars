@@ -8,7 +8,7 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
 import top.earthstudio.nextgenbedwars.api.team.event.BedwarsPlayerDeadEvent;
 
-public class ProductTierListener implements Listener {
+public final class ProductTierListener implements Listener {
     public final GameInstance gameInstance;
     public final ProductTierManager productTierManager;
 

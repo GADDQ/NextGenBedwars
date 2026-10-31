@@ -24,7 +24,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-public class ItemShopPage extends ChestGuiPage {
+public final class ItemShopPage extends ChestGuiPage {
     private final boolean isCategoryFullSize = false;
     private int activeCategoryIndex = 0;
     private int currentCategoryIconPage = 0;

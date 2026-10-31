@@ -9,7 +9,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
-public class ShopEntityProtectListener implements Listener {
+public final class ShopEntityProtectListener implements Listener {
     private final ShopManager shopManager;
     private final GameInstance gameInstance;
 

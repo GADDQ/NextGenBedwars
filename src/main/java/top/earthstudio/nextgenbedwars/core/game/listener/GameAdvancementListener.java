@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class GameAdvancementListener implements Listener {
+public final class GameAdvancementListener implements Listener {
     private final GameInstance gameInstance;
 
     public GameAdvancementListener(GameInstance gameInstance) {

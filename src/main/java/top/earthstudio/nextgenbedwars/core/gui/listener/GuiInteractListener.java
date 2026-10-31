@@ -14,7 +14,7 @@ import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 
-public class GuiInteractListener implements Listener {
+public final class GuiInteractListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onGuiClick(InventoryClickEvent event) {
         IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());

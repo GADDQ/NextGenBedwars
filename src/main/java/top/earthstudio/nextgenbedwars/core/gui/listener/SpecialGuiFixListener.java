@@ -8,7 +8,7 @@ import top.earthstudio.nextgenbedwars.api.gui.IGuiHolder;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 
 @SuppressWarnings("UnstableApiUsage")
-public class SpecialGuiFixListener implements Listener {
+public final class SpecialGuiFixListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPrepareAnvil(org.bukkit.event.inventory.PrepareAnvilEvent event) {
         IGuiHolder guiHolder = GuiManagerImpl.getGuiHolder(event.getView());

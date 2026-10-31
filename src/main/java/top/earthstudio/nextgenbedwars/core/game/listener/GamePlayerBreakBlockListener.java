@@ -13,7 +13,7 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
 import java.util.Collection;
 
-public class GamePlayerBreakBlockListener implements Listener {
+public final class GamePlayerBreakBlockListener implements Listener {
     private final GameInstance gameInstance;
     private final ItemStack silkTouchTool;
 
