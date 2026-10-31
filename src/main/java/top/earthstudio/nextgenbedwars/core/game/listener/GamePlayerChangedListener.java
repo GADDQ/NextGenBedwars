@@ -41,12 +41,12 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) { // TODO: advanced starting countdown logic, disconnect event listener, clear/restore inventory
-        Player player = event.getPlayer();
+        Player eventPlayer = event.getPlayer();
 
-        if (player.getWorld() == gameInstance.getWorld()) { // JOIN
+        if (eventPlayer.getWorld() == gameInstance.getWorld()) { // JOIN
             switch (gameInstance.getGameState()) {
                 case WAITING:
-                    if (player.getWorld().getPlayerCount() >= gameInstance.getGame().minPlayers) {
+                    if (eventPlayer.getWorld().getPlayerCount() >= gameInstance.getGame().minPlayers) {
                         gameInstance.setGameState(GameState.STARTING);
                         Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(gameInstance, GameState.STARTING));
 
@@ -60,8 +60,8 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                     second = leftTick / 20;
 
                                     if (second % 10 == 0 || second < 10) {
-                                        gameInstance.getWorld().getPlayers().forEach(player1 -> {
-                                            player1.showTitle(Title.title(
+                                        gameInstance.getWorld().getPlayers().forEach(player -> {
+                                            player.showTitle(Title.title(
                                                     Component.text("游戏即将开始").color(NamedTextColor.GREEN),
                                                     Component.text("倒计时 ").append(Component.text(second)).append(Component.text(" 秒")),
                                                     Title.Times.times(
@@ -69,7 +69,7 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                                             Ticks.duration(30),
                                                             Ticks.duration(10))
                                             ));
-                                            player1.playSound(player1, Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
+                                            player.playSound(player, Sound.BLOCK_NOTE_BLOCK_HAT, 1, 1);
                                         });
                                     }
                                 }
@@ -95,21 +95,21 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                             return;
                                         }
 
-                                        team.players.forEach(player1 -> {
-                                            player1.setFireTicks(0);
-                                            player1.clearActivePotionEffects();
-                                            player1.setFallDistance(0);
-                                            player1.heal(Double.MAX_VALUE);
-                                            player1.setFoodLevel(20);
-                                            player1.setSaturation(0);
-                                            player1.setGameMode(GameMode.SURVIVAL);
-                                            player1.setVelocity(new Vector(0, 0, 0));
-                                            player1.getInventory().clear();
+                                        team.players.forEach(player -> {
+                                            player.setFireTicks(0);
+                                            player.clearActivePotionEffects();
+                                            player.setFallDistance(0);
+                                            player.heal(Double.MAX_VALUE);
+                                            player.setFoodLevel(20);
+                                            player.setSaturation(0);
+                                            player.setGameMode(GameMode.SURVIVAL);
+                                            player.setVelocity(new Vector(0, 0, 0));
+                                            player.getInventory().clear();
 
-                                            player1.teleport(team.respawnLocation);
-                                            player1.setScoreboard(scoreboard);
+                                            player.teleport(team.respawnLocation);
+                                            player.setScoreboard(scoreboard);
 
-                                            scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player1.getName());
+                                            scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player.getName());
                                         });
                                     });
 
@@ -132,21 +132,21 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                     }
                     break;
                 case STARTING:
-                    if (player.getWorld().getPlayerCount() > gameInstance.getGame().maxPlayers) {
-                        player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
-                        player.sendMessage(Component.text("由于房间已满，您已被传送回大厅！").color(NamedTextColor.RED));
+                    if (eventPlayer.getWorld().getPlayerCount() > gameInstance.getGame().maxPlayers) {
+                        eventPlayer.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
+                        eventPlayer.sendMessage(Component.text("由于房间已满，您已被传送回大厅！").color(NamedTextColor.RED));
                         return;
                     }
 
-                    if (player.getWorld().getPlayerCount() == gameInstance.getGame().maxPlayers) {
+                    if (eventPlayer.getWorld().getPlayerCount() == gameInstance.getGame().maxPlayers) {
                         // TODO: switch to 5s startup
                         return;
                     }
 
                     break;
                 case ENDING:
-                    player.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
-                    player.sendMessage(Component.text("您不能加入此房间，此房间已关闭！").color(NamedTextColor.RED));
+                    eventPlayer.teleport(Bukkit.getWorlds().getFirst().getSpawnLocation());
+                    eventPlayer.sendMessage(Component.text("您不能加入此房间，此房间已关闭！").color(NamedTextColor.RED));
                     break;
             }
         }
