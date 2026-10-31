@@ -59,7 +59,7 @@ public class GameOverListener implements Listener {
             return;
 
         gameInstance.setGameState(GameState.ENDING);
-        Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(gameInstance, GameState.EDITING));
+        Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(gameInstance, GameState.ENDING));
         Bukkit.getPluginManager().callEvent(new BedwarsGameOverEvent(gameInstance, winningTeam));
     }
 
