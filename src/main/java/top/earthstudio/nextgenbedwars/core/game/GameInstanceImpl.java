@@ -17,6 +17,7 @@ import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.game.listener.GameAdvancementListener;
 import top.earthstudio.nextgenbedwars.core.game.listener.GameCraftingListener;
+import top.earthstudio.nextgenbedwars.core.game.listener.GameLivingEntityDeadListener;
 import top.earthstudio.nextgenbedwars.core.game.listener.GamePlayerChangedListener;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
@@ -42,6 +43,7 @@ public final class GameInstanceImpl implements GameInstance {
     private GamePlayerChangedListener gamePlayerChangedListener;
     private GameCraftingListener gameCraftingListener;
     private GameAdvancementListener gameAdvancementListener;
+    private GameLivingEntityDeadListener gameLivingEntityDeadListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -91,9 +93,12 @@ public final class GameInstanceImpl implements GameInstance {
         gamePlayerChangedListener = new GamePlayerChangedListener(this);
         gameCraftingListener = new GameCraftingListener(this);
         gameAdvancementListener = new GameAdvancementListener(this);
+        gameLivingEntityDeadListener = new GameLivingEntityDeadListener(this);
+
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameCraftingListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameAdvancementListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gameLivingEntityDeadListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
@@ -121,12 +126,16 @@ public final class GameInstanceImpl implements GameInstance {
 
         if (!isEditMode) {
             gamePlayerChangedListener.shutdown();
+
             HandlerList.unregisterAll(gameCraftingListener);
             HandlerList.unregisterAll(gamePlayerChangedListener);
             HandlerList.unregisterAll(gameAdvancementListener);
+            HandlerList.unregisterAll(gameLivingEntityDeadListener);
+
             gameCraftingListener = null;
             gamePlayerChangedListener = null;
             gameAdvancementListener = null;
+            gameLivingEntityDeadListener = null;
         }
 
         gameConfig.release();
