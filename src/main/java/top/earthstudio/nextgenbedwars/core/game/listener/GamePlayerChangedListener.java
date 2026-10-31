@@ -8,6 +8,7 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.Ticks;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -15,6 +16,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.Vector;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.GameState;
@@ -37,7 +39,7 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) { // TODO: advanced starting countdown logic, disconnect event listener
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) { // TODO: advanced starting countdown logic, disconnect event listener, clear/restore inventory
         Player player = event.getPlayer();
 
         if (player.getWorld() == gameInstance.getWorld()) { // JOIN
@@ -88,8 +90,18 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
 
                                     teamManager.getAll().forEach(team ->
                                             team.players.forEach(player1 -> {
+                                                player1.setFireTicks(0);
+                                                player1.clearActivePotionEffects();
+                                                player1.setFallDistance(0);
+                                                player1.heal(Double.MAX_VALUE);
+                                                player1.setFoodLevel(20);
+                                                player1.setSaturation(0);
+                                                player.setGameMode(GameMode.SURVIVAL);
+                                                player.setVelocity(new Vector(0, 0, 0));
+
                                                 player1.teleport(team.respawnLocation);
                                                 player1.setScoreboard(scoreboard);
+
                                                 scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player1.getName());
                                             })
                                     );
