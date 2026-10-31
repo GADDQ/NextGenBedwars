@@ -27,7 +27,7 @@ import java.util.UUID;
 
 import static java.util.Collections.shuffle;
 
-public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejoin player support
+public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejoin player support, ScoreBoard Team Manager
     private Map<UUID, Team> teams;
     private Map<Color, Team> teamsByColor;
     private Map<Team, Set<Player>> teamSpectators;

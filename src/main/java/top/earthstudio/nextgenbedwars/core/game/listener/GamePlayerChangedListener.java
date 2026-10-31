@@ -81,14 +81,13 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
 
                                     teamManager.randomAssignTeam(gameInstance.getWorld().getPlayers());
 
-                                    teamManager.getAll().forEach(team ->
-                                            scoreboard.registerNewTeam(((TextComponent) team.displayName).content())
-                                                    .prefix(
-                                                            Component.text().color(
-                                                                    TextColor.color(team.teamColor.asARGB())
-                                                            ).build()
-                                                    )
-                                    );
+                                    teamManager.getAll().forEach(team -> { // TODO: FIXME: this is a temp color solution, please refactor TeamManagerImpl to support ScoreBoard Team Natively!
+                                        var sbTeam = scoreboard.registerNewTeam(((TextComponent) team.displayName).content());
+
+                                        TextColor textColor = TextColor.color(team.teamColor.asRGB());
+                                        NamedTextColor namedColor = NamedTextColor.nearestTo(textColor);
+                                        sbTeam.color(namedColor);
+                                    });
 
                                     teamManager.getAll().forEach(team -> {
                                         if (team.players.isEmpty()) {
