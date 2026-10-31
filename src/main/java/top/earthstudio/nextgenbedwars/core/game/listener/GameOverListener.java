@@ -40,14 +40,14 @@ public class GameOverListener implements Listener {
         TeamManager teamManager = gameInstance.get(TeamManager.class);
 
         int hasBedTeamCount = 0;
-        int estimatedTeamCount = 0;
+        int eliminatedTeamCount = 0;
         Team winningTeam = null;
         for (Team team : teamManager.getAll()) {
             if (team.isBedAlive)
                 hasBedTeamCount++;
 
             if (team.players.size() == teamManager.getSpectators(team).size())
-                estimatedTeamCount++;
+                eliminatedTeamCount++;
             else
                 winningTeam = team;
         }
@@ -55,7 +55,7 @@ public class GameOverListener implements Listener {
         if (hasBedTeamCount > 1)
             return;
 
-        if (estimatedTeamCount < teamManager.getAll().size() - 1)
+        if (eliminatedTeamCount < teamManager.getAll().size() - 1)
             return;
 
         gameInstance.setGameState(GameState.ENDING);
