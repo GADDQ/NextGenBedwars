@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.Pair;
 
 import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,6 +15,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.api.world.event.BedwarsWorldReadyEvent;
+
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
 import java.io.File;
@@ -34,6 +36,8 @@ public class WorldManager {
     private static Set<UUID> exportingUuids;
     private static Map<UUID, File> pendingDestroyAfterExport;
 
+    static private WorldReadyListener worldReadyListener;
+
     private WorldManager() {}
 
     static public void initialize(JavaPlugin plugin) {
@@ -43,6 +47,9 @@ public class WorldManager {
         exportingUuids = ConcurrentHashMap.newKeySet();
         pendingDestroyAfterExport = new ConcurrentHashMap<>();
         worlds = new ConcurrentHashMap<>();
+
+        worldReadyListener = new WorldReadyListener();
+        Bukkit.getPluginManager().registerEvents(worldReadyListener, plugin);
 
         cleanupOrphanedWorlds();
     }
@@ -262,11 +269,15 @@ public class WorldManager {
 
         while (!pendingUuids.isEmpty() || !exportingUuids.isEmpty()) {
             try {
+                //noinspection BusyWait
                 Thread.sleep(20);
             } catch (InterruptedException e) {
                 break;
             }
         }
+
+        HandlerList.unregisterAll(worldReadyListener);
+        worldReadyListener = null;
 
         worlds.clear();
         worlds = null;

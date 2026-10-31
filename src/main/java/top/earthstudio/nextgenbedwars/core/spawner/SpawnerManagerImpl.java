@@ -3,12 +3,17 @@ package top.earthstudio.nextgenbedwars.core.spawner;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.HandlerList;
 
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
+
+import top.earthstudio.nextgenbedwars.core.spawner.listener.SpawnerMergeListener;
 
 import java.util.List;
 import java.util.Map;
@@ -18,14 +23,16 @@ public class SpawnerManagerImpl implements SpawnerManager {
     private Map<UUID, SpawnerEntity> spawners;
     private World world;
 
-    private GameInstance gameInstance;
+    private SpawnerMergeListener spawnerMergeListener;
 
     private SpawnerConfig spawnerConfig;
 
     public SpawnerManagerImpl(GameInstance gameInstance) {
         spawners = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
-        this.gameInstance = gameInstance;
+
+        spawnerMergeListener = new SpawnerMergeListener(gameInstance);
+        Bukkit.getPluginManager().registerEvents(spawnerMergeListener, BedwarsAPI.getInstance().plugin());
 
         spawnerConfig = new SpawnerConfig(gameInstance);
         spawnerConfig.getValues().forEach(this::add);
@@ -82,7 +89,8 @@ public class SpawnerManagerImpl implements SpawnerManager {
         spawnerConfig.release();
         spawnerConfig = null;
 
-        gameInstance = null;
+        HandlerList.unregisterAll(spawnerMergeListener);
+        spawnerMergeListener = null;
 
         world = null;
         spawners.values().forEach(SpawnerEntity::destroy);
