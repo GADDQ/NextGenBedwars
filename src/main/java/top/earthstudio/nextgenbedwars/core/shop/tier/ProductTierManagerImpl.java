@@ -10,7 +10,7 @@ import org.bukkit.event.HandlerList;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
-import top.earthstudio.nextgenbedwars.core.shop.listener.ProductTierListener;
+import top.earthstudio.nextgenbedwars.core.shop.tier.listener.ProductTierListener;
 
 import java.util.Map;
 import java.util.UUID;

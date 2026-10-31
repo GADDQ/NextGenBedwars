@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.shop.listener;
+package top.earthstudio.nextgenbedwars.core.shop.tier.listener;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
