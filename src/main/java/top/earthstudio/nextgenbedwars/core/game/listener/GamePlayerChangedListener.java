@@ -96,8 +96,8 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                                 player1.heal(Double.MAX_VALUE);
                                                 player1.setFoodLevel(20);
                                                 player1.setSaturation(0);
-                                                player.setGameMode(GameMode.SURVIVAL);
-                                                player.setVelocity(new Vector(0, 0, 0));
+                                                player1.setGameMode(GameMode.SURVIVAL);
+                                                player1.setVelocity(new Vector(0, 0, 0));
 
                                                 player1.teleport(team.respawnLocation);
                                                 player1.setScoreboard(scoreboard);
