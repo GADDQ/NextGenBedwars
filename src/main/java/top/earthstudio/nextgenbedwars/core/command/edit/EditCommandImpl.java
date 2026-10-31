@@ -38,7 +38,7 @@ import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 
-import top.earthstudio.nextgenbedwars.api.util.ColorUtil;
+import top.earthstudio.nextgenbedwars.api.util.TextUtil;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 
 import java.util.Collection;
@@ -528,7 +528,7 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
 
         assert instance != null;
-        instance.getGame().displayName = ColorUtil.toTextComponent(name);
+        instance.getGame().displayName = TextUtil.toTextComponent(name);
 
         player.sendMessage(Component.text("实例显示名称已设置为：").color(NamedTextColor.GREEN).append(instance.getGame().displayName));
 
