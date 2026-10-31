@@ -20,6 +20,7 @@ import org.bukkit.util.Vector;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.game.GameState;
+import top.earthstudio.nextgenbedwars.api.game.event.BedwarsGameStateChangedEvent;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
@@ -47,6 +48,7 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                 case WAITING:
                     if (player.getWorld().getPlayerCount() >= gameInstance.getGame().minPlayers) {
                         gameInstance.setGameState(GameState.STARTING);
+                        Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(gameInstance, GameState.STARTING));
 
                         GlobalTicker.set(uuid, new TickerTask() { // TODO: wait tick can changed in config
                             int leftTick = 1200;
@@ -88,25 +90,32 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                                                     )
                                     );
 
-                                    teamManager.getAll().forEach(team ->
-                                            team.players.forEach(player1 -> {
-                                                player1.setFireTicks(0);
-                                                player1.clearActivePotionEffects();
-                                                player1.setFallDistance(0);
-                                                player1.heal(Double.MAX_VALUE);
-                                                player1.setFoodLevel(20);
-                                                player1.setSaturation(0);
-                                                player1.setGameMode(GameMode.SURVIVAL);
-                                                player1.setVelocity(new Vector(0, 0, 0));
+                                    teamManager.getAll().forEach(team -> {
+                                        if (team.players.isEmpty()) {
+                                            team.isBedAlive = false;
+                                            return;
+                                        }
 
-                                                player1.teleport(team.respawnLocation);
-                                                player1.setScoreboard(scoreboard);
+                                        team.players.forEach(player1 -> {
+                                            player1.setFireTicks(0);
+                                            player1.clearActivePotionEffects();
+                                            player1.setFallDistance(0);
+                                            player1.heal(Double.MAX_VALUE);
+                                            player1.setFoodLevel(20);
+                                            player1.setSaturation(0);
+                                            player1.setGameMode(GameMode.SURVIVAL);
+                                            player1.setVelocity(new Vector(0, 0, 0));
+                                            player1.getInventory().clear();
 
-                                                scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player1.getName());
-                                            })
-                                    );
+                                            player1.teleport(team.respawnLocation);
+                                            player1.setScoreboard(scoreboard);
+
+                                            scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player1.getName());
+                                        });
+                                    });
 
                                     gameInstance.setGameState(GameState.PLAYING);
+                                    Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(gameInstance, GameState.PLAYING));
                                     gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title( // TODO: isShowStartTitle
                                             Component.text("游戏开始").color(NamedTextColor.GREEN),
                                             Component.text("保护你的床！").color(NamedTextColor.RED),
@@ -150,6 +159,7 @@ public class GamePlayerChangedListener implements Listener { // TODO: detect con
                 case STARTING:
                     if (event.getFrom().getPlayerCount() < gameInstance.getGame().minPlayers) {
                         gameInstance.setGameState(GameState.WAITING);
+                        Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(gameInstance, GameState.WAITING));
                         gameInstance.getWorld().getPlayers().forEach(player1 -> player1.showTitle(Title.title(
                                 Component.text("启动已暂停").color(NamedTextColor.RED),
                                 Component.text("玩家数量不足")

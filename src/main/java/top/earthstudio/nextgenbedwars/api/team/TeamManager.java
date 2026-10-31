@@ -6,9 +6,13 @@ import org.bukkit.entity.Player;
 import top.earthstudio.nextgenbedwars.api.game.IManager;
 
 import java.util.List;
+import java.util.Set;
 
+@SuppressWarnings("unused")
 public interface TeamManager extends IManager<Team> {
     Team get(Color color);
     Team get(Player player);
     void randomAssignTeam(List<Player> players);
+    boolean isSpectator(Player player);
+    Set<Player> getSpectators(Team team);
 }

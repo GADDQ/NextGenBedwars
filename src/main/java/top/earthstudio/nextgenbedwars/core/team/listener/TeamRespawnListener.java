@@ -55,8 +55,16 @@ public class TeamRespawnListener implements Listener {
         if (teamManager.get(player) == null)
             return;
 
+        Team team = teamManager.get(player);
+
+        if (!team.isBedAlive)
+            teamManager.getSpectators(team).add(player);
+
+        BedwarsPlayerDeadEvent sendEvent = new BedwarsPlayerDeadEvent(gameInstance, player, !team.isBedAlive);
+        Bukkit.getPluginManager().callEvent(sendEvent);
+
         event.setCancelled(true);
-        tryRespawn(player, teamManager.get(player), true);
+        tryRespawn(player, team, true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -68,17 +76,22 @@ public class TeamRespawnListener implements Listener {
         if (teamManager.get(player) == null)
             return;
 
+        Team team = teamManager.get(player);
+
+        if (!team.isBedAlive)
+            teamManager.getSpectators(team).add(player);
+
         event.setCancelled(true);
         event.deathMessage(null);
 
         // TODO: kill message
-        BedwarsPlayerDeadEvent sendEvent = new BedwarsPlayerDeadEvent(gameInstance, player);
+        BedwarsPlayerDeadEvent sendEvent = new BedwarsPlayerDeadEvent(gameInstance, player, !team.isBedAlive);
         Bukkit.getPluginManager().callEvent(sendEvent);
 
         if (sendEvent.isCancelled())
             return;
 
-        tryRespawn(player, teamManager.get(player), true);
+        tryRespawn(player, team, true);
     }
 
     private void tryRespawn(Player player, Team team, boolean teleportToSpectatorRespawnPoint) { // TODO: respawn cannot see other player, this == below TODO

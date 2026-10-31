@@ -15,6 +15,7 @@ public interface GameInstance {
     World getWorld();
     boolean isEditMode();
     void saveGame();
+    UUID getUUID();
 
     <M extends IGameSubSystem> M get(Class<M> type);
 }

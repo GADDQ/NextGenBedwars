@@ -9,17 +9,19 @@ import org.jetbrains.annotations.NotNull;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class BedwarsPlayerDeadEvent extends Event implements Cancellable { // TODO: who cause the death?
+public class BedwarsPlayerDeadEvent extends Event implements Cancellable { // TODO: who cause the death? uncancellable condition?
     private static final HandlerList HANDLERS = new HandlerList();
 
-    public GameInstance gameInstance;
-    public Player player;
+    public final GameInstance gameInstance;
+    public final Player player;
+    public final boolean isFinalDeath;
 
     private boolean isCancelled = false;
 
-    public BedwarsPlayerDeadEvent(GameInstance gameInstance, Player player) {
+    public BedwarsPlayerDeadEvent(GameInstance gameInstance, Player player, boolean isFinalDeath) {
         this.gameInstance = gameInstance;
         this.player = player;
+        this.isFinalDeath = isFinalDeath;
     }
 
     @Override

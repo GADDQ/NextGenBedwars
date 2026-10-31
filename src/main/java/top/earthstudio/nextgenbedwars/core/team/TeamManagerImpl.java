@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.team;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.World;
@@ -21,6 +22,7 @@ import top.earthstudio.nextgenbedwars.core.team.listener.TeamRespawnListener;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static java.util.Collections.shuffle;
@@ -28,6 +30,7 @@ import static java.util.Collections.shuffle;
 public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejoin player support
     private Map<UUID, Team> teams;
     private Map<Color, Team> teamsByColor;
+    private Map<Team, Set<Player>> teamSpectators;
 
     private TeamInteractListener teamInteractListener;
     private TeamRespawnListener teamRespawnListener;
@@ -42,6 +45,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     public TeamManagerImpl(GameInstance gameInstance) {
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
+        teamSpectators = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
 
         if (!gameInstance.isEditMode()) {
@@ -70,6 +74,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         team.uuid = uuid;
         teams.put(uuid, team);
         teamsByColor.put(team.teamColor, team);
+        teamSpectators.put(team, new ObjectOpenHashSet<>());
         return uuid;
     }
 
@@ -108,6 +113,21 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     }
 
     @Override
+    public boolean isSpectator(Player player) {
+        Team team = get(player);
+
+        if (team == null)
+            return true;
+
+        return getSpectators(team).contains(player);
+    }
+
+    @Override
+    public Set<Player> getSpectators(Team team) {
+        return teamSpectators.get(team);
+    }
+
+    @Override
     public List<Team> getAll() {
         List<Team> teamList = new ObjectArrayList<>();
         teamList.addAll(teams.values());
@@ -116,7 +136,9 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
     @Override
     public void remove(UUID uuid) {
-        teamsByColor.remove(teams.remove(uuid).teamColor);
+        Team team = teams.remove(uuid);
+        teamsByColor.remove(team.teamColor);
+        teamSpectators.remove(team).clear();
     }
 
     @Override
@@ -142,6 +164,8 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
         this.gameInstance = null;
 
+        teamSpectators.clear();
+        teamSpectators = null;
         teamsByColor.clear();
         teamsByColor = null;
         teams.clear();

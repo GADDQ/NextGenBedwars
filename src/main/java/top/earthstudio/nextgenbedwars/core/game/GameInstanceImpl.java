@@ -13,12 +13,10 @@ import org.joml.Vector3i;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.*;
+import top.earthstudio.nextgenbedwars.api.game.event.BedwarsGameStateChangedEvent;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
-import top.earthstudio.nextgenbedwars.core.game.listener.GameAdvancementListener;
-import top.earthstudio.nextgenbedwars.core.game.listener.GameCraftingListener;
-import top.earthstudio.nextgenbedwars.core.game.listener.GameLivingEntityDeadListener;
-import top.earthstudio.nextgenbedwars.core.game.listener.GamePlayerChangedListener;
+import top.earthstudio.nextgenbedwars.core.game.listener.*;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
@@ -44,6 +42,7 @@ public final class GameInstanceImpl implements GameInstance {
     private GameCraftingListener gameCraftingListener;
     private GameAdvancementListener gameAdvancementListener;
     private GameLivingEntityDeadListener gameLivingEntityDeadListener;
+    private GameOverListener gameOverListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -69,6 +68,7 @@ public final class GameInstanceImpl implements GameInstance {
 
             if (isEditMode) {
                 gameState = GameState.EDITING;
+                Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(this, GameState.EDITING));
             } else {
                 WorldManager.forceLoadRegions(worldUUID, game.region);
 
@@ -89,16 +89,19 @@ public final class GameInstanceImpl implements GameInstance {
         isReady = true;
 
         gameState = GameState.WAITING;
+        Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(this, GameState.WAITING));
 
         gamePlayerChangedListener = new GamePlayerChangedListener(this);
         gameCraftingListener = new GameCraftingListener(this);
         gameAdvancementListener = new GameAdvancementListener(this);
         gameLivingEntityDeadListener = new GameLivingEntityDeadListener(this);
+        gameOverListener = new GameOverListener(this);
 
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameCraftingListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameAdvancementListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameLivingEntityDeadListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gameOverListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
@@ -131,11 +134,13 @@ public final class GameInstanceImpl implements GameInstance {
             HandlerList.unregisterAll(gamePlayerChangedListener);
             HandlerList.unregisterAll(gameAdvancementListener);
             HandlerList.unregisterAll(gameLivingEntityDeadListener);
+            HandlerList.unregisterAll(gameOverListener);
 
             gameCraftingListener = null;
             gamePlayerChangedListener = null;
             gameAdvancementListener = null;
             gameLivingEntityDeadListener = null;
+            gameOverListener = null;
         }
 
         gameConfig.release();
@@ -172,6 +177,7 @@ public final class GameInstanceImpl implements GameInstance {
 
     @Override public World getWorld() { return world; }
     @Override public boolean isEditMode() { return isEditMode; }
+    @Override public UUID getUUID() { return game.uuid; }
 
     @Override
     public <M extends IGameSubSystem> M get(Class<M> type) {
