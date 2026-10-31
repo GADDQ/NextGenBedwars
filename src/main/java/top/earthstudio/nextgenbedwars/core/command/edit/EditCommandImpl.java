@@ -562,7 +562,7 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         Player player = (Player) ctx.getSource().getSender();
         GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
         assert instance != null;
-        instance.getGame().waitingLobby = player.getLocation();
+        instance.getGame().waitingLobbyLocation = player.getLocation();
         player.sendMessage(Component.text("已将当前位置设为等待大厅 (waitingLobby)！").color(NamedTextColor.GREEN));
         return Command.SINGLE_SUCCESS;
     }
@@ -571,7 +571,7 @@ public class EditCommandImpl implements EditCommand { // TODO: i18n
         Player player = (Player) ctx.getSource().getSender();
         GameInstance instance = GameManager.getInstanceByWorld(player.getWorld());
         assert instance != null;
-        instance.getGame().spectatorRespawnPoint = player.getLocation();
+        instance.getGame().spectatorRespawnLocation = player.getLocation();
         player.sendMessage(Component.text("已将当前位置设为观察者重生点 (spectatorRespawnPoint)！").color(NamedTextColor.GREEN));
         return Command.SINGLE_SUCCESS;
     }

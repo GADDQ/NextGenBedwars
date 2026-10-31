@@ -43,6 +43,8 @@ public final class GameInstanceImpl implements GameInstance {
     private GameAdvancementListener gameAdvancementListener;
     private GameLivingEntityDeadListener gameLivingEntityDeadListener;
     private GameOverListener gameOverListener;
+    private GamePlayerBreakBlockListener gamePlayerBreakBlockListener;
+    private GameNonPlayingActionListener gameNonPlayingActionListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -96,12 +98,16 @@ public final class GameInstanceImpl implements GameInstance {
         gameAdvancementListener = new GameAdvancementListener(this);
         gameLivingEntityDeadListener = new GameLivingEntityDeadListener(this);
         gameOverListener = new GameOverListener(this);
+        gamePlayerBreakBlockListener = new GamePlayerBreakBlockListener(this);
+        gameNonPlayingActionListener = new GameNonPlayingActionListener(this);
 
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameCraftingListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameAdvancementListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameLivingEntityDeadListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameOverListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gamePlayerBreakBlockListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gameNonPlayingActionListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
@@ -135,12 +141,16 @@ public final class GameInstanceImpl implements GameInstance {
             HandlerList.unregisterAll(gameAdvancementListener);
             HandlerList.unregisterAll(gameLivingEntityDeadListener);
             HandlerList.unregisterAll(gameOverListener);
+            HandlerList.unregisterAll(gamePlayerBreakBlockListener);
+            HandlerList.unregisterAll(gameNonPlayingActionListener);
 
             gameCraftingListener = null;
             gamePlayerChangedListener = null;
             gameAdvancementListener = null;
             gameLivingEntityDeadListener = null;
             gameOverListener = null;
+            gamePlayerBreakBlockListener = null;
+            gameNonPlayingActionListener = null;
         }
 
         gameConfig.release();

@@ -38,8 +38,8 @@ public final class GameConfig {
                 game.maxPlayers = loaded.maxPlayers;
                 game.minPlayers = loaded.minPlayers;
                 game.displayName = loaded.displayName;
-                game.waitingLobby = loaded.waitingLobby;
-                game.spectatorRespawnPoint = loaded.spectatorRespawnPoint;
+                game.waitingLobbyLocation = loaded.waitingLobbyLocation;
+                game.spectatorRespawnLocation = loaded.spectatorRespawnLocation;
                 game.region = loaded.region;
             }
         } catch (ConfigurateException e) {

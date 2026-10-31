@@ -101,8 +101,8 @@ public class CommonCommand {
             return 0;
         }
 
-        Location targetLoc = target.getGame().waitingLobby != null
-                ? target.getGame().waitingLobby
+        Location targetLoc = target.getGame().waitingLobbyLocation != null
+                ? target.getGame().waitingLobbyLocation
                 : target.getWorld().getSpawnLocation();
 
         player.teleport(targetLoc);

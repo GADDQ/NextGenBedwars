@@ -30,7 +30,7 @@ public final class NextGenBedwars extends JavaPlugin{
         BedwarsAPI.register(new BedwarsAPIImpl(this));
 
         logger = getComponentLogger();
-        logger.info(Component.text("NextGenBedwars v0.1.2-Alpha, MIT Licence. Made by Earth_Studio with <3. Now starting up...").color(NamedTextColor.GREEN));
+        logger.info(Component.text("NextGenBedwars v0.1.3-Alpha, MIT Licence. Made by Earth_Studio with <3. Now starting up...").color(NamedTextColor.GREEN));
 
         GlobalTicker.initialize(this);
         WorldManager.initialize(this);

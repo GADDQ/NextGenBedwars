@@ -6,6 +6,8 @@ NextGenBedwars now is on **Alpha**.
 
 **Basic functions were all ready!**
 
-**BUT, game will not over because check logic is not ready yet! you need to write some temporary code!**
+**BUT it's seriously lack of polishment!**
 
-**AND it's seriously lack of polishment! You might meet a tons of bugs while running the plugin!**
+You can edit game, and play it. **BUT you can play game ONLY.** Some critical function didn't implement yet!
+
+**You might meet a tons of bugs while trying to run the plugin!**

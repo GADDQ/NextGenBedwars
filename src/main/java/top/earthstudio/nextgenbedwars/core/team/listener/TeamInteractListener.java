@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
+import top.earthstudio.nextgenbedwars.api.game.GameState;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.team.event.BedwarsBedBrokenEvent;
@@ -38,6 +39,11 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerFight(EntityDamageByEntityEvent event) { // TODO: config to enable / disable
         if (event.getEntity().getWorld() != gameInstance.getWorld()) return;
+
+        if (gameInstance.getGameState() != GameState.PLAYING) {
+            event.setCancelled(true);
+            return;
+        }
 
         Player attacker;
 
@@ -75,6 +81,11 @@ public class TeamInteractListener implements Listener {  // TODO: i18n
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() != gameInstance.getWorld()) return;
+
+        if (gameInstance.getGameState() != GameState.PLAYING) {
+            event.setCancelled(true);
+            return;
+        }
 
         Player player = event.getPlayer();
         Team team = teamManager.get(player);

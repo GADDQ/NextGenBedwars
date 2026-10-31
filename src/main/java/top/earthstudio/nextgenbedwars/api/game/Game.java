@@ -19,8 +19,8 @@ public final class Game {
     public Component displayName;
     public int maxPlayers;
     public int minPlayers = 2;
-    public Location waitingLobby;
-    public Location spectatorRespawnPoint;
+    public Location waitingLobbyLocation;
+    public Location spectatorRespawnLocation;
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;
 
     public transient File mapTemplate;
@@ -29,10 +29,10 @@ public final class Game {
     public Game() {}
 
     public void locationsModifier(World world) {
-        if (waitingLobby != null)
-            waitingLobby.setWorld(world);
+        if (waitingLobbyLocation != null)
+            waitingLobbyLocation.setWorld(world);
 
-        if (spectatorRespawnPoint != null)
-            spectatorRespawnPoint.setWorld(world);
+        if (spectatorRespawnLocation != null)
+            spectatorRespawnLocation.setWorld(world);
     }
 }

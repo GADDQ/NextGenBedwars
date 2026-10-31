@@ -135,7 +135,7 @@ public class AdminCommand {
         game.name = name;
 
         WorldReadyListener.addTask(GameManager.getInstance(GameManager.addInstance(game, true)).getWorldUUID(), world -> {
-            Location targetLoc = (game.waitingLobby != null) ? game.waitingLobby : ((game.spectatorRespawnPoint != null) ? game.spectatorRespawnPoint : world.getSpawnLocation());
+            Location targetLoc = (game.waitingLobbyLocation != null) ? game.waitingLobbyLocation : ((game.spectatorRespawnLocation != null) ? game.spectatorRespawnLocation : world.getSpawnLocation());
             player.teleport(targetLoc);
             player.sendMessage(Component.text("您正在编辑游戏: " + name).color(NamedTextColor.GREEN));
             player.updateCommands();

@@ -40,6 +40,9 @@ public class TeamRespawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPLayerFallInVoid(EntityDamageEvent event) { // TODO: Send event with uncancelled property
+        if (event.getEntity().getWorld() != gameInstance.getWorld())
+            return;
+
         if (event.getEntityType() != EntityType.PLAYER)
             return;
 
@@ -47,8 +50,6 @@ public class TeamRespawnListener implements Listener {
             return;
 
         Player player = (Player) event.getEntity();
-        if (player.getWorld() != gameInstance.getWorld())
-            return;
 
         // TODO: spectator logic
 
@@ -110,7 +111,7 @@ public class TeamRespawnListener implements Listener {
         if (!team.isBedAlive) {
             GlobalTicker.set(uuid, () -> {
                 GlobalTicker.remove(uuid);
-                player.teleport(gameInstance.getGame().spectatorRespawnPoint);
+                player.teleport(gameInstance.getGame().spectatorRespawnLocation);
             });
             return;
         }
@@ -123,7 +124,7 @@ public class TeamRespawnListener implements Listener {
             public void run() { // TODO: i18n
                 if (isFirst) {
                     if (teleportToSpectatorRespawnPoint)
-                        player.teleport(gameInstance.getGame().spectatorRespawnPoint); // TODO: Configurable
+                        player.teleport(gameInstance.getGame().spectatorRespawnLocation); // TODO: Configurable
 
                     isFirst = false;
                 }
