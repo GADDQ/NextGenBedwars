@@ -1,19 +1,21 @@
 package top.earthstudio.nextgenbedwars.core.game;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-
 import org.bukkit.event.HandlerList;
+
 import org.joml.Vector3i;
+
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
+import top.earthstudio.nextgenbedwars.core.game.listener.GameAdvancementListener;
 import top.earthstudio.nextgenbedwars.core.game.listener.GameCraftingListener;
 import top.earthstudio.nextgenbedwars.core.game.listener.GamePlayerChangedListener;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
@@ -39,6 +41,7 @@ public final class GameInstanceImpl implements GameInstance {
 
     private GamePlayerChangedListener gamePlayerChangedListener;
     private GameCraftingListener gameCraftingListener;
+    private GameAdvancementListener gameAdvancementListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -87,8 +90,10 @@ public final class GameInstanceImpl implements GameInstance {
 
         gamePlayerChangedListener = new GamePlayerChangedListener(this);
         gameCraftingListener = new GameCraftingListener(this);
+        gameAdvancementListener = new GameAdvancementListener(this);
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameCraftingListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gameAdvancementListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
@@ -118,8 +123,10 @@ public final class GameInstanceImpl implements GameInstance {
             gamePlayerChangedListener.shutdown();
             HandlerList.unregisterAll(gameCraftingListener);
             HandlerList.unregisterAll(gamePlayerChangedListener);
-            gamePlayerChangedListener = null;
+            HandlerList.unregisterAll(gameAdvancementListener);
             gameCraftingListener = null;
+            gamePlayerChangedListener = null;
+            gameAdvancementListener = null;
         }
 
         gameConfig.release();
