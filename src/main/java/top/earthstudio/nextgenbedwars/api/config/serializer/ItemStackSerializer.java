@@ -1,10 +1,12 @@
 package top.earthstudio.nextgenbedwars.api.config.serializer;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
+
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -57,9 +59,9 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
                         : NamespacedKey.minecraft(enchantName);
 
                 if (key != null) {
-                    Enchantment ench = Registry.ENCHANTMENT.get(key);
-                    if (ench != null) {
-                        item.addUnsafeEnchantment(ench, level);
+                    Enchantment enchantment = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT).get(key);
+                    if (enchantment != null) {
+                        item.addUnsafeEnchantment(enchantment, level);
                     }
                 }
             }
