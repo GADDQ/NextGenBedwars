@@ -33,6 +33,8 @@ public class SpawnerEntity {
         leftTick = spawner.spawnerType.spawnTick.get(spawner.level);
 
         itemDisplay = spawner.location.getWorld().spawn(spawner.location, ItemDisplay.class, entity -> {
+            entity.setPersistent(false);
+
             entity.setBrightness(new Display.Brightness(15, 15));
 
             entity.setItemStack(new ItemStack(
@@ -53,6 +55,8 @@ public class SpawnerEntity {
         });
 
         textDisplay = spawner.location.getWorld().spawn(spawner.location, TextDisplay.class, entity -> {
+            entity.setPersistent(false);
+
             entity.setBrightness(new Display.Brightness(15, 15));
             entity.setBillboard(Display.Billboard.VERTICAL);
             entity.setShadowed(true);
