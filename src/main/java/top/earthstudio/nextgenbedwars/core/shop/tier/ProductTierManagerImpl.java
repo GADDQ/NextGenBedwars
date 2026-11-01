@@ -15,7 +15,7 @@ import top.earthstudio.nextgenbedwars.core.shop.tier.listener.ProductTierListene
 import java.util.Map;
 import java.util.UUID;
 
-public class ProductTierManagerImpl implements ProductTierManager {
+public class ProductTierManagerImpl implements ProductTierManager { // TODO: FIXME: refactor to fix some item doesn't need downgrade
     private Map<UUID, Object2IntOpenHashMap<String>> tiersMap;
     private ProductTierListener productTierListener;
 

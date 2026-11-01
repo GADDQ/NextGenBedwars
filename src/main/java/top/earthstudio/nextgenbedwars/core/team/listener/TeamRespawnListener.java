@@ -29,7 +29,7 @@ import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 import java.time.Duration;
 import java.util.UUID;
 
-public final class TeamRespawnListener implements Listener {
+public final class TeamRespawnListener implements Listener { // TODO: List<UUID> runningTasks, remove tasks when shutdown
     private final TeamManager teamManager;
     private final GameInstance gameInstance;
 
@@ -109,14 +109,14 @@ public final class TeamRespawnListener implements Listener {
         UUID uuid = UUID.randomUUID();
 
         if (!team.isBedAlive) {
-            GlobalTicker.set(uuid, () -> {
+            GlobalTicker.set(uuid, () -> { // TODO: FIXME: remove when shutdown
                 GlobalTicker.remove(uuid);
                 player.teleport(gameInstance.getGame().spectatorRespawnLocation);
             });
             return;
         }
 
-        GlobalTicker.set(uuid, new TickerTask() {
+        GlobalTicker.set(uuid, new TickerTask() { // TODO: FIXME: remove when shutdown
             boolean isFirst = true;
             int tick = team.respawnTick;
 

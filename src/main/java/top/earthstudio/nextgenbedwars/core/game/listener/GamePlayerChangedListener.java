@@ -44,7 +44,7 @@ public final class GamePlayerChangedListener implements Listener { // TODO: dete
         Player eventPlayer = event.getPlayer();
 
         if (eventPlayer.getWorld() == gameInstance.getWorld()) { // JOIN
-            switch (gameInstance.getGameState()) {
+            switch (gameInstance.getGameState()) { // TODO: FIXME: remove when shutdown
                 case WAITING:
                     if (eventPlayer.getWorld().getPlayerCount() >= gameInstance.getGame().minPlayers) {
                         gameInstance.setGameState(GameState.STARTING);
