@@ -148,6 +148,11 @@ public final class AdminCommand {
         String name = StringArgumentType.getString(ctx, "game");
         Player player = (Player) ctx.getSource().getSender();
 
+        if (name.isBlank()) {
+            player.sendMessage(Component.text("未指定游戏名称").color(NamedTextColor.RED));
+            return 0;
+        }
+
         player.sendMessage(Component.text("正在删除游戏: " + name).color(NamedTextColor.YELLOW));
 
         GameManager.removeInstanceByName(name);
@@ -166,7 +171,7 @@ public final class AdminCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int executeEnable(CommandContext<CommandSourceStack> ctx) { // TODO: auto open new Instance?
+    private int executeEnable(CommandContext<CommandSourceStack> ctx) { // TODO: auto open new Instance? FIXME: check is editing?
         String name = StringArgumentType.getString(ctx, "game");
         Player player = (Player) ctx.getSource().getSender();
 
