@@ -78,7 +78,7 @@ public final class TeamInteractListener implements Listener {  // TODO: i18n
             event.setCancelled(true);
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() != gameInstance.getWorld()) return;
 
