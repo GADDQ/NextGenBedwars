@@ -107,7 +107,10 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         int i = 0;
         for (Player player : playerList) {
             Team team = teamList.get(i % teamList.size());
-            team.players.add(player);
+
+            if (team.players.size() <= team.maxPlayerCount)
+                team.players.add(player);
+
             i++;
         }
     }
