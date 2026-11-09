@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.UUID;
 
 @ConfigSerializable
-public final class Game {
+public final class Game { // struct Game
     public String name;
     public Component displayName;
     public int maxPlayers;
@@ -24,6 +24,7 @@ public final class Game {
     public ObjectObjectImmutablePair<Vector3i, Vector3i> region;
 
     public transient File mapTemplate;
+
     public transient UUID uuid;
 
     public Game() {}

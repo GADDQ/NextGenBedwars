@@ -26,7 +26,7 @@ import java.util.UUID;
 public final class GameInstanceImpl implements GameInstance {
     public GameState gameState;
 
-    private final Game game;
+    private Game game;
     private UUID worldUUID;
     private World world;
     private Map<Class<? extends IGameSubSystem>, IGameSubSystem> subSystems;
@@ -51,20 +51,20 @@ public final class GameInstanceImpl implements GameInstance {
         this.isEditMode = isEditMode;
 
         this.gameConfig = new GameConfig(this);
-        gameConfig.load();
+        this.game = gameConfig.load();
 
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
-        if (game.mapTemplate == null)
+        if (this.game.mapTemplate == null)
             this.worldUUID = WorldManager.createEmptyTemp();
         else
-            this.worldUUID = WorldManager.create(game.mapTemplate);
+            this.worldUUID = WorldManager.create(this.game.mapTemplate);
 
         WorldReadyListener.addTask(worldUUID, world -> {
             if (isShutdown) return;
 
             this.world = world;
-            game.locationsModifier(world);
+            this.game.locationsModifier(world);
 
             buildSubSystems(subSystemTemplates);
 
@@ -72,16 +72,16 @@ public final class GameInstanceImpl implements GameInstance {
                 gameState = GameState.EDITING;
                 Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(this, GameState.EDITING));
             } else {
-                WorldManager.forceLoadRegions(worldUUID, game.region);
+                WorldManager.forceLoadRegions(worldUUID, this.game.region);
 
                 WorldProtector worldProtector = get(WorldProtector.class);
 
-                if (game.region.equals(new ObjectObjectImmutablePair<>(new Vector3i(0, 0, 0), new Vector3i(0, 0, 0)))) { // TODO: Config allow set no protection
+                if (this.game.region.equals(new ObjectObjectImmutablePair<>(new Vector3i(0, 0, 0), new Vector3i(0, 0, 0)))) { // TODO: Config allow set no protection
                     setReady();
                     return;
                 }
 
-                worldProtector.scanWorldToProtectLater(world, game.region, v -> setReady());
+                worldProtector.scanWorldToProtectLater(world, this.game.region, v -> setReady());
             }
         });
     }
@@ -153,8 +153,9 @@ public final class GameInstanceImpl implements GameInstance {
             gameNonPlayingActionListener = null;
         }
 
-        gameConfig.release();
         gameConfig = null;
+
+        game = null;
 
         if (subSystems != null) {
             subSystems.values().forEach(IGameSubSystem::shutdown);
@@ -173,7 +174,7 @@ public final class GameInstanceImpl implements GameInstance {
 
         isSaving = true;
 
-        gameConfig.save(false);
+        gameConfig.save(game);
         subSystems.values().forEach(IGameSubSystem::save);
 
         isSaving = false;
