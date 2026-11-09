@@ -25,7 +25,10 @@ public class SpawnerManagerImpl implements SpawnerManager {
 
     private SpawnerMergeListener spawnerMergeListener;
 
+    private SpawnerTypeConfig spawnerTypeConfig;
     private SpawnerConfig spawnerConfig;
+
+    private Map<String, SpawnerType> spawnerTypes;
 
     public SpawnerManagerImpl(GameInstance gameInstance) {
         spawners = new Object2ObjectOpenHashMap<>();
@@ -34,8 +37,11 @@ public class SpawnerManagerImpl implements SpawnerManager {
         spawnerMergeListener = new SpawnerMergeListener(gameInstance);
         Bukkit.getPluginManager().registerEvents(spawnerMergeListener, BedwarsAPI.getInstance().plugin());
 
+        spawnerTypeConfig = new SpawnerTypeConfig(gameInstance);
         spawnerConfig = new SpawnerConfig(gameInstance);
-        spawnerConfig.getValues().forEach(this::add);
+
+        spawnerTypes = spawnerTypeConfig.load();
+        spawnerConfig.load(spawnerTypes).forEach(this::add);
     }
 
     @Override
@@ -66,12 +72,12 @@ public class SpawnerManagerImpl implements SpawnerManager {
 
     @Override
     public List<String> getTypes() {
-        return spawnerConfig.getTypes();
+        return new ObjectArrayList<>(spawnerTypes.keySet());
     }
 
     @Override
     public SpawnerType getSpawnerType(String typeName) {
-        return spawnerConfig.getType(typeName);
+        return spawnerTypes.get(typeName);
     }
 
     @Override
@@ -86,8 +92,11 @@ public class SpawnerManagerImpl implements SpawnerManager {
 
     @Override
     public void shutdown() {
-        spawnerConfig.release();
+        spawnerTypes.clear();
+        spawnerTypes = null;
+
         spawnerConfig = null;
+        spawnerTypeConfig = null;
 
         HandlerList.unregisterAll(spawnerMergeListener);
         spawnerMergeListener = null;
