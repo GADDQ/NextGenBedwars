@@ -61,7 +61,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         this.gameInstance = gameInstance;
 
         this.teamConfig = new TeamConfig(gameInstance);
-        teamConfig.getValues().forEach(this::add);
+        teamConfig.load().forEach(this::add);
     }
 
     @Override
@@ -151,7 +151,6 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
     @Override
     public void shutdown() {
-        teamConfig.release();
         teamConfig = null;
 
         world = null;
