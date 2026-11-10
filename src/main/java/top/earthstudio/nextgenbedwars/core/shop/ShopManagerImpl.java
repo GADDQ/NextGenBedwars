@@ -11,12 +11,14 @@ import org.bukkit.event.HandlerList;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
+import top.earthstudio.nextgenbedwars.api.level.LevelManager;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopConfig;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopEntityProtectListener;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopInteractListener;
+import top.earthstudio.nextgenbedwars.core.shop.listener.ShopItemLevelListener;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopItemThrowListener;
 
 import java.util.List;
@@ -33,6 +35,7 @@ public class ShopManagerImpl implements ShopManager {
     private ShopInteractListener shopInteractListener;
     private ShopItemThrowListener shopItemThrowListener;
     private ShopEntityProtectListener shopEntityProtectListener;
+    private ShopItemLevelListener shopItemLevelListener;
 
     private GameInstance gameInstance;
 
@@ -60,6 +63,13 @@ public class ShopManagerImpl implements ShopManager {
         itemShopConfig = new ItemShopConfig(gameInstance);
         itemShopConfig.load();
         addProvider("item_shop", itemShopConfig.getProvider());
+    }
+
+    @Override
+    public void onReady() {
+        shopItemLevelListener = new ShopItemLevelListener(gameInstance, gameInstance.get(LevelManager.class),itemShopConfig);
+
+        Bukkit.getPluginManager().registerEvents(shopItemLevelListener, BedwarsAPI.getInstance().plugin());
     }
 
     @Override
@@ -128,9 +138,11 @@ public class ShopManagerImpl implements ShopManager {
             HandlerList.unregisterAll(shopItemThrowListener);
             HandlerList.unregisterAll(shopInteractListener);
             HandlerList.unregisterAll(shopEntityProtectListener);
+            HandlerList.unregisterAll(shopItemLevelListener);
             shopItemThrowListener = null;
             shopInteractListener = null;
             shopEntityProtectListener = null;
+            shopItemLevelListener = null;
         }
 
         gameInstance = null;

@@ -16,7 +16,7 @@ import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
-import top.earthstudio.nextgenbedwars.api.shop.tier.ProductTierManager;
+import top.earthstudio.nextgenbedwars.api.level.LevelManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
@@ -30,7 +30,7 @@ public final class ItemShopPage extends ChestGuiPage {
     private int currentCategoryIconPage = 0;
     private int currentCategoryContentPage = 0;
 
-    private final ProductTierManager productTierManager;
+    private final LevelManager levelManager;
     private final ShopExecutor shopExecutor;
     private final Player player;
 
@@ -38,7 +38,7 @@ public final class ItemShopPage extends ChestGuiPage {
 
     public ItemShopPage(GameInstance gameInstance, Player player, Component title, List<Category> categories) { // TODO: i18n
         super(title, 6);
-        this.productTierManager = gameInstance.get(ProductTierManager.class);
+        this.levelManager = gameInstance.get(LevelManager.class);
         this.shopExecutor = gameInstance.get(ShopExecutor.class);
         this.player = player;
 
@@ -134,7 +134,13 @@ public final class ItemShopPage extends ChestGuiPage {
                     break loop;
 
                 ShopItem shopItem = category.items.get(index);
-                int currentLevel = shopItem.isUpgradeable() ? productTierManager.getTier(player, shopItem.id) : 0;
+
+                int currentLevel;
+                if (shopItem.isUpgradeable()) {
+                    levelManager.createGroup(player.getUniqueId());
+                    levelManager.create(player.getUniqueId(), shopItem.id, shopItem.maxLevel);
+                    currentLevel = levelManager.getLevel(player.getUniqueId(), shopItem.id);
+                } else currentLevel = 0;
 
                 add(
                         x,
@@ -151,7 +157,7 @@ public final class ItemShopPage extends ChestGuiPage {
 
                             if (buyItem(player, shopItem)) {
                                 if (shopItem.isUpgradeable())
-                                    productTierManager.upgradeTier(player, shopItem.id, shopItem.maxLevel);
+                                    levelManager.upgrade(player.getUniqueId(), shopItem.id, 1);
 
                                 buildPage();
                                 update();
@@ -328,25 +334,34 @@ public final class ItemShopPage extends ChestGuiPage {
         }
 
         ItemStack toGive;
+        int currentLevel = shopItem.isUpgradeable() ? levelManager.getLevel(player.getUniqueId(), shopItem.id) : 0;
         if (shopItem.actualItems != null && !shopItem.actualItems.isEmpty())
-            toGive = shopItem.getActualItem(productTierManager.getTier(player, shopItem.id)).clone();
+            toGive = shopItem.getActualItem(currentLevel).clone();
         else
-            toGive = new ItemStack(shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getType(), shopItem.getShowItem(productTierManager.getTier(player, shopItem.id)).getAmount());
+            toGive = new ItemStack(shopItem.getShowItem(currentLevel).getType(), shopItem.getShowItem(currentLevel).getAmount());
 
-        if (!canFit(player, toGive, cost)) {
+        int existingSlot = -1;
+        if (shopItem.isUpgradeable()) {
+            existingSlot = findSlotByShopItemId(player, shopItem.id);
+        }
+
+        if (existingSlot == -1 && !canFit(player, toGive, cost)) {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_VILLAGER_NO, 1f, 1f);
             player.sendMessage(Component.text("购买失败！背包已满！").color(NamedTextColor.RED));
             return false;
         }
 
-        if (shopItem.isDecreaseLevelWhenPlayerDead)
-            toGive.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PdcKeys.shop.downgradeWhenDead, PersistentDataType.BOOLEAN, true));
-
-        if (shopItem.isKeepWhenDead)
-            toGive.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true));
-
-        if (!shopItem.isThrowable)
-            toGive.editMeta(itemMeta -> itemMeta.getPersistentDataContainer().set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false));
+        toGive.editMeta(itemMeta -> {
+            var pdc = itemMeta.getPersistentDataContainer();
+            if (shopItem.isDecreaseLevelWhenPlayerDead)
+                pdc.set(PdcKeys.shop.downgradeWhenDead, PersistentDataType.BOOLEAN, true);
+            if (shopItem.isKeepWhenDead)
+                pdc.set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true);
+            if (!shopItem.isThrowable)
+                pdc.set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
+            if (shopItem.id != null)
+                pdc.set(PdcKeys.shop.itemId, PersistentDataType.STRING, shopItem.id);
+        });
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
             if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem)) {
@@ -356,10 +371,16 @@ public final class ItemShopPage extends ChestGuiPage {
         }
 
         player.getInventory().removeItem(cost);
-        player.getInventory().addItem(toGive);
+
+
+        if (existingSlot != -1) {
+            player.getInventory().setItem(existingSlot, toGive);
+        } else {
+            player.getInventory().addItem(toGive);
+        }
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
-        player.sendMessage(Component.text("购买成功！").color(NamedTextColor.GREEN)); // TODO: replace text "你购买了 什么 多少"
+        player.sendMessage(Component.text("购买成功！").color(NamedTextColor.GREEN)); // TODO: buy what x?
         return true;
     }
 
@@ -405,5 +426,21 @@ public final class ItemShopPage extends ChestGuiPage {
         }
 
         return remaining <= (long) emptySlots * maxStack;
+    }
+
+    private int findSlotByShopItemId(Player player, String itemId) {
+        if (itemId == null) return -1;
+        var inv = player.getInventory();
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack item = inv.getItem(i);
+            if (item == null || item.getType().isAir()) continue;
+            var meta = item.getItemMeta();
+            if (meta == null) continue;
+            String id = meta.getPersistentDataContainer().get(PdcKeys.shop.itemId, PersistentDataType.STRING);
+            if (itemId.equals(id)) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

@@ -16,5 +16,6 @@ public final class PdcKeys {
         public static final NamespacedKey downgradeWhenDead = new NamespacedKey("nextgenbedwars", "shop_downgrade_when_dead");
         public static final NamespacedKey keepWhenDead = new NamespacedKey("nextgenbedwars", "shop_keep_when_dead");
         public static final NamespacedKey throwable = new NamespacedKey("nextgenbedwars", "shop_throwable");
+        public static final NamespacedKey itemId = new NamespacedKey("nextgenbedwars", "shop_item_id");
     }
 }
