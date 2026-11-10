@@ -9,7 +9,7 @@ import top.earthstudio.nextgenbedwars.api.level.LevelManager;
 import java.util.Map;
 import java.util.UUID;
 
-public class LevelManagerImpl implements LevelManager { // TODO: FIXME: refactor to fix some item doesn't need downgrade
+public class LevelManagerImpl implements LevelManager {
     private Map<UUID, Map<String, IntIntMutablePair>> levelGroups;
 
     public LevelManagerImpl(GameInstance gameInstance) {
