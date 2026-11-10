@@ -18,7 +18,7 @@ import java.io.File;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
-public abstract class Config<T> {
+public abstract class IConfig<T> {
     private final File file;
     private final YamlConfigurationLoader loader;
     private final TypeToken<T> typeToken;
@@ -26,11 +26,11 @@ public abstract class Config<T> {
 
     private final boolean hasGlobal;
 
-    protected Config(@NotNull GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal) {
+    protected IConfig(@NotNull GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal) {
         this(gameInstance, fileName, hasGlobal, null);
     }
 
-    protected Config(@NotNull GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal, @Nullable String nodeKey) {
+    protected IConfig(@NotNull GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal, @Nullable String nodeKey) {
         Type superClass = getClass().getGenericSuperclass();
         if (superClass instanceof ParameterizedType parameterized) {
             Type actualType = parameterized.getActualTypeArguments()[0];

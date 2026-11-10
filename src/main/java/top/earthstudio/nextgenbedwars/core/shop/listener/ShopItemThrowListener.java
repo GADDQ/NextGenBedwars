@@ -86,7 +86,6 @@ public final class ShopItemThrowListener implements Listener {
                 return;
             }
 
-            // 3.2 数字键 1-9 从快捷栏把不可丢弃物品换入容器
             if (event.getClick() == ClickType.NUMBER_KEY) {
                 int hotbarSlot = event.getHotbarButton();
                 if (hotbarSlot >= 0 && hotbarSlot < 9) {

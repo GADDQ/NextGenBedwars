@@ -1,12 +1,12 @@
 package top.earthstudio.nextgenbedwars.core.team;
 
-import top.earthstudio.nextgenbedwars.api.config.Config;
+import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 
 import java.util.List;
 
-public class TeamConfig extends Config<List<Team>> {
+public class TeamConfig extends IConfig<List<Team>> {
     public TeamConfig(GameInstance gameInstance) {
         super(gameInstance, "teams.yml", false, "teams");
     }

@@ -1,12 +1,12 @@
 package top.earthstudio.nextgenbedwars.core.shop;
 
-import top.earthstudio.nextgenbedwars.api.config.Config;
+import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 
 import java.util.List;
 
-public class ShopConfig extends Config<List<Shop>> {
+public class ShopConfig extends IConfig<List<Shop>> {
     protected ShopConfig(GameInstance gameInstance) {
         super(gameInstance, "shops.yml", false, "shops");
     }

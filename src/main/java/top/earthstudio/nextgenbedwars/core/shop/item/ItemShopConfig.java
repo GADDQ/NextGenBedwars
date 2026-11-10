@@ -7,7 +7,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.entity.Player;
 
-import top.earthstudio.nextgenbedwars.api.config.Config;
+import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
@@ -15,7 +15,7 @@ import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import java.util.List;
 import java.util.function.Function;
 
-public class ItemShopConfig extends Config<List<Category>> {
+public class ItemShopConfig extends IConfig<List<Category>> {
     private final GameInstance gameInstance;
     private final List<Category> categories;
 

@@ -2,7 +2,7 @@ package top.earthstudio.nextgenbedwars.core.spawner;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
-import top.earthstudio.nextgenbedwars.api.config.Config;
+import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
@@ -10,7 +10,7 @@ import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 import java.util.List;
 import java.util.Map;
 
-public class SpawnerConfig extends Config<List<Spawner>> {
+public class SpawnerConfig extends IConfig<List<Spawner>> {
     public SpawnerConfig(GameInstance gameInstance) {
         super(gameInstance, "spawners.yml", false, "spawners");
     }
