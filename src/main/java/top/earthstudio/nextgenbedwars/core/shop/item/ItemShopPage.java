@@ -164,6 +164,7 @@ public final class ItemShopPage extends ChestGuiPage {
 
                             if (isMaxLevel) {
                                 player.sendMessage(Component.text("该物品已达到最高等级！").color(NamedTextColor.RED));
+                                player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0f);
                                 return;
                             }
 

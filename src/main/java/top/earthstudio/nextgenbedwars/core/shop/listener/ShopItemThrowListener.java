@@ -5,9 +5,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
@@ -30,7 +33,28 @@ public final class ShopItemThrowListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onInventoryDrop(InventoryClickEvent event) {
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (event.getWhoClicked().getWorld() != gameInstance.getWorld())
+            return;
+
+        if (!isNotThrowable(event.getOldCursor()))
+            return;
+
+        Inventory top = event.getView().getTopInventory();
+        if (!isExternalContainer(top, event.getWhoClicked()))
+            return;
+
+        int topSize = top.getSize();
+        for (int rawSlot : event.getRawSlots()) {
+            if (rawSlot < topSize) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onInventoryClick(InventoryClickEvent event) {
         if (event.getWhoClicked().getWorld() != gameInstance.getWorld())
             return;
 
@@ -39,8 +63,53 @@ public final class ShopItemThrowListener implements Listener {
             ItemStack current = event.getCurrentItem();
             if (isNotThrowable(cursor) || isNotThrowable(current)) {
                 event.setCancelled(true);
+                return;
             }
         }
+
+        Inventory top = event.getView().getTopInventory();
+        Inventory clicked = event.getClickedInventory();
+
+        if (event.isShiftClick()) {
+            if (clicked != null && isPlayerInventory(clicked, event.getWhoClicked()) && isExternalContainer(top, event.getWhoClicked())) {
+                if (isNotThrowable(event.getCurrentItem())) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
+        }
+
+
+        if (clicked != null && isExternalContainer(clicked, event.getWhoClicked())) {
+            if (isNotThrowable(event.getCursor())) {
+                event.setCancelled(true);
+                return;
+            }
+
+            // 3.2 数字键 1-9 从快捷栏把不可丢弃物品换入容器
+            if (event.getClick() == ClickType.NUMBER_KEY) {
+                int hotbarSlot = event.getHotbarButton();
+                if (hotbarSlot >= 0 && hotbarSlot < 9) {
+                    ItemStack hotbarItem = event.getWhoClicked().getInventory().getItem(hotbarSlot);
+                    if (isNotThrowable(hotbarItem)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean isExternalContainer(Inventory inventory, org.bukkit.entity.HumanEntity player) {
+        if (inventory == null) return false;
+
+        if (inventory.equals(player.getInventory())) return false;
+
+        return true;
+    }
+
+    private boolean isPlayerInventory(Inventory inventory, org.bukkit.entity.HumanEntity player) {
+        return inventory != null && inventory.equals(player.getInventory());
     }
 
     private boolean isNotThrowable(ItemStack item) {
