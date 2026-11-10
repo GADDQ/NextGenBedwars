@@ -79,7 +79,7 @@ public class WorldProtectorImpl implements WorldProtector {
 
     @Override
     public boolean contains(long blockLong) {
-        return refCounts.get(blockLong) > 0;
+        return refCounts.containsKey(blockLong);
     }
 
     @Override
