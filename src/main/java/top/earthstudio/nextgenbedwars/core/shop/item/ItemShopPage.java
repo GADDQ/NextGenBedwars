@@ -127,6 +127,8 @@ public final class ItemShopPage extends ChestGuiPage {
         int maxX = isFullSize ? 8 : 7;
         int categorySize = isFullSize ? 27 : 21;
 
+        var playerGroup = levelManager.getAll(player.getUniqueId());
+
         int index = page * categorySize;
         loop: for (int y = 2; y <= 4; y++) {
             for (int x = minX; x <= maxX; x++) {
@@ -135,29 +137,47 @@ public final class ItemShopPage extends ChestGuiPage {
 
                 ShopItem shopItem = category.items.get(index);
 
-                int currentLevel;
-                if (shopItem.isUpgradeable()) {
-                    levelManager.createGroup(player.getUniqueId());
-                    levelManager.create(player.getUniqueId(), shopItem.id, shopItem.maxLevel);
-                    currentLevel = levelManager.getLevel(player.getUniqueId(), shopItem.id);
-                } else currentLevel = 0;
+                boolean hasPurchased = shopItem.isUpgradeable()
+                        && playerGroup != null
+                        && playerGroup.containsKey(shopItem.id);
+
+                int currentLevel = hasPurchased ? levelManager.getLevel(player.getUniqueId(), shopItem.id) : -1;
+                boolean isMaxLevel = hasPurchased && currentLevel >= shopItem.maxLevel;
+
+                ItemStack showItem;
+                if (!shopItem.isUpgradeable()) {
+                    showItem = shopItem.getShowItem(0);
+                } else if (isMaxLevel) {
+                    showItem = shopItem.getShowItem(currentLevel);
+                } else {
+                    int targetLevel = hasPurchased ? currentLevel + 1 : 0;
+                    showItem = shopItem.getShowItem(targetLevel);
+                }
 
                 add(
                         x,
                         y,
-                        shopItem.getShowItem(currentLevel),
-                        (player, clickType) -> { // TODO: add to quick buy, buy x64, buy x32
-                            if (clickType != ClickType.LEFT)
+                        showItem,
+                        (player, clickType) -> {
+                            if (clickType != ClickType.LEFT) // TODO: quick buy action: x32, x64
                                 return;
 
-                            if (shopItem.isUpgradeable() && currentLevel >= shopItem.maxLevel) {
+                            if (isMaxLevel) {
                                 player.sendMessage(Component.text("该物品已达到最高等级！").color(NamedTextColor.RED));
                                 return;
                             }
 
-                            if (buyItem(player, shopItem)) {
-                                if (shopItem.isUpgradeable())
-                                    levelManager.upgrade(player.getUniqueId(), shopItem.id, 1);
+                            int targetLevel = hasPurchased ? currentLevel + 1 : 0;
+
+                            if (buyItem(player, shopItem, targetLevel)) {
+                                if (shopItem.isUpgradeable()) {
+                                    if (!hasPurchased) {
+                                        levelManager.createGroup(player.getUniqueId());
+                                        levelManager.create(player.getUniqueId(), shopItem.id, shopItem.maxLevel);
+                                    } else {
+                                        levelManager.upgrade(player.getUniqueId(), shopItem.id, 1);
+                                    }
+                                }
 
                                 buildPage();
                                 update();
@@ -324,21 +344,22 @@ public final class ItemShopPage extends ChestGuiPage {
         }
     }
 
-    private boolean buyItem(Player player, ShopItem shopItem) { // TODO: i18n
+    private boolean buyItem(Player player, ShopItem shopItem, int targetLevel) { // TODO: i18n
         ItemStack cost = new ItemStack(shopItem.coinType, shopItem.price);
 
         if (!player.getInventory().containsAtLeast(cost, shopItem.price)) {
             player.playSound(player.getLocation(), org.bukkit.Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0.5f);
-            player.sendMessage(Component.text("货币不足！需要 " + shopItem.price + " 个 ").color(NamedTextColor.RED).append(Component.translatable(requireNonNull(shopItem.coinType.getItemTranslationKey()))));
+            player.sendMessage(Component.text("货币不足！需要 " + shopItem.price + " 个 ")
+                    .color(NamedTextColor.RED)
+                    .append(Component.translatable(requireNonNull(shopItem.coinType.getItemTranslationKey()))));
             return false;
         }
 
         ItemStack toGive;
-        int currentLevel = shopItem.isUpgradeable() ? levelManager.getLevel(player.getUniqueId(), shopItem.id) : 0;
         if (shopItem.actualItems != null && !shopItem.actualItems.isEmpty())
-            toGive = shopItem.getActualItem(currentLevel).clone();
+            toGive = shopItem.getActualItem(targetLevel).clone();
         else
-            toGive = new ItemStack(shopItem.getShowItem(currentLevel).getType(), shopItem.getShowItem(currentLevel).getAmount());
+            toGive = new ItemStack(shopItem.getShowItem(targetLevel).getType(), shopItem.getShowItem(targetLevel).getAmount());
 
         int existingSlot = -1;
         if (shopItem.isUpgradeable()) {
@@ -371,7 +392,6 @@ public final class ItemShopPage extends ChestGuiPage {
         }
 
         player.getInventory().removeItem(cost);
-
 
         if (existingSlot != -1) {
             player.getInventory().setItem(existingSlot, toGive);

@@ -46,7 +46,6 @@ public class GameManager {
         registerSubSystem(ShopManager.class, ShopManagerImpl::new);
         registerSubSystem(LevelManager.class, LevelManagerImpl::new);
         registerSubSystem(ShopExecutor.class, ShopExecutorImpl::new);
-        registerSubSystem(LevelManager.class, LevelManagerImpl::new);
     }
 
     static public void shutdown() {
