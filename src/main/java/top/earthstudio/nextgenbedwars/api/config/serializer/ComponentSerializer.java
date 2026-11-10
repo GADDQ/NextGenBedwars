@@ -1,21 +1,21 @@
 package top.earthstudio.nextgenbedwars.api.config.serializer;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.serialize.TypeSerializer;
 
+import top.earthstudio.nextgenbedwars.api.util.TextUtil;
+
 import java.lang.reflect.Type;
 
 public class ComponentSerializer implements TypeSerializer<Component> {
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
     @Override
     public Component deserialize(Type type, ConfigurationNode node) {
         String str = node.getString("");
-        return str.isEmpty() ? Component.empty() : MINI_MESSAGE.deserialize(str);
+        return str.isEmpty() ? Component.empty() : TextUtil.parse(str);
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ComponentSerializer implements TypeSerializer<Component> {
         if (obj == null || obj.equals(Component.empty())) {
             node.raw(null);
         } else {
-            node.set(MINI_MESSAGE.serialize(obj));
+            node.set(TextUtil.toMiniMessage(obj));
         }
     }
 }
