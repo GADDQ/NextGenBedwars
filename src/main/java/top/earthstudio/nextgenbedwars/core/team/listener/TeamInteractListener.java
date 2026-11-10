@@ -119,6 +119,10 @@ public final class TeamInteractListener implements Listener {  // TODO: i18n
                 }
 
                 event.setDropItems(false);
+
+                if (!targetTeam.isBedAlive) // TODO: this is a temp fix, need destroy empty team bed at beginning
+                    return;
+
                 targetTeam.isBedAlive = false;
 
                 player.getWorld().sendMessage(targetTeam.displayName.append(Component.text(" 的床被 ").color(NamedTextColor.RED).append(player.displayName().asComponent().append(Component.text("摧毁了！")))));
