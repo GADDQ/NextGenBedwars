@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.game.listener;
 
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.block.Container;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,6 +34,9 @@ public final class GamePlayerBreakBlockListener implements Listener {
             return;
 
         if (event.getPlayer().getGameMode() == GameMode.CREATIVE)
+            return;
+
+        if (event.getBlock().getState(false) instanceof Container)
             return;
 
         event.setExpToDrop(0);
