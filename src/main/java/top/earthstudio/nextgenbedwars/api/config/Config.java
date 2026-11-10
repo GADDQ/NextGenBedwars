@@ -34,6 +34,7 @@ public abstract class Config<T> {
         Type superClass = getClass().getGenericSuperclass();
         if (superClass instanceof ParameterizedType parameterized) {
             Type actualType = parameterized.getActualTypeArguments()[0];
+            //noinspection unchecked
             this.typeToken = (TypeToken<T>) TypeToken.get(actualType);
         } else {
             throw new IllegalArgumentException("Subclass must specify a generic type parameter: " + getClass().getName());
@@ -69,6 +70,7 @@ public abstract class Config<T> {
             throw new IllegalArgumentException("Saved object cannot be null!");
 
         if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            //noinspection ResultOfMethodCallIgnored
             file.getParentFile().mkdirs();
         }
 
@@ -81,6 +83,4 @@ public abstract class Config<T> {
             throw new RuntimeException("Failed to save config: " + file.getName(), e);
         }
     }
-
-    public void release() {}
 }
