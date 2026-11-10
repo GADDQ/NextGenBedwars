@@ -9,7 +9,6 @@ import org.bukkit.util.Transformation;
 import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
-import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 
 import java.util.UUID;
@@ -58,10 +57,6 @@ public class ShopEntity {
 
     public UUID getUuid() {
         return bodyEntity.getUniqueId();
-    }
-
-    public IGuiPage getGui(Player player) {
-        return shop.shopPageProvider.apply(player);
     }
 
     public void destroy() {

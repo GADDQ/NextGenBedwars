@@ -14,6 +14,7 @@ import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.Shop;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 
+import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopConfig;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopEntityProtectListener;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopInteractListener;
 import top.earthstudio.nextgenbedwars.core.shop.listener.ShopItemThrowListener;
@@ -21,9 +22,12 @@ import top.earthstudio.nextgenbedwars.core.shop.listener.ShopItemThrowListener;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 public class ShopManagerImpl implements ShopManager {
     private Map<UUID, ShopEntity> shops;
+    private Map<String, Function<Player, ? extends IGuiPage>> providers;
+
     private World world;
 
     private ShopInteractListener shopInteractListener;
@@ -33,9 +37,11 @@ public class ShopManagerImpl implements ShopManager {
     private GameInstance gameInstance;
 
     private ShopConfig shopConfig;
+    private ItemShopConfig itemShopConfig;
 
     public ShopManagerImpl(GameInstance gameInstance) {
         shops = new Object2ObjectOpenHashMap<>();
+        providers = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
         this.gameInstance = gameInstance;
 
@@ -50,13 +56,15 @@ public class ShopManagerImpl implements ShopManager {
         }
 
         shopConfig = new ShopConfig(gameInstance);
-        shopConfig.getValues().forEach(this::add);
+        shopConfig.load().forEach(this::add);
+        itemShopConfig = new ItemShopConfig(gameInstance);
+        itemShopConfig.load();
+        addProvider("item_shop", itemShopConfig.getProvider());
     }
 
     @Override
     public UUID add(Shop shop) {
         shop.location.setWorld(world);
-        shop.shopPageProvider = shopConfig.providerFor(shop.shopType);
 
         ShopEntity shopEntity = new ShopEntity(shop);
         UUID uuid = shopEntity.getUuid();
@@ -84,8 +92,19 @@ public class ShopManagerImpl implements ShopManager {
     }
 
     @Override
+    public void addProvider(String id, Function<Player, ? extends IGuiPage> provider) {
+        if (providers.putIfAbsent(id, provider) != null)
+            throw new IllegalStateException("Provider ID has already been used!");
+    }
+
+    @Override
+    public void removeProvider(String id) {
+        providers.remove(id);
+    }
+
+    @Override
     public IGuiPage getShopGui(UUID uuid, Player player) {
-        return shops.get(uuid).getGui(player);
+        return providers.get(shops.get(uuid).shop.shopType).apply(player);
     }
 
     @Override
@@ -100,7 +119,7 @@ public class ShopManagerImpl implements ShopManager {
 
     @Override
     public void shutdown() {
-        shopConfig.release();
+        itemShopConfig = null;
         shopConfig = null;
 
         world = null;
@@ -116,6 +135,8 @@ public class ShopManagerImpl implements ShopManager {
 
         gameInstance = null;
 
+        providers.clear();
+        providers = null;
         shops.forEach((uuid, shopEntity) -> shopEntity.destroy());
         shops.clear();
         shops = null;

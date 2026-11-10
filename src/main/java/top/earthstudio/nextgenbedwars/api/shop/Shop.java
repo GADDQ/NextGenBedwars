@@ -4,14 +4,10 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
-import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
-
 import java.util.UUID;
-import java.util.function.Function;
 
 @ConfigSerializable
 public final class Shop {
@@ -21,7 +17,6 @@ public final class Shop {
     public EntityType entityType;
     public Location location;
 
-    public transient Function<Player, ? extends IGuiPage> shopPageProvider;
     public transient UUID uuid;
 
     public Shop() {}

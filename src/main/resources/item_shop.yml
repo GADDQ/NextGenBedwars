@@ -1,6 +1,4 @@
-title: "<gold>物品商店"
-
-categories:
+itemShop:
   # ==================== 1. 方块 ====================
   - categoryIcon:
       material: ORANGE_TERRACOTTA
