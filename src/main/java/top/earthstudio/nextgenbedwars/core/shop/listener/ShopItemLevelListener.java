@@ -55,7 +55,7 @@ public final class ShopItemLevelListener implements Listener {
             levelManager.downgrade(player.getUniqueId(), itemId, 1);
             int newLevel = levelManager.getLevel(player.getUniqueId(), itemId);
 
-            ShopItem shopItem = findShopItem(itemId);
+            ShopItem shopItem = itemShopConfig.getItem(itemId);
             if (shopItem != null) {
                 ItemStack newItem = (shopItem.actualItems != null && !shopItem.actualItems.isEmpty())
                         ? shopItem.getActualItem(newLevel).clone()
@@ -76,14 +76,5 @@ public final class ShopItemLevelListener implements Listener {
                 inv.setItem(i, newItem);
             }
         }
-    }
-
-    private ShopItem findShopItem(String id) {
-        for (var category : itemShopConfig.load()) {
-            for (var item : category.items) {
-                if (id.equals(item.id)) return item;
-            }
-        }
-        return null;
     }
 }
