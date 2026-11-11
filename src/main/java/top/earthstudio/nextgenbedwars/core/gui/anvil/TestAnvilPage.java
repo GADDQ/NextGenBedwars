@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.gui.chest.anvil;
+package top.earthstudio.nextgenbedwars.core.gui.anvil;
 
 import net.kyori.adventure.text.Component;
 

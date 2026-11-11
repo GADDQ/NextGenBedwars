@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.gui.chest.page;
+package top.earthstudio.nextgenbedwars.core.gui.chest;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
