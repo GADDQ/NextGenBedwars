@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.team.event;
+package top.earthstudio.nextgenbedwars.api.respawn.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -9,19 +9,17 @@ import org.jetbrains.annotations.NotNull;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
-public class BedwarsPlayerDeadEvent extends Event implements Cancellable { // TODO: who cause the death? uncancellable condition?
+public class BedwarsPlayerDeadEvent extends Event implements Cancellable { // TODO: who cause the death?
     private static final HandlerList HANDLERS = new HandlerList();
 
     public final GameInstance gameInstance;
     public final Player player;
-    public final boolean isFinalDeath;
 
     private boolean isCancelled = false;
 
-    public BedwarsPlayerDeadEvent(GameInstance gameInstance, Player player, boolean isFinalDeath) {
+    public BedwarsPlayerDeadEvent(GameInstance gameInstance, Player player) {
         this.gameInstance = gameInstance;
         this.player = player;
-        this.isFinalDeath = isFinalDeath;
     }
 
     @Override

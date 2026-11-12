@@ -16,7 +16,7 @@ import top.earthstudio.nextgenbedwars.api.game.event.BedwarsGameOverEvent;
 import top.earthstudio.nextgenbedwars.api.game.event.BedwarsGameStateChangedEvent;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
-import top.earthstudio.nextgenbedwars.api.team.event.BedwarsPlayerDeadEvent;
+import top.earthstudio.nextgenbedwars.api.respawn.event.BedwarsPlayerDeadEvent;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
 import top.earthstudio.nextgenbedwars.api.util.ticker.TickerTask;
 
@@ -40,7 +40,7 @@ public final class GameOverListener implements Listener {
         if (gameInstance.getGameState() != GameState.PLAYING)
             return;
 
-        if (!event.isFinalDeath)
+        if (gameInstance.get(TeamManager.class).get(event.player).isBedAlive)
             return;
 
         TeamManager teamManager = gameInstance.get(TeamManager.class);

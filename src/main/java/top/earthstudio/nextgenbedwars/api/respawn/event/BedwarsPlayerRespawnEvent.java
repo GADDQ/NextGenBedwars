@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.team.event;
+package top.earthstudio.nextgenbedwars.api.respawn.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -22,6 +22,7 @@ public class BedwarsPlayerRespawnEvent extends Event {
         return HANDLERS;
     }
 
+    @SuppressWarnings("unused")
     public static HandlerList getHandlerList() {
         return HANDLERS;
     }

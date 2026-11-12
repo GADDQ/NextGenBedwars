@@ -2,8 +2,8 @@ package top.earthstudio.nextgenbedwars.core.team;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.World;
@@ -14,8 +14,8 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
-
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamChatListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamRespawnListener;

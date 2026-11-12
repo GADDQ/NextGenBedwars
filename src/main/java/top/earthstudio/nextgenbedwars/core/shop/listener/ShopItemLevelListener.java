@@ -12,7 +12,7 @@ import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.level.LevelManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
-import top.earthstudio.nextgenbedwars.api.team.event.BedwarsPlayerDeadEvent;
+import top.earthstudio.nextgenbedwars.api.respawn.event.BedwarsPlayerDeadEvent;
 
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopConfig;
 
