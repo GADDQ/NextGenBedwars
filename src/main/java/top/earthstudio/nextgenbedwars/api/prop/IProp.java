@@ -1,8 +1,10 @@
 package top.earthstudio.nextgenbedwars.api.prop;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
 @SuppressWarnings("unused")
@@ -14,8 +16,8 @@ public abstract class IProp {
         this.id = id;
     }
 
-    public boolean onPick(GameInstance gameInstance, Player player) { return true; }
-    public boolean onDrop(GameInstance gameInstance, Player player) { return true; }
+    public boolean onPick(GameInstance gameInstance, Player player, ItemStack prop) { return true; }
+    public boolean onDrop(GameInstance gameInstance, Player player, Item prop) { return true; }
 
     public void onClick(GameInstance gameInstance, Player player, ItemStack propItem) {}
     public void onUse(GameInstance gameInstance, Player player, ItemStack propItem) {}

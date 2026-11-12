@@ -1,9 +1,12 @@
 package top.earthstudio.nextgenbedwars.core.prop;
 
 import net.kyori.adventure.text.Component;
+
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.IProp;
 
@@ -20,13 +23,14 @@ public class TestProp extends IProp {
     }
 
     @Override
-    public boolean onDrop(GameInstance gameInstance, Player player) {
+    public boolean onDrop(GameInstance gameInstance, Player player, Item prop) {
         player.sendMessage(Component.text("丢弃道具"));
+        prop.setUnlimitedLifetime(true);
         return true;
     }
 
     @Override
-    public boolean onPick(GameInstance gameInstance, Player player) {
+    public boolean onPick(GameInstance gameInstance, Player player, ItemStack prop) {
         player.sendMessage(Component.text("捡起道具"));
         return true;
     }

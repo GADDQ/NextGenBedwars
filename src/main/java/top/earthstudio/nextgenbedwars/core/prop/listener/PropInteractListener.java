@@ -5,7 +5,6 @@ import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -130,7 +129,7 @@ public class PropInteractListener implements Listener {
         if (event.getPlayer().getWorld() != gameInstance.getWorld())
             return;
 
-        Item prop = event.getItem();
+        ItemStack prop = event.getItem().getItemStack();
 
         var pdc = prop.getPersistentDataContainer();
         if (!pdc.has(PdcKeys.prop.id))
@@ -138,7 +137,7 @@ public class PropInteractListener implements Listener {
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
 
-        if (!propManager.get(id).onPick(gameInstance, event.getPlayer()))
+        if (!propManager.get(id).onPick(gameInstance, event.getPlayer(), prop))
             event.setCancelled(true);
     }
 
@@ -152,10 +151,7 @@ public class PropInteractListener implements Listener {
             return;
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
-        if (!propManager.get(id).onDrop(gameInstance, event.getPlayer()))
+        if (!propManager.get(id).onDrop(gameInstance, event.getPlayer(), event.getItemDrop()))
             event.setCancelled(true);
-
-        assert id != null;
-        event.getItemDrop().getPersistentDataContainer().set(PdcKeys.prop.id, PersistentDataType.STRING, id);
     }
 }
