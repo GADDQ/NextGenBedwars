@@ -375,14 +375,16 @@ public final class ItemShopPage extends ChestGuiPage {
 
         toGive.editMeta(itemMeta -> {
             var pdc = itemMeta.getPersistentDataContainer();
+            pdc.set(PdcKeys.shop.itemId, PersistentDataType.STRING, shopItem.id);
+
             if (shopItem.isDecreaseLevelWhenPlayerDead)
                 pdc.set(PdcKeys.shop.downgradeWhenDead, PersistentDataType.BOOLEAN, true);
             if (shopItem.isKeepWhenDead)
                 pdc.set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true);
             if (!shopItem.isThrowable)
                 pdc.set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
-            if (shopItem.id != null)
-                pdc.set(PdcKeys.shop.itemId, PersistentDataType.STRING, shopItem.id);
+            if (shopItem.propId != null)
+                pdc.set(PdcKeys.prop.id, PersistentDataType.STRING, shopItem.propId);
         });
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {

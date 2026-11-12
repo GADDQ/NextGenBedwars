@@ -18,4 +18,9 @@ public final class PdcKeys {
         public static final NamespacedKey throwable = new NamespacedKey("nextgenbedwars", "shop_throwable");
         public static final NamespacedKey itemId = new NamespacedKey("nextgenbedwars", "shop_item_id");
     }
+
+    public static final class prop {
+        private prop() {}
+        public static final NamespacedKey id = new NamespacedKey("nextgenbedwars", "prop_id");
+    }
 }

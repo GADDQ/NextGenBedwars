@@ -39,9 +39,10 @@ public class ItemShopConfig extends IConfig<List<Category>> {
         for (Category category : categories) {
             if (category.items != null) {
                 for (ShopItem item : category.items) {
-                    if (item.id != null) {
-                        itemCache.put(item.id, item);
-                    }
+                    if (item.id == null)
+                        throw new IllegalStateException("ShopItem's ID cannot be null!");
+
+                    itemCache.put(item.id, item);
                 }
             }
         }
