@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.api.shop.item;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
