@@ -17,7 +17,7 @@ public final class SpawnerMergeListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onItemMergeEvent(ItemMergeEvent event) {
+    public void onItemMerge(ItemMergeEvent event) {
         Item entity = event.getEntity();
         Item target = event.getTarget();
 
