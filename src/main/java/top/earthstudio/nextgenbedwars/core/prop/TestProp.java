@@ -36,23 +36,27 @@ public class TestProp extends IProp {
     }
 
     @Override
-    public void onClick(GameInstance gameInstance, Player player, ItemStack propItem) {
+    public boolean onClick(GameInstance gameInstance, Player player, ItemStack propItem) {
         player.sendMessage(Component.text("左键点击道具"));
+        return true;
     }
 
     @Override
-    public void onClickOnBlock(GameInstance gameInstance, Player player, Block block, ItemStack propItem) {
+    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, ItemStack propItem) {
         player.sendMessage(Component.text("道具左键点击方块"));
+        return true;
     }
 
     @Override
-    public void onUse(GameInstance gameInstance, Player player, ItemStack propItem) {
+    public boolean onUse(GameInstance gameInstance, Player player, ItemStack propItem) {
         player.sendMessage(Component.text("右键点击道具"));
+        return true;
     }
 
     @Override
-    public void onUseOnBlock(GameInstance gameInstance, Player player, Block block, ItemStack propItem) {
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, ItemStack propItem) {
         player.sendMessage(Component.text("道具右键点击方块"));
+        return true;
     }
 
     @Override

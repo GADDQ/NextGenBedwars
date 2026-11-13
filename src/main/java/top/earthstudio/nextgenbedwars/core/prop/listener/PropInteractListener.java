@@ -1,14 +1,17 @@
 package top.earthstudio.nextgenbedwars.core.prop.listener;
 
+import io.papermc.paper.event.entity.EntityLoadCrossbowEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -56,17 +59,20 @@ public class PropInteractListener implements Listener {
         if (!pdc.has(PdcKeys.prop.id))
             return;
 
-        event.setCancelled(true);
-
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
 
+        boolean noCancelled = true;
+
         switch (event.getAction())  {
-            case LEFT_CLICK_AIR -> propManager.get(id).onClick(gameInstance, event.getPlayer(), event.getItem());
-            case RIGHT_CLICK_AIR -> propManager.get(id).onUse(gameInstance, event.getPlayer(), event.getItem());
-            case LEFT_CLICK_BLOCK -> propManager.get(id).onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
-            case RIGHT_CLICK_BLOCK -> propManager.get(id).onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
+            case LEFT_CLICK_AIR -> noCancelled = propManager.get(id).onClick(gameInstance, event.getPlayer(), event.getItem());
+            case RIGHT_CLICK_AIR -> noCancelled = propManager.get(id).onUse(gameInstance, event.getPlayer(), event.getItem());
+            case LEFT_CLICK_BLOCK -> noCancelled = propManager.get(id).onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
+            case RIGHT_CLICK_BLOCK -> noCancelled = propManager.get(id).onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
             default -> {}
         }
+
+        if (!noCancelled)
+            event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -74,7 +80,7 @@ public class PropInteractListener implements Listener {
         if (event.getPlayer().getWorld() != gameInstance.getWorld())
             return;
 
-        if (!(event.getRightClicked() instanceof Player))
+        if (event.getRightClicked().getType() != EntityType.PLAYER)
             return;
 
         if (event.getHand() == EquipmentSlot.OFF_HAND)
@@ -102,7 +108,7 @@ public class PropInteractListener implements Listener {
         if (event.getPlayer().getWorld() != gameInstance.getWorld())
             return;
 
-        if (!(event.getAttacked() instanceof Player))
+        if (event.getAttacked().getType() != EntityType.PLAYER)
             return;
 
         ItemStack prop;
@@ -153,5 +159,57 @@ public class PropInteractListener implements Listener {
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
         if (!propManager.get(id).onDrop(gameInstance, event.getPlayer(), event.getItemDrop()))
             event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerConsume(PlayerItemConsumeEvent event) {
+        if (event.getPlayer().getWorld() != gameInstance.getWorld())
+            return;
+
+        var pdc = event.getItem().getPersistentDataContainer();
+        if (!pdc.has(PdcKeys.prop.id))
+            return;
+
+        String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
+        if (!propManager.get(id).onConsume(gameInstance, event.getPlayer(), event.getPlayer().getInventory().getItem(event.getHand())))
+            event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerLoadCrossbow(EntityLoadCrossbowEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER)
+            return;
+
+        Player player = (Player) event.getEntity();
+
+        var pdc = event.getCrossbow().getPersistentDataContainer();
+        if (!pdc.has(PdcKeys.prop.id))
+            return;
+
+        String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
+        if (!propManager.get(id).onCrossbowLoad(gameInstance, player, player.getInventory().getItem(event.getHand())))
+            event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerShootBow(EntityShootBowEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER)
+            return;
+
+        Player player = (Player) event.getEntity();
+
+        assert event.getBow() != null;
+        var pdc = event.getBow().getPersistentDataContainer();
+        if (!pdc.has(PdcKeys.prop.id))
+            return;
+
+        String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
+
+        var resultPair = propManager.get(id).onBowShoot(gameInstance, player, player.getInventory().getItem(event.getHand()));
+
+        if (!resultPair.left())
+            event.setCancelled(true);
+        else if (resultPair.right() != null)
+            event.setProjectile(resultPair.right());
     }
 }
