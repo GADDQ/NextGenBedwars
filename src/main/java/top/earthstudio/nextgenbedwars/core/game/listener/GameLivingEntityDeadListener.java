@@ -1,10 +1,11 @@
 package top.earthstudio.nextgenbedwars.core.game.listener;
 
-import org.bukkit.entity.Player;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
+
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 
 public final class GameLivingEntityDeadListener implements Listener {
@@ -19,7 +20,7 @@ public final class GameLivingEntityDeadListener implements Listener {
         if (event.getEntity().getWorld() != gameInstance.getWorld())
             return;
 
-        if (event.getEntity() instanceof Player)
+        if (event.getEntity().getType() == EntityType.PLAYER)
             return;
 
         event.setDroppedExp(0);
