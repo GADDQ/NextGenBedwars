@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class InformationRender {
-    public static void renderSidebar(Map<UUID, Scoreboard> scoreboards, Map<GameState, List<Component>> components, GameState gameState) {
+    public static void renderSidebar(Map<UUID, Scoreboard> scoreboards, Map<GameState, List<Component>> components, GameState gameState) { // TODO: Information Hook replace
         List<Component> lines = components.get(gameState);
         if (lines == null || lines.isEmpty()) return;
 

@@ -89,9 +89,7 @@ public class InformationManagerImpl implements InformationManager {
     @Override
     public void update() {
         animationInformationConfig.animationComponents.forEach((string, pair) -> {
-            if (pair.leftInt() < pair.right().size())
-                pair.left(pair.leftInt() + 1);
-            else pair.left(0);
+            pair.left((pair.leftInt() + 1) % pair.right().size());
         });
 
         switch (gameInstance.getGameState()) {
