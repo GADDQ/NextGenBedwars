@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.api.game;
 public interface IGameSubSystem {
     void update();
     void shutdown();
+    default void forceUpdate() {}
     default void onReady() {}
     default void save() {}
 }

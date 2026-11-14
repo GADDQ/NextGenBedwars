@@ -126,7 +126,10 @@ public final class GameInstanceImpl implements GameInstance {
 
     public void update() {
         if (!isReady || isShutdown) return;
-        if (gameState != GameState.PLAYING) return;
+        if (gameState != GameState.PLAYING) {
+            subSystems.values().forEach(IGameSubSystem::forceUpdate);
+            return;
+        }
 
         subSystems.values().forEach(IGameSubSystem::update);
     }
