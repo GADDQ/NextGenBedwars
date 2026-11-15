@@ -125,6 +125,9 @@ public class TeamInvisibleListener implements Listener {
         if (teamManager.isSpectator(player))
             return;
 
+        if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY))
+            return;
+
         player.sendMessage(Component.text("由于受到攻击，你的隐身已失效！").color(NamedTextColor.RED));
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
         restoreArmorVisual(player);
