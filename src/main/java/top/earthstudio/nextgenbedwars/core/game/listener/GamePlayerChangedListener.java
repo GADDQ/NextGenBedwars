@@ -91,6 +91,7 @@ public final class GamePlayerChangedListener implements Listener { // TODO: dete
                                             player.setGameMode(GameMode.SURVIVAL);
                                             player.setVelocity(new Vector(0, 0, 0));
                                             player.getInventory().clear();
+                                            player.clearActivePotionEffects();
 
                                             player.teleport(team.respawnLocation);
                                         });

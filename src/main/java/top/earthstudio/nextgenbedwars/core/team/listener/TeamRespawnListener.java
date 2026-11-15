@@ -66,7 +66,7 @@ public final class TeamRespawnListener implements Listener { // TODO: List<UUID>
         player.setVelocity(new Vector(0, 0, 0));
 
         if (teleportToSpectatorRespawnPoint)
-            Bukkit.getScheduler().runTaskLater(BedwarsAPI.getInstance().plugin(), () -> player.teleport(gameInstance.getGame().spectatorRespawnLocation), 1L);
+            Bukkit.getScheduler().runTask(BedwarsAPI.getInstance().plugin(), () -> player.teleport(gameInstance.getGame().spectatorRespawnLocation));
     }
 
     private void doTeamRespawn(Player player, Team team) { // TODO: respawn cannot see other player, this == below TODO; configurable

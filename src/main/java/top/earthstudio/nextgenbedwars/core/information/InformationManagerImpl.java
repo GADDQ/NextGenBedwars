@@ -40,7 +40,7 @@ public class InformationManagerImpl implements InformationManager {
 
     private AnimationInformationConfig animationInformationConfig;
 
-    public InformationManagerImpl(GameInstance gameInstance) { // TODO: let other subsystem register placeholder
+    public InformationManagerImpl(GameInstance gameInstance) { // TODO: let other subsystem register placeholder, support PlaceholderAPI
         scoreboards = new Object2ObjectOpenHashMap<>();
         informationHooks = new Object2ObjectOpenHashMap<>();
         informationMap = new Object2ObjectOpenHashMap<>();

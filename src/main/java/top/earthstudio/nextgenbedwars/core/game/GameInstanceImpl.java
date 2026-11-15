@@ -45,6 +45,7 @@ public final class GameInstanceImpl implements GameInstance {
     private GameOverListener gameOverListener;
     private GamePlayerBreakBlockListener gamePlayerBreakBlockListener;
     private GameNonPlayingActionListener gameNonPlayingActionListener;
+    private GamePotionListener gamePotionListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
         this.game = game;
@@ -102,6 +103,7 @@ public final class GameInstanceImpl implements GameInstance {
         gameOverListener = new GameOverListener(this);
         gamePlayerBreakBlockListener = new GamePlayerBreakBlockListener(this);
         gameNonPlayingActionListener = new GameNonPlayingActionListener(this);
+        gamePotionListener = new GamePotionListener(this);
 
         Bukkit.getPluginManager().registerEvents(gamePlayerChangedListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameCraftingListener, BedwarsAPI.getInstance().plugin());
@@ -110,6 +112,7 @@ public final class GameInstanceImpl implements GameInstance {
         Bukkit.getPluginManager().registerEvents(gameOverListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gamePlayerBreakBlockListener, BedwarsAPI.getInstance().plugin());
         Bukkit.getPluginManager().registerEvents(gameNonPlayingActionListener, BedwarsAPI.getInstance().plugin());
+        Bukkit.getPluginManager().registerEvents(gamePotionListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
     }
@@ -148,6 +151,7 @@ public final class GameInstanceImpl implements GameInstance {
             HandlerList.unregisterAll(gameOverListener);
             HandlerList.unregisterAll(gamePlayerBreakBlockListener);
             HandlerList.unregisterAll(gameNonPlayingActionListener);
+            HandlerList.unregisterAll(gamePotionListener);
 
             gameCraftingListener = null;
             gamePlayerChangedListener = null;
@@ -156,6 +160,7 @@ public final class GameInstanceImpl implements GameInstance {
             gameOverListener = null;
             gamePlayerBreakBlockListener = null;
             gameNonPlayingActionListener = null;
+            gamePotionListener = null;
         }
 
         gameConfig = null;

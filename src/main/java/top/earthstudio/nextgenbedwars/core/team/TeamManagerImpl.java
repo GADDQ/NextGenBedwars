@@ -22,6 +22,7 @@ import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamChatListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamInteractListener;
+import top.earthstudio.nextgenbedwars.core.team.listener.TeamInvisibleListener;
 import top.earthstudio.nextgenbedwars.core.team.listener.TeamRespawnListener;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     private TeamInteractListener teamInteractListener;
     private TeamRespawnListener teamRespawnListener;
     private TeamChatListener teamChatListener;
+    private TeamInvisibleListener teamInvisibleListener;
 
     private World world;
 
@@ -56,10 +58,12 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
             teamInteractListener = new TeamInteractListener(this, gameInstance);
             teamRespawnListener = new TeamRespawnListener(this, gameInstance);
             teamChatListener = new TeamChatListener(this, gameInstance);
+            teamInvisibleListener = new TeamInvisibleListener(this, gameInstance);
 
             Bukkit.getPluginManager().registerEvents(teamInteractListener, BedwarsAPI.getInstance().plugin());
             Bukkit.getPluginManager().registerEvents(teamRespawnListener, BedwarsAPI.getInstance().plugin());
             Bukkit.getPluginManager().registerEvents(teamChatListener, BedwarsAPI.getInstance().plugin());
+            Bukkit.getPluginManager().registerEvents(teamInvisibleListener, BedwarsAPI.getInstance().plugin());
         }
 
         this.gameInstance = gameInstance;
@@ -163,9 +167,11 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
             HandlerList.unregisterAll(teamChatListener);
             HandlerList.unregisterAll(teamRespawnListener);
             HandlerList.unregisterAll(teamInteractListener);
+            HandlerList.unregisterAll(teamInvisibleListener);
             teamChatListener = null;
             teamRespawnListener = null;
             teamInteractListener = null;
+            teamInvisibleListener = null;
         }
 
         this.gameInstance = null;
