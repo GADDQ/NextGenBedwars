@@ -17,7 +17,7 @@ public class PlayerNameSuffixConfig extends IConfig<Map<GameState, List<Componen
     private final Map<GameState, List<Component>> components;
 
     public PlayerNameSuffixConfig(@NotNull GameInstance gameInstance) {
-        super(gameInstance, "information/player_name_suffix.yml", true, "information");
+        super(gameInstance, "Information/player_name_suffix.yml", true, "information");
         components = new Object2ObjectOpenHashMap<>();
     }
 

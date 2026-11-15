@@ -1,0 +1,13 @@
+information:
+  WAITING:
+    - ""
+    - "<gray>正在等待其他玩家加入..."
+  STARTING:
+    - ""
+    - "<green>准备战斗！"
+  PLAYING:
+    - ""
+    - "<white>当前队伍: {team_prefix}"
+  ENDING:
+    - ""
+    - "<gray>即将返回大厅"

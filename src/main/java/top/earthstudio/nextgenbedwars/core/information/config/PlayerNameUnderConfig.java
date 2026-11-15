@@ -17,7 +17,7 @@ public class PlayerNameUnderConfig extends IConfig<Map<GameState, List<Component
     private final Map<GameState, List<Component>> components;
 
     public PlayerNameUnderConfig(@NotNull GameInstance gameInstance) {
-        super(gameInstance, "information/player_name_under.yml", true, "information");
+        super(gameInstance, "Information/player_name_under.yml", true, "information");
         components = new Object2ObjectOpenHashMap<>();
     }
 

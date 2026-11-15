@@ -67,5 +67,13 @@ public final class NextGenBedwars extends JavaPlugin{
     private void bootstrapDefaultConfigs() {
         saveResource("spawner_types.yml", false);
         saveResource("item_shop.yml", false);
+
+        saveResource("Information/information_animations.yml", false);
+        saveResource("Information/sidebar.yml", false);
+        saveResource("Information/tab_header.yml", false);
+        saveResource("Information/tab_footer.yml", false);
+        saveResource("Information/player_name_prefix.yml", false);
+        saveResource("Information/player_name_suffix.yml", false);
+        saveResource("Information/player_name_under.yml", false);
     }
 }

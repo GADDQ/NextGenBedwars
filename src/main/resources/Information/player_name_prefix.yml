@@ -1,0 +1,9 @@
+information:
+  WAITING:
+    - "<gray>[等待] "
+  STARTING:
+    - "<yellow>[准备] "
+  PLAYING:
+    - "{team_prefix}"
+  ENDING:
+    - "{team_prefix}"

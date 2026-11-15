@@ -1,9 +1,7 @@
 package top.earthstudio.nextgenbedwars.core.game.listener;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.Ticks;
 
@@ -15,7 +13,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
@@ -32,11 +29,8 @@ public final class GamePlayerChangedListener implements Listener { // TODO: dete
     private final GameInstance gameInstance;
     private final UUID uuid = UUID.randomUUID();
 
-    private final Scoreboard scoreboard;
-
     public GamePlayerChangedListener(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
-        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -81,14 +75,6 @@ public final class GamePlayerChangedListener implements Listener { // TODO: dete
 
                                     teamManager.randomAssignTeam(gameInstance.getWorld().getPlayers());
 
-                                    teamManager.getAll().forEach(team -> { // TODO: FIXME: this is a temp color solution, please refactor TeamManagerImpl to support ScoreBoard Team Natively!
-                                        var sbTeam = scoreboard.registerNewTeam(((TextComponent) team.displayName).content());
-
-                                        TextColor textColor = TextColor.color(team.teamColor.asRGB());
-                                        NamedTextColor namedColor = NamedTextColor.nearestTo(textColor);
-                                        sbTeam.color(namedColor);
-                                    });
-
                                     teamManager.getAll().forEach(team -> {
                                         if (team.players.isEmpty()) {
                                             team.isBedAlive = false;
@@ -107,9 +93,6 @@ public final class GamePlayerChangedListener implements Listener { // TODO: dete
                                             player.getInventory().clear();
 
                                             player.teleport(team.respawnLocation);
-                                            player.setScoreboard(scoreboard);
-
-                                            scoreboard.getTeam(((TextComponent) team.displayName).content()).addEntry(player.getName());
                                         });
                                     });
 

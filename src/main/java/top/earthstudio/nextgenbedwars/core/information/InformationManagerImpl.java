@@ -6,12 +6,16 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.scoreboard.Scoreboard;
 
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.information.InformationManager;
 import top.earthstudio.nextgenbedwars.api.information.InformationPosition;
+
 import top.earthstudio.nextgenbedwars.core.information.config.*;
+import top.earthstudio.nextgenbedwars.core.information.listener.InformationPlayerChangedListener;
 
 import java.util.List;
 import java.util.Map;
@@ -20,10 +24,12 @@ import java.util.function.Function;
 
 public class InformationManagerImpl implements InformationManager {
     private Map<UUID, Scoreboard> scoreboards;
-    private Map<String, Function<Player, Component>> informationHooks;
+    private Map<String, Function<Player, List<Component>>> informationHooks;
     private Map<InformationPosition, List<Component>> informationMap;
 
     private GameInstance gameInstance;
+
+    private InformationPlayerChangedListener informationPlayerChangedListener;
 
     private TabHeaderConfig tabHeaderConfig;
     private TabFooterConfig tabFooterConfig;
@@ -34,7 +40,7 @@ public class InformationManagerImpl implements InformationManager {
 
     private AnimationInformationConfig animationInformationConfig;
 
-    public InformationManagerImpl(GameInstance gameInstance) {
+    public InformationManagerImpl(GameInstance gameInstance) { // TODO: let other subsystem register placeholder
         scoreboards = new Object2ObjectOpenHashMap<>();
         informationHooks = new Object2ObjectOpenHashMap<>();
         informationMap = new Object2ObjectOpenHashMap<>();
@@ -50,10 +56,16 @@ public class InformationManagerImpl implements InformationManager {
 
         animationInformationConfig = new AnimationInformationConfig(gameInstance);
         animationInformationConfig.load();
+        animationInformationConfig.animationComponents.forEach((id, pair) ->
+                create(id, player -> pair.right().get(pair.leftInt()))
+        );
+
+        informationPlayerChangedListener = new InformationPlayerChangedListener(this, gameInstance);
+        Bukkit.getPluginManager().registerEvents(informationPlayerChangedListener, BedwarsAPI.getInstance().plugin());
     }
 
     @Override
-    public void create(String id, Function<Player, Component> informationHook) {
+    public void createLines(String id, Function<Player, List<Component>> informationHook) {
         if (informationHooks.putIfAbsent(id, informationHook) != null)
             throw new IllegalStateException("Information ID has been used!");
     }
@@ -88,18 +100,18 @@ public class InformationManagerImpl implements InformationManager {
 
     @Override
     public void update() {
-        animationInformationConfig.animationComponents.forEach((string, pair) -> {
-            pair.left((pair.leftInt() + 1) % pair.right().size());
-        });
+        animationInformationConfig.animationComponents.forEach((string, pair) ->
+            pair.left((pair.leftInt() + 1) % pair.right().size())
+        );
 
         switch (gameInstance.getGameState()) {
             case WAITING:
             case STARTING:
             case PLAYING:
             case ENDING:
-                InformationRender.renderSidebar(scoreboards, sideBarConfig.load(), gameInstance.getGameState());
-                InformationRender.renderTab();
-                InformationRender.renderPlayerName();
+                InformationRender.renderSidebar(scoreboards, sideBarConfig.load(), informationHooks, gameInstance.getGameState());
+                InformationRender.renderTab(scoreboards, tabHeaderConfig.load(), tabFooterConfig.load(), informationHooks, gameInstance.getGameState());
+                InformationRender.renderPlayerName(scoreboards, playerNamePrefixConfig.load(), playerNameSuffixConfig.load(), playerNameUnderConfig.load(), informationHooks, gameInstance.getGameState());
             default:
                 break;
         }
@@ -112,6 +124,9 @@ public class InformationManagerImpl implements InformationManager {
 
     @Override
     public void shutdown() {
+        HandlerList.unregisterAll(informationPlayerChangedListener);
+        informationPlayerChangedListener = null;
+
         tabHeaderConfig = null;
         tabFooterConfig = null;
         sideBarConfig = null;

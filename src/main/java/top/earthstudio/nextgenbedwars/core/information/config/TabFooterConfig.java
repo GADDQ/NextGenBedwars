@@ -17,7 +17,7 @@ public class TabFooterConfig extends IConfig<Map<GameState, List<Component>>> {
     private final Map<GameState, List<Component>> components;
 
     public TabFooterConfig(@NotNull GameInstance gameInstance) {
-        super(gameInstance, "information/tab_footer.yml", true, "information");
+        super(gameInstance, "Information/tab_footer.yml", true, "information");
         components = new Object2ObjectOpenHashMap<>();
     }
 

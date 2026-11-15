@@ -1,0 +1,31 @@
+information:
+  WAITING:
+    - "{title_anim}"
+    - "<gray>状态: <green>等待玩家中..."
+    - ""
+    - "<white>地图: <yellow>{map_name}"
+    - "<white>人数: <green>{players}<gray>/<green>{max_players}"
+    - ""
+    - "<gray>NextGenBedwars"
+  STARTING:
+    - "{title_anim}"
+    - "<gray>状态: <yellow>即将开始 ({countdown}s)"
+    - ""
+    - "<white>地图: <yellow>{map_name}"
+    - "<white>人数: <green>{players}<gray>/<green>{max_players}"
+    - ""
+    - "<gray>NextGenBedwars"
+  PLAYING:
+    - "{title_anim}"
+    - "<white>你的队伍: {team_prefix}"
+    - ""
+    - "<white>击杀: <green>{kills}"
+    - "<white>血量: {health}"
+    - ""
+    - "<gray>NextGenBedwars"
+  ENDING:
+    - "{title_anim}"
+    - "<gold><bold>游戏结束！"
+    - ""
+    - "<white>感谢游玩！"
+    - "<gray>NextGenBedwars"

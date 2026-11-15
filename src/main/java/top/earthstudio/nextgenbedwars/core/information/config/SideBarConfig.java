@@ -17,7 +17,7 @@ public class SideBarConfig extends IConfig<Map<GameState, List<Component>>> {
     private final Map<GameState, List<Component>> components;
 
     public SideBarConfig(@NotNull GameInstance gameInstance) {
-        super(gameInstance, "information/sidebar.yml", true, "information");
+        super(gameInstance, "Information/sidebar.yml", true, "information");
         components = new Object2ObjectOpenHashMap<>();
     }
 

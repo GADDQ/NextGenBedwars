@@ -1,0 +1,17 @@
+information:
+  WAITING:
+    - "<gold><bold>NextGenBedwars</bold></gold>"
+    - "<gray>当前地图: <yellow>{map_name}"
+    - ""
+  STARTING:
+    - "<gold><bold>NextGenBedwars</bold></gold>"
+    - "<yellow>游戏将在 {countdown} 秒后开始"
+    - ""
+  PLAYING:
+    - "<gold><bold>NextGenBedwars</bold></gold>"
+    - "<gray>地图: <yellow>{map_name}"
+    - ""
+  ENDING:
+    - "<gold><bold>NextGenBedwars</bold></gold>"
+    - "<green>本局已结束"
+    - ""

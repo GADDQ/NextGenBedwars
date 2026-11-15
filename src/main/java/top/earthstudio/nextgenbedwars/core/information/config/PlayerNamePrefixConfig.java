@@ -17,7 +17,7 @@ public class PlayerNamePrefixConfig extends IConfig<Map<GameState, List<Componen
     private final Map<GameState, List<Component>> components;
 
     public PlayerNamePrefixConfig(@NotNull GameInstance gameInstance) {
-        super(gameInstance, "information/player_name_prefix.yml", true, "information");
+        super(gameInstance, "Information/player_name_prefix.yml", true, "information");
         components = new Object2ObjectOpenHashMap<>();
     }
 

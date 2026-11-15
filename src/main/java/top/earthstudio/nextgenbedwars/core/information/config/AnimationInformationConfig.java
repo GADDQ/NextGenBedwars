@@ -15,7 +15,7 @@ public class AnimationInformationConfig extends IConfig<Map<String, List<Compone
     public final Map<String, IntObjectMutablePair<List<Component>>> animationComponents;
 
     public AnimationInformationConfig(GameInstance gameInstance) {
-        super(gameInstance, "information/information_animations.yml", true, "animations");
+        super(gameInstance, "Information/information_animations.yml", true, "animations");
         animationComponents = new Object2ObjectOpenHashMap<>();
     }
 
