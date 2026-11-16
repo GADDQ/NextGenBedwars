@@ -52,8 +52,11 @@ public final class EditCommandImpl implements EditCommand { // TODO: i18n
     private static EditCommandImpl handler;
 
     public EditCommandImpl() {
-        EditCommand.set(this);
         handler = this;
+    }
+
+    public static EditCommand get() {
+        return handler;
     }
 
     @Override

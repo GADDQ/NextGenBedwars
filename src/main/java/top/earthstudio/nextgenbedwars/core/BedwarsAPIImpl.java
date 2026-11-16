@@ -3,10 +3,12 @@ package top.earthstudio.nextgenbedwars.core;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
+import top.earthstudio.nextgenbedwars.api.command.edit.EditCommand;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 import top.earthstudio.nextgenbedwars.api.gui.GuiManager;
 
+import top.earthstudio.nextgenbedwars.core.command.edit.EditCommandImpl;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 
@@ -19,5 +21,10 @@ public record BedwarsAPIImpl(JavaPlugin plugin) implements BedwarsAPI {
     @Override
     public GuiManager getGuiManager() {
         return GuiManagerImpl.get();
+    }
+
+    @Override
+    public EditCommand getEditCommand() {
+        return EditCommandImpl.get();
     }
 }

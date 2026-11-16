@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.api;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import top.earthstudio.nextgenbedwars.api.command.edit.EditCommand;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 import top.earthstudio.nextgenbedwars.api.gui.GuiManager;
@@ -24,6 +25,7 @@ public interface BedwarsAPI {
 
     <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor);
     GuiManager getGuiManager();
+    EditCommand getEditCommand();
 
     // ================= 核心挂载与注销通道 =================
     static void register(BedwarsAPI implementation) {
