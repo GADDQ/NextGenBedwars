@@ -15,7 +15,7 @@ import org.bukkit.event.HandlerList;
 
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.information.InformationManager;
+import top.earthstudio.nextgenbedwars.api.placeholder.PlaceholderManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
@@ -196,16 +196,16 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
             protector.removeBlockFromWorldGroup(team.bedBlockLongs.secondLong());
         }
 
-        InformationManager infoManager = gameInstance.get(InformationManager.class);
+        PlaceholderManager placeholderManager = gameInstance.get(PlaceholderManager.class);
 
-        infoManager.create("team_prefix", player -> {
+        placeholderManager.create("team_prefix", player -> {
             Team team = get(player);
             if (team == null) return Component.empty();
             TextColor color = TextColor.color(team.teamColor.asRGB());
             return team.displayName.colorIfAbsent(color).appendSpace();
         });
 
-        infoManager.create("health", player ->
+        placeholderManager.create("health", player ->
                 Component.text((int) Math.ceil(player.getHealth()), NamedTextColor.WHITE)
                         .append(Component.text(" ❤", NamedTextColor.RED))
         );

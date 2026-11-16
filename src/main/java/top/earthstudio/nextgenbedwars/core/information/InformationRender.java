@@ -6,7 +6,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 
 import org.bukkit.Bukkit;
@@ -14,64 +16,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
 import top.earthstudio.nextgenbedwars.api.game.GameState;
-import top.earthstudio.nextgenbedwars.api.util.TextUtil;
+import top.earthstudio.nextgenbedwars.api.placeholder.PlaceholderManager;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class InformationRender {
-    private static final Pattern HOOK_PATTERN = Pattern.compile("\\{([a-zA-Z0-9_]+)}");
-
-    public static Component resolveSingle(
-            Component template,
-            Player player,
-            Map<String, Function<Player, List<Component>>> hooks
-    ) {
-        if (template == null) return Component.empty();
-        return template.replaceText(builder -> builder
-                .match(HOOK_PATTERN)
-                .replacement((matchResult, textBuilder) -> {
-                    String key = matchResult.group(1);
-                    var hook = hooks.get(key);
-                    if (hook == null) return Component.text(matchResult.group(0));
-
-                    List<Component> resolved = hook.apply(player);
-                    if (resolved == null || resolved.isEmpty()) return Component.empty();
-                    return resolved.size() == 1 ? resolved.getFirst() : Component.join(JoinConfiguration.newlines(), resolved);
-                })
-        );
-    }
-
-    public static List<Component> resolveLines(
-            Component template,
-            Player player,
-            Map<String, Function<Player, List<Component>>> hooks
-    ) {
-        if (template == null) return List.of(Component.empty());
-
-        String serialized = TextUtil.toMiniMessage(template).trim();
-        Matcher matcher = HOOK_PATTERN.matcher(serialized);
-
-        if (matcher.matches()) {
-            String key = matcher.group(1);
-            var hook = hooks.get(key);
-            if (hook != null) {
-                List<Component> resolved = hook.apply(player);
-                return (resolved != null && !resolved.isEmpty()) ? resolved : List.of();
-            }
-        }
-
-        return List.of(resolveSingle(template, player, hooks));
-    }
-
     public static void renderSidebar(
             Map<UUID, Scoreboard> scoreboards,
             Map<GameState, List<Component>> components,
-            Map<String, Function<Player, List<Component>>> hooks,
+            PlaceholderManager placeholderManager,
             GameState gameState
     ) {
         List<Component> lines = components.get(gameState);
@@ -79,13 +34,11 @@ public class InformationRender {
 
         Component titleTemplate = lines.getFirst();
 
-        for (Map.Entry<UUID, Scoreboard> entry : scoreboards.entrySet()) {
-            Player player = Bukkit.getPlayer(entry.getKey());
-            if (player == null) continue;
+        scoreboards.forEach((uuid, scoreboard) -> {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) return;
 
-            Scoreboard scoreboard = entry.getValue();
-            Component title = resolveSingle(titleTemplate, player, hooks);
-
+            Component title = placeholderManager.resolve(titleTemplate, player);
             Objective sidebar = scoreboard.getObjective(DisplaySlot.SIDEBAR);
             if (sidebar == null) {
                 sidebar = scoreboard.registerNewObjective("sidebar", Criteria.DUMMY, title);
@@ -96,7 +49,7 @@ public class InformationRender {
 
             List<Component> expanded = new ObjectArrayList<>();
             for (int i = 1; i < lines.size(); i++) {
-                expanded.addAll(resolveLines(lines.get(i), player, hooks));
+                expanded.addAll(splitLines(placeholderManager.resolve(lines.get(i), player)));
             }
 
             int displayCount = Math.min(expanded.size(), 15);
@@ -112,14 +65,14 @@ public class InformationRender {
             for (int i = displayCount; i < 15; i++) {
                 scoreboard.resetScores("line_" + i);
             }
-        }
+        });
     }
 
     public static void renderTab(
             Map<UUID, Scoreboard> scoreboards,
             Map<GameState, List<Component>> headerComponents,
             Map<GameState, List<Component>> footerComponents,
-            Map<String, Function<Player, List<Component>>> hooks,
+            PlaceholderManager placeholderManager,
             GameState gameState
     ) {
         List<Component> headerLines = headerComponents != null ? headerComponents.get(gameState) : null;
@@ -129,8 +82,8 @@ public class InformationRender {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
 
-            Component header = renderLines(headerLines, player, hooks);
-            Component footer = renderLines(footerLines, player, hooks);
+            Component header = renderLines(headerLines, player, placeholderManager);
+            Component footer = renderLines(footerLines, player, placeholderManager);
             player.sendPlayerListHeaderAndFooter(header, footer);
         }
     }
@@ -140,7 +93,7 @@ public class InformationRender {
             Map<GameState, List<Component>> prefixComponents,
             Map<GameState, List<Component>> suffixComponents,
             Map<GameState, List<Component>> underComponents,
-            Map<String, Function<Player, List<Component>>> hooks,
+            PlaceholderManager placeholderManager,
             GameState gameState
     ) {
         List<Component> prefixLines = prefixComponents != null ? prefixComponents.get(gameState) : null;
@@ -151,12 +104,7 @@ public class InformationRender {
         Component suffixTemplate = (suffixLines != null && !suffixLines.isEmpty()) ? suffixLines.getFirst() : Component.empty();
         Component underTemplate = (underLines != null && !underLines.isEmpty()) ? underLines.getFirst() : null;
 
-        for (Map.Entry<UUID, Scoreboard> entry : scoreboards.entrySet()) {
-            Player viewer = Bukkit.getPlayer(entry.getKey());
-            if (viewer == null) continue;
-
-            Scoreboard scoreboard = entry.getValue();
-
+        scoreboards.forEach((viewerUuid, scoreboard) -> {
             Objective underObjective = null;
             if (underTemplate != null) {
                 underObjective = scoreboard.getObjective(DisplaySlot.BELOW_NAME);
@@ -170,10 +118,14 @@ public class InformationRender {
                 Player target = Bukkit.getPlayer(targetUuid);
                 if (target == null) continue;
 
-                Component prefix = resolveSingle(prefixTemplate, target, hooks);
-                Component suffix = resolveSingle(suffixTemplate, target, hooks);
+                Component prefix = placeholderManager.resolve(prefixTemplate, target);
+                Component suffix = placeholderManager.resolve(suffixTemplate, target);
+                if (suffix.color() == null) {
+                    suffix = suffix.color(NamedTextColor.WHITE);
+                }
 
-                NamedTextColor nameColor = extractNameColor(prefix);
+                TextColor trailingColor = findTrailingColor(prefix);
+                NamedTextColor nameColor = trailingColor != null ? NamedTextColor.nearestTo(trailingColor) : NamedTextColor.WHITE;
 
                 String teamId = target.getName();
                 Team sbTeam = scoreboard.getTeam(teamId);
@@ -183,38 +135,71 @@ public class InformationRender {
                 sbTeam.prefix(prefix);
                 sbTeam.suffix(suffix);
                 sbTeam.color(nameColor);
-
                 if (!sbTeam.hasEntity(target)) {
                     sbTeam.addEntity(target);
                 }
 
                 if (underObjective != null) {
-                    Component underText = resolveSingle(underTemplate, target, hooks);
+                    Component underText = placeholderManager.resolve(underTemplate, target);
                     Score score = underObjective.getScoreFor(target);
                     score.numberFormat(NumberFormat.fixed(underText));
                     score.setScore(0);
                 }
             }
-        }
+        });
     }
 
     private static Component renderLines(
             List<Component> lines,
             Player player,
-            Map<String, Function<Player, List<Component>>> hooks
+            PlaceholderManager placeholderManager
     ) {
         if (lines == null || lines.isEmpty()) return Component.empty();
-        List<Component> expanded = new ObjectArrayList<>();
-        for (Component line : lines) {
-            expanded.addAll(resolveLines(line, player, hooks));
-        }
-        return Component.join(JoinConfiguration.newlines(), expanded);
+        return Component.join(
+                JoinConfiguration.newlines(),
+                lines.stream().map(line -> placeholderManager.resolve(line, player)).toList()
+        );
     }
 
-    private static NamedTextColor extractNameColor(Component prefix) {
-        if (prefix == null) return NamedTextColor.WHITE;
-        TextColor lastColor = findTrailingColor(prefix);
-        return lastColor != null ? NamedTextColor.nearestTo(lastColor) : NamedTextColor.WHITE;
+    private static List<Component> splitLines(Component root) {
+        List<Component> result = new ObjectArrayList<>();
+        List<Component> currentParts = new ObjectArrayList<>();
+        collectLineParts(root, Style.empty(), result, currentParts);
+        result.add(joinParts(currentParts));
+        return result;
+    }
+
+    private static void collectLineParts(
+            Component node,
+            Style inheritedStyle,
+            List<Component> result,
+            List<Component> currentParts
+    ) {
+        Style effectiveStyle = inheritedStyle.merge(node.style());
+        if (node instanceof TextComponent text) {
+            String[] segments = text.content().split("\n", -1);
+            for (int i = 0; i < segments.length; i++) {
+                if (i > 0) {
+                    result.add(joinParts(currentParts));
+                    currentParts.clear();
+                }
+                if (!segments[i].isEmpty()) {
+                    currentParts.add(Component.text(segments[i], effectiveStyle));
+                }
+            }
+        } else {
+            currentParts.add(node.children(List.of()).style(effectiveStyle));
+        }
+
+        for (Component child : node.children()) {
+            collectLineParts(child, effectiveStyle, result, currentParts);
+        }
+    }
+
+    private static Component joinParts(List<Component> parts) {
+        if (parts.isEmpty()) return Component.empty();
+        if (parts.size() == 1) return parts.getFirst();
+        return Component.empty().children(List.copyOf(parts));
     }
 
     private static TextColor findTrailingColor(Component component) {

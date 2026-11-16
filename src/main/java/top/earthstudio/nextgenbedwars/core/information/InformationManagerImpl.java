@@ -12,22 +12,18 @@ import org.bukkit.scoreboard.Scoreboard;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.information.InformationManager;
-import top.earthstudio.nextgenbedwars.api.information.InformationPosition;
-
+import top.earthstudio.nextgenbedwars.api.placeholder.PlaceholderManager;
 import top.earthstudio.nextgenbedwars.core.information.config.*;
 import top.earthstudio.nextgenbedwars.core.information.listener.InformationPlayerChangedListener;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Function;
 
 public class InformationManagerImpl implements InformationManager {
     private Map<UUID, Scoreboard> scoreboards;
-    private Map<String, Function<Player, List<Component>>> informationHooks;
-    private Map<InformationPosition, List<Component>> informationMap;
 
     private GameInstance gameInstance;
+    private PlaceholderManager placeholderManager;
 
     private InformationPlayerChangedListener informationPlayerChangedListener;
 
@@ -40,10 +36,8 @@ public class InformationManagerImpl implements InformationManager {
 
     private AnimationInformationConfig animationInformationConfig;
 
-    public InformationManagerImpl(GameInstance gameInstance) { // TODO: let other subsystem register placeholder, support PlaceholderAPI
+    public InformationManagerImpl(GameInstance gameInstance) {
         scoreboards = new Object2ObjectOpenHashMap<>();
-        informationHooks = new Object2ObjectOpenHashMap<>();
-        informationMap = new Object2ObjectOpenHashMap<>();
 
         this.gameInstance = gameInstance;
 
@@ -54,25 +48,18 @@ public class InformationManagerImpl implements InformationManager {
         playerNamePrefixConfig = new PlayerNamePrefixConfig(gameInstance);
         playerNameSuffixConfig = new PlayerNameSuffixConfig(gameInstance);
 
-        animationInformationConfig = new AnimationInformationConfig(gameInstance);
-        animationInformationConfig.load();
-        animationInformationConfig.animationComponents.forEach((id, pair) ->
-                create(id, player -> pair.right().get(pair.leftInt()))
-        );
-
         informationPlayerChangedListener = new InformationPlayerChangedListener(this, gameInstance);
         Bukkit.getPluginManager().registerEvents(informationPlayerChangedListener, BedwarsAPI.getInstance().plugin());
     }
 
     @Override
-    public void createLines(String id, Function<Player, List<Component>> informationHook) {
-        if (informationHooks.putIfAbsent(id, informationHook) != null)
-            throw new IllegalStateException("Information ID has been used!");
-    }
-
-    @Override
-    public void remove(String id) {
-        informationHooks.remove(id);
+    public void onReady() {
+        this.placeholderManager = gameInstance.get(PlaceholderManager.class);
+        animationInformationConfig = new AnimationInformationConfig(gameInstance);
+        animationInformationConfig.load();
+        animationInformationConfig.animationComponents.forEach((id, pair) ->
+                placeholderManager.create(id, player -> pair.right().get(pair.leftInt()))
+        );
     }
 
     @Override
@@ -101,7 +88,7 @@ public class InformationManagerImpl implements InformationManager {
     @Override
     public void update() {
         animationInformationConfig.animationComponents.forEach((string, pair) ->
-            pair.left((pair.leftInt() + 1) % pair.right().size())
+                pair.left((pair.leftInt() + 1) % pair.right().size())
         );
 
         switch (gameInstance.getGameState()) {
@@ -109,9 +96,9 @@ public class InformationManagerImpl implements InformationManager {
             case STARTING:
             case PLAYING:
             case ENDING:
-                InformationRender.renderSidebar(scoreboards, sideBarConfig.load(), informationHooks, gameInstance.getGameState());
-                InformationRender.renderTab(scoreboards, tabHeaderConfig.load(), tabFooterConfig.load(), informationHooks, gameInstance.getGameState());
-                InformationRender.renderPlayerName(scoreboards, playerNamePrefixConfig.load(), playerNameSuffixConfig.load(), playerNameUnderConfig.load(), informationHooks, gameInstance.getGameState());
+                InformationRender.renderSidebar(scoreboards, sideBarConfig.load(), placeholderManager, gameInstance.getGameState());
+                InformationRender.renderTab(scoreboards, tabHeaderConfig.load(), tabFooterConfig.load(), placeholderManager, gameInstance.getGameState());
+                InformationRender.renderPlayerName(scoreboards, playerNamePrefixConfig.load(), playerNameSuffixConfig.load(), playerNameUnderConfig.load(), placeholderManager, gameInstance.getGameState());
             default:
                 break;
         }
@@ -135,7 +122,7 @@ public class InformationManagerImpl implements InformationManager {
         playerNameSuffixConfig = null;
 
         animationInformationConfig = null;
-
+        placeholderManager = null;
         gameInstance = null;
 
         Scoreboard mainScoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -153,10 +140,6 @@ public class InformationManagerImpl implements InformationManager {
 
         scoreboards.clear();
         scoreboards = null;
-        informationHooks.clear();
-        informationHooks = null;
-        informationMap.clear();
-        informationMap = null;
     }
 
     private void destroyScoreboard(Scoreboard scoreboard) {
