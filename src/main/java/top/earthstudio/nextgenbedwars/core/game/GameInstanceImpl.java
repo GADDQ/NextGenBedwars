@@ -53,10 +53,9 @@ public final class GameInstanceImpl implements GameInstance {
         this.game = game;
         this.isEditMode = isEditMode;
 
-        UUID uuid = game.uuid;
         this.gameConfig = new GameConfig(this);
         this.game = gameConfig.load();
-        game.uuid = uuid;
+        this.game.uuid = game.uuid;
 
         this.subSystems = new Object2ObjectOpenHashMap<>();
 
