@@ -2,11 +2,13 @@ package top.earthstudio.nextgenbedwars.core.spawner;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
+
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.util.Vector;
-import top.earthstudio.nextgenbedwars.api.PdcKeys;
+
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
+
+import java.util.Locale;
 
 public final class SpawnerDisplayUtil {
     private SpawnerDisplayUtil() {}

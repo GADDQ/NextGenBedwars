@@ -13,6 +13,11 @@ public class SpawnerTypeConfig extends IConfig<Map<String, SpawnerType>> {
 
     @Override
     public Map<String, SpawnerType> load() {
+//        var config = super.load();
+//        config.forEach((id, spawnerType) -> {
+//            spawnerType.resourceName = Component.translatable("nextgenbedwars.spawner.spawnertype.resource_name." + id);
+//        });
+//        return config;
         return super.load();
     }
 

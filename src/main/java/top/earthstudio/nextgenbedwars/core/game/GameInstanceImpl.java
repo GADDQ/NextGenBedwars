@@ -50,6 +50,8 @@ public final class GameInstanceImpl implements GameInstance {
     private GamePotionListener gamePotionListener;
 
     public GameInstanceImpl(Game game, Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates, boolean isEditMode) {
+        BedwarsAPI.getInstance().getLanguageTranslator().reload();
+
         this.game = game;
         this.isEditMode = isEditMode;
 

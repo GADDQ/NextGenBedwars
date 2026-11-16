@@ -24,5 +24,7 @@ public class SpawnerType {
     public boolean isAllowMerge = true;
     public int maxSpawnCount = 0;
 
+    //transient public Component resourceName;
+
     public SpawnerType() {}
 }

@@ -37,7 +37,7 @@ public class TestProp extends IProp {
 
     @Override
     public boolean onClick(GameInstance gameInstance, Player player, ItemStack propItem) {
-        player.sendMessage(Component.text("左键点击道具"));
+        player.sendMessage(Component.translatable("nextgenbedwars.prop.testprop.left_click"));
         return true;
     }
 

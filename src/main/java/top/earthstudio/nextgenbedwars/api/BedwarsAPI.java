@@ -6,6 +6,7 @@ import top.earthstudio.nextgenbedwars.api.command.edit.EditCommand;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 import top.earthstudio.nextgenbedwars.api.gui.GuiManager;
+import top.earthstudio.nextgenbedwars.api.language.LanguageTranslator;
 
 @SuppressWarnings("unused")
 public interface BedwarsAPI {
@@ -26,6 +27,7 @@ public interface BedwarsAPI {
     <T extends IGameSubSystem> void registerSubSystem(Class<T> type, SubSystemConstructor<T> constructor);
     GuiManager getGuiManager();
     EditCommand getEditCommand();
+    LanguageTranslator getLanguageTranslator();
 
     // ================= 核心挂载与注销通道 =================
     static void register(BedwarsAPI implementation) {

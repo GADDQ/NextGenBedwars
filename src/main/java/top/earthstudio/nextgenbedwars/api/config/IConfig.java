@@ -26,11 +26,33 @@ public abstract class IConfig<T> {
 
     private final boolean hasGlobal;
 
-    protected IConfig(@NotNull GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal) {
+    /**
+     * Initializes a configuration instance.
+     *
+     * <p>If {@code gameInstance} is {@code null}, this configuration operates in global-only mode
+     * (stored directly under the plugin's data folder), and {@code hasGlobal} is ignored.
+     *
+     * @param gameInstance the associated game instance, or {@code null} for a global-only config
+     * @param fileName     the relative path of the configuration file
+     * @param hasGlobal    whether to fall back to the global config if the instance-local file does not exist
+     */
+    protected IConfig(GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal) {
         this(gameInstance, fileName, hasGlobal, null);
     }
 
-    protected IConfig(@NotNull GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal, @Nullable String nodeKey) {
+    /**
+     * Initializes a configuration instance with an optional root node key.
+     *
+     * <p>If {@code gameInstance} is {@code null}, this configuration operates in global-only mode
+     * (stored directly under the plugin's data folder), and {@code hasGlobal} is ignored.
+     * If no {@code nodeKey} is needed, prefer {@link #IConfig(GameInstance, String, boolean)}.
+     *
+     * @param gameInstance the associated game instance, or {@code null} for a global-only config
+     * @param fileName     the relative path of the configuration file
+     * @param hasGlobal    whether to fall back to the global config if the instance-local file does not exist
+     * @param nodeKey      the YAML key under the root node to read/write from, or {@code null} (or blank) to use the root node directly
+     */
+    protected IConfig(GameInstance gameInstance, @NotNull String fileName, boolean hasGlobal, @Nullable String nodeKey) {
         Type superClass = getClass().getGenericSuperclass();
         if (superClass instanceof ParameterizedType parameterized) {
             Type actualType = parameterized.getActualTypeArguments()[0];
@@ -43,11 +65,15 @@ public abstract class IConfig<T> {
         this.nodeKey = nodeKey;
         this.hasGlobal = hasGlobal;
 
-        File localFile = new File(GameFolder.of(gameInstance.getGame()), fileName);
-        if (hasGlobal && !localFile.exists()) {
+        if (gameInstance == null) {
             this.file = new File(BedwarsAPI.getInstance().plugin().getDataFolder(), fileName);
         } else {
-            this.file = localFile;
+            File localFile = new File(GameFolder.of(gameInstance.getGame()), fileName);
+            if (hasGlobal && !localFile.exists()) {
+                this.file = new File(BedwarsAPI.getInstance().plugin().getDataFolder(), fileName);
+            } else {
+                this.file = localFile;
+            }
         }
 
         this.loader = ConfigurateHelper.loader(this.file);
