@@ -157,7 +157,7 @@ public class WorldManager {
         World world = worlds.get(uuid);
         if (world == null) return;
 
-        world.save();
+        world.save(true);
         exportingUuids.add(uuid);
 
         Runnable baseExport = () -> {

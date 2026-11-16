@@ -14,12 +14,14 @@ import org.joml.Vector3i;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.*;
 import top.earthstudio.nextgenbedwars.api.game.event.BedwarsGameStateChangedEvent;
+import top.earthstudio.nextgenbedwars.api.util.GameFolder;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 import top.earthstudio.nextgenbedwars.core.game.listener.*;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 import top.earthstudio.nextgenbedwars.core.world.listener.WorldReadyListener;
 
+import java.io.File;
 import java.util.Map;
 import java.util.UUID;
 
@@ -186,6 +188,8 @@ public final class GameInstanceImpl implements GameInstance {
 
         gameConfig.save(game);
         subSystems.values().forEach(IGameSubSystem::save);
+
+        WorldManager.exportWorld(worldUUID, new File(GameFolder.of(game), "map"));
 
         isSaving = false;
     }
