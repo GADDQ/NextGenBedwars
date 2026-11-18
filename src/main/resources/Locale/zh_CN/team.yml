@@ -1,6 +1,7 @@
 translations:
   cannot_break_self_team_bed: "<red>你不能破坏自己的床！"
   bed_destroy_by_player: "{0:victim_team} &7的床被 {1:attacker_name} &7摧毁了！"
+  lost_invisible: "<red>由于受到敌人攻击，你的隐身已失效！"
 
   team.red.display_name: "旭日红"
   team.blue.display_name: "深海蓝"

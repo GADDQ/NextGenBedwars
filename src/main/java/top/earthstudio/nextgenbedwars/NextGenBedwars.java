@@ -22,6 +22,7 @@ import top.earthstudio.nextgenbedwars.core.language.LanguageTranslatorImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
 import java.io.File;
+import java.util.List;
 
 public final class NextGenBedwars extends JavaPlugin{
     static private Metrics metrics;
@@ -79,16 +80,21 @@ public final class NextGenBedwars extends JavaPlugin{
     }
 
     private void bootstrapDefaultConfigs() {
-        saveResource("spawner_types.yml", false);
-        saveResource("item_shop.yml", false);
-
-        saveResource("Information/information_animations.yml", false);
-        saveResource("Information/sidebar.yml", false);
-        saveResource("Information/tab_header.yml", false);
-        saveResource("Information/tab_footer.yml", false);
-        saveResource("Information/player_name_prefix.yml", false);
-        saveResource("Information/player_name_suffix.yml", false);
-        saveResource("Information/player_name_under.yml", false);
+        for (String path : List.of(
+                "spawner_types.yml",
+                "item_shop.yml",
+                "Information/information_animations.yml",
+                "Information/sidebar.yml",
+                "Information/tab_header.yml",
+                "Information/tab_footer.yml",
+                "Information/player_name_prefix.yml",
+                "Information/player_name_suffix.yml",
+                "Information/player_name_under.yml"
+        )) {
+            if (!new File(getDataFolder(), path).exists()) {
+                saveResource(path, false);
+            }
+        }
     }
 
     private void extractLocaleResources() {
