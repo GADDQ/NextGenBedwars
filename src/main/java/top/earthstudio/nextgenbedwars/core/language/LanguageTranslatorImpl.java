@@ -68,9 +68,7 @@ public class LanguageTranslatorImpl implements LanguageTranslator {
         if (template == null) return null;
 
         List<TranslationArgument> args = component.arguments();
-        if (args.isEmpty()) return template;
-
-        return template.replaceText(builder -> builder
+        Component result = args.isEmpty() ? template : template.replaceText(builder -> builder
                 .match(ARG_PATTERN)
                 .replacement((matchResult, textBuilder) -> {
                     int index = Integer.parseInt(matchResult.group(1));
@@ -80,6 +78,8 @@ public class LanguageTranslatorImpl implements LanguageTranslator {
                     return Component.text(matchResult.group(0));
                 })
         );
+
+        return result.applyFallbackStyle(component.style());
     }
 
     @Override
