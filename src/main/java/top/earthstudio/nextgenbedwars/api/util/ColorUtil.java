@@ -107,4 +107,15 @@ public final class ColorUtil {
     public static NamedTextColor toNamedTextColor(@NotNull Color color) {
         return NamedTextColor.nearestTo(toTextColor(color));
     }
+
+    @Nullable
+    public static NamedTextColor toExactNamedTextColor(@NotNull Color color) {
+        return NamedTextColor.namedColor(color.asRGB());
+    }
+
+    @Nullable
+    public static String toNamedTextColorName(@NotNull Color color) {
+        NamedTextColor named = NamedTextColor.namedColor(color.asRGB());
+        return named != null ? NamedTextColor.NAMES.key(named) : null;
+    }
 }
