@@ -1,7 +1,6 @@
 package top.earthstudio.nextgenbedwars.core.world.listener;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Tag;
 import org.bukkit.World;
@@ -16,7 +15,6 @@ import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
 public final class WorldProtectListener implements Listener {
-    // TODO: i18n
     private final WorldProtector worldProtector;
     private final World world;
 
@@ -34,7 +32,7 @@ public final class WorldProtectListener implements Listener {
             }
 
             if (worldProtector.contains(BlockUtil.asLong(event.getBlockPlaced()))) {
-                event.getPlayer().sendMessage(Component.text("你不允许在这里放置方块！").color(NamedTextColor.RED));
+                event.getPlayer().sendMessage(Component.translatable("nextgenbedwars.world_protect.forbidden_place"));
                 event.setCancelled(true);
             }
         }
@@ -59,7 +57,7 @@ public final class WorldProtectListener implements Listener {
                 if (Tag.BEDS.isTagged(event.getBlock().getType()))
                     return;
 
-                event.getPlayer().sendMessage(Component.text("你只能破坏玩家放置的方块！").color(NamedTextColor.RED));
+                event.getPlayer().sendMessage(Component.translatable("nextgenbedwars.world_protect.forbidden_break"));
                 event.setCancelled(true);
             }
         }
