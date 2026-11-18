@@ -1,0 +1,8 @@
+translations:
+  cannot_break_self_team_bed: "<red>你不能破坏自己的床！"
+  bed_destroy_by_player: "{0:victim_team} &7的床被 {1:attacker_name} &7摧毁了！"
+
+  team.red.display_name: "旭日红"
+  team.blue.display_name: "深海蓝"
+  team.lime.display_name: "生态绿"
+  team.yellow.display_name: "琥珀黄"

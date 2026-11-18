@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.team.listener;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -98,7 +99,7 @@ public final class TeamInteractListener implements Listener {  // TODO: i18n
 
         long blockLong = BlockUtil.asLong(block);
         if (team.bedBlockLongs.firstLong() == blockLong || team.bedBlockLongs.secondLong() == blockLong) {
-            player.sendMessage(Component.text("你不能破坏自己的床！").color(NamedTextColor.RED));
+            player.sendMessage(Component.translatable("nextgenbedwars.team.cannot_break_self_team_bed"));
             event.setCancelled(true);
             return;
         }
@@ -125,7 +126,7 @@ public final class TeamInteractListener implements Listener {  // TODO: i18n
 
                 targetTeam.isBedAlive = false;
 
-                player.getWorld().sendMessage(targetTeam.displayName.append(Component.text(" 的床被 ").color(NamedTextColor.RED).append(player.displayName().asComponent().append(Component.text("摧毁了！")))));
+                player.getWorld().sendMessage(Component.translatable("nextgenbedwars.team.bed_destroy_by_player", targetTeam.displayName, player.displayName().color(TextColor.color(team.teamColor.asRGB()))));
                 return;
             }
         }

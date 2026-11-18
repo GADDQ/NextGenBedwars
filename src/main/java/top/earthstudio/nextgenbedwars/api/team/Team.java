@@ -16,7 +16,6 @@ import java.util.UUID;
 
 @ConfigSerializable
 public final class Team { // struct Team
-    public Component displayName;
     public Color teamColor;
 
     public int maxPlayerCount;
@@ -24,6 +23,8 @@ public final class Team { // struct Team
 
     public Location respawnLocation;
     public LongLongPair bedBlockLongs;
+
+    public transient Component displayName;
 
     public transient boolean isBedAlive = true;
     public transient final List<Player> players = new ObjectArrayList<>();

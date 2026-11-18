@@ -42,7 +42,7 @@ public final class TeamChatListener implements Listener { // TODO: global chat
         for (Player player : team.players) { // TODO: allow config how message are presented, is allow to use color
             player.sendMessage(
                     Component.text("<").color(NamedTextColor.WHITE).append(
-                                    event.getPlayer().displayName().color(TextColor.color(team.teamColor.asARGB()))
+                                    event.getPlayer().displayName().color(TextColor.color(team.teamColor.asRGB()))
                     ).append(
                             Component.text("> ").color(NamedTextColor.WHITE)
                     ).append(

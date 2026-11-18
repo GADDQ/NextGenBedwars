@@ -1,0 +1,8 @@
+translations:
+  cannot_break_self_team_bed: "<red>You cannot break your own bed!"
+  bed_destroy_by_player: "{0:victim_team} &7Bed was destroy by {1:attacker_name} &7!"
+
+  team.red.display_name: "RED"
+  team.blue.display_name: "BLUE"
+  team.lime.display_name: "GREEN"
+  team.yellow.display_name: "YELLOW"

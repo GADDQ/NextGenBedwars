@@ -113,7 +113,7 @@ public class TeamInvisibleListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerHurt(EntityDamageByEntityEvent event) { // TODO: i18n
+    public void onPlayerHurt(EntityDamageByEntityEvent event) {
         if (event.getEntity().getWorld() != gameInstance.getWorld())
             return;
 
@@ -128,7 +128,7 @@ public class TeamInvisibleListener implements Listener {
         if (!player.hasPotionEffect(PotionEffectType.INVISIBILITY))
             return;
 
-        player.sendMessage(Component.text("由于受到敌方攻击，你的隐身已失效！").color(NamedTextColor.RED));
+        player.sendMessage(Component.translatable("nextgenbedwars.team.lost_invisible"));
         player.removePotionEffect(PotionEffectType.INVISIBILITY);
         restoreArmorVisual(player);
     }
