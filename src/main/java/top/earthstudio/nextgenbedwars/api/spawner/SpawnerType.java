@@ -16,7 +16,6 @@ public class SpawnerType {
     public boolean isShowHolo = false;
 
     public Material holoMaterial;
-    public Component resourceName;
 
     public boolean isShowTimer = true;
     public boolean isShowLevel = true;
@@ -24,7 +23,7 @@ public class SpawnerType {
     public boolean isAllowMerge = true;
     public int maxSpawnCount = 0;
 
-    //transient public Component resourceName;
+    transient public Component resourceName;
 
     public SpawnerType() {}
 }

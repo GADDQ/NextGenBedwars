@@ -1,21 +1,17 @@
 package top.earthstudio.nextgenbedwars.core.spawner;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
-import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.util.Vector;
 
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
-
-import java.util.Locale;
 
 public final class SpawnerDisplayUtil {
     private SpawnerDisplayUtil() {}
 
     public static final Vector ZERO_VELOCITY = new Vector(0, 0, 0);
 
-    public static Component updateTextDisplay(int seconds, Spawner spawner) { // TODO: i18n
+    public static Component updateTextDisplay(int seconds, Spawner spawner) {
         Component component = Component.text("");
         if (spawner.spawnerType.isShowHolo) {
             if (spawner.spawnerType.resourceName != null) {
@@ -26,10 +22,7 @@ public final class SpawnerDisplayUtil {
 
             if (spawner.spawnerType.isShowTimer) {
                 component = component.append(
-                        Component.text(seconds).color(NamedTextColor.WHITE)
-                                .append(
-                                        Component.text(" 秒后刷新").color(NamedTextColor.GREEN)
-                                )
+                        Component.translatable("nextgenbedwars.spawner.display.rest_spawn_time", Component.text(seconds))
                 );
             }
 
@@ -37,10 +30,7 @@ public final class SpawnerDisplayUtil {
 
             if (spawner.spawnerType.isShowLevel && spawner.level > 0) {
                 component = component.append(
-                        Component.text("等级 ").color(NamedTextColor.GOLD)
-                                .append(
-                                        Component.text(spawner.level + 1).color(NamedTextColor.WHITE)
-                                )
+                        Component.translatable("nextgenbedwars.spawner.display.level", Component.text(spawner.level))
                 );
             }
         }

@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 
 public interface LanguageTranslator extends Translator {
     Key TRANSLATOR_KEY = Key.key("nextgenbedwars", "translator");
-    Pattern ARG_PATTERN = Pattern.compile("\\{(\\d+)}");
-    Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    Pattern ARG_PATTERN = Pattern.compile("\\{(\\d+)(?::[a-zA-Z0-9_]+)?}");
+    Locale DEFAULT_LOCALE = Locale.CHINA;
 
     void reload();
 

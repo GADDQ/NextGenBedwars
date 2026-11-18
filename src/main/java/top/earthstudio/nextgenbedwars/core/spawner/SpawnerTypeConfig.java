@@ -1,5 +1,7 @@
 package top.earthstudio.nextgenbedwars.core.spawner;
 
+import net.kyori.adventure.text.Component;
+
 import top.earthstudio.nextgenbedwars.api.config.IConfig;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
@@ -13,12 +15,11 @@ public class SpawnerTypeConfig extends IConfig<Map<String, SpawnerType>> {
 
     @Override
     public Map<String, SpawnerType> load() {
-//        var config = super.load();
-//        config.forEach((id, spawnerType) -> {
-//            spawnerType.resourceName = Component.translatable("nextgenbedwars.spawner.spawnertype.resource_name." + id);
-//        });
-//        return config;
-        return super.load();
+        var config = super.load();
+        config.forEach((id, spawnerType) ->
+                spawnerType.resourceName = Component.translatable("nextgenbedwars.spawner.spawnertype.resource_name." + id)
+        );
+        return config;
     }
 
     public void save(Map<String, SpawnerType> spawnerTypes) {
