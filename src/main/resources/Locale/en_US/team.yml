@@ -1,6 +1,6 @@
 translations:
   cannot_break_self_team_bed: "<red>You cannot break your own bed!"
-  bed_destroy_by_player: "{0:victim_team} &7Bed was destroy by {1:attacker_name} &7!"
+  bed_destroy_by_player: "{0:victim_team} &7Bed was destroyed by {1:attacker_name} &7!"
   lost_invisible: "<red>Enemy attack! Your invisibility has worn off!"
 
   team.red.display_name: "RED"
