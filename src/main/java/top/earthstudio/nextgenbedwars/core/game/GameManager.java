@@ -44,7 +44,7 @@ public class GameManager {
 
     private GameManager() {}
 
-    static public void initialize() { // TODO: ability to edit instance map and save to template
+    static public void initialize() {
         gameInstances = new Object2ObjectOpenHashMap<>();
         SUB_SYSTEM_TEMPLATES = new Object2ObjectOpenHashMap<>();
 
