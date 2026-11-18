@@ -1,0 +1,3 @@
+translations:
+  forbidden_place: "<red>You can't place blocks here!"
+  forbidden_break: "<red>You can only break blocks placed by a player!"

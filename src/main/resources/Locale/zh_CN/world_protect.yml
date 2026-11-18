@@ -1,0 +1,3 @@
+translations:
+  forbidden_place: "<red>你不允许在这里放置方块！"
+  forbidden_break: "<red>你只能破坏玩家放置的方块！"
