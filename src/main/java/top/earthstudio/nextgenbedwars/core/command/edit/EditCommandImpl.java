@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
-public final class EditCommandImpl implements EditCommand { // TODO: i18n
+public final class EditCommandImpl implements EditCommand { // TODO: i18n, Refactor, FIXME: do not use DyeColor, use Color directly
     public static LiteralCommandNode<CommandSourceStack> root;
 
     private static EditCommandImpl handler;
