@@ -23,7 +23,7 @@ public class RespawnListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPLayerFallInVoid(EntityDamageEvent event) { // TODO: Send event with uncancelled property
+    public void onPLayerFallInVoid(EntityDamageEvent event) {
         if (event.getEntity().getWorld() != gameInstance.getWorld())
             return;
 

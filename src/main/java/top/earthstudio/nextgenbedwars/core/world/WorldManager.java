@@ -264,7 +264,7 @@ public class WorldManager {
         }
     }
 
-    static public void shutdown() { // TODO: auto save editing game
+    static public void shutdown() {
         worlds.forEach((uuid, world) -> deleteTempWorld(world));
 
         while (!pendingUuids.isEmpty() || !exportingUuids.isEmpty()) {
