@@ -201,7 +201,6 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         placeholderManager.create("team_prefix", player -> {
             Team team = get(player);
             if (team == null) return Component.empty();
-            TextColor color = TextColor.color(team.teamColor.asRGB());
             return team.displayName;
         });
 
