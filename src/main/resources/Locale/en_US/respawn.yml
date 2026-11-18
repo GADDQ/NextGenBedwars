@@ -1,0 +1,5 @@
+translations:
+  title.respawning_title.main_title: "<red>YOU DIED!"
+  title.respawning_title.sub_title: "<yellow>You will respawn in <red>{0:second} <yellow>seconds!"
+  title.respawned_title.main_title: "<green>RESPAWNED!"
+  title.respawned_title.sub_title: ""

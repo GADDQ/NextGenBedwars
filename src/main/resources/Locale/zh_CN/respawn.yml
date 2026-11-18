@@ -1,0 +1,5 @@
+translations:
+  title.respawning_title.main_title: "<red>你死了！"
+  title.respawning_title.sub_title: "<yellow>你将在 <red>{0:second} <yellow>秒后重生！"
+  title.respawned_title.main_title: "<green>已重生！"
+  title.respawned_title.sub_title: ""

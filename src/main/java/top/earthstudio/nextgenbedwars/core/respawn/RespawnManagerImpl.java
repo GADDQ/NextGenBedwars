@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 
 import org.bukkit.Bukkit;
@@ -79,7 +78,7 @@ public class RespawnManagerImpl implements RespawnManager { // TODO: player chan
     }
 
     @Override
-    public void update() { // TODO: i18n
+    public void update() {
         List<UUID> pendingRemoves = new ObjectArrayList<>();
         respawnTicks.replaceAll((uuid, tick) -> {
             if (ignorePlayers.contains(uuid)) {
@@ -98,8 +97,8 @@ public class RespawnManagerImpl implements RespawnManager { // TODO: player chan
                     return tick;
 
                 player.showTitle(Title.title(
-                        Component.text("你死了！").color(NamedTextColor.RED),
-                        Component.text("你将在 ").append(Component.text(remainingSeconds).color(NamedTextColor.YELLOW)).append(Component.text(" 秒后重生")),
+                        Component.translatable("nextgenbedwars.respawn.title.respawning_title.main_title"),
+                        Component.translatable("nextgenbedwars.respawn.title.respawning_title.sub_title", Component.text(remainingSeconds)),
                         Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofSeconds(1))
                 ));
             }
@@ -116,8 +115,8 @@ public class RespawnManagerImpl implements RespawnManager { // TODO: player chan
             var event = new BedwarsPlayerRespawnEvent(gameInstance, player);
             Bukkit.getPluginManager().callEvent(event);
             player.showTitle(Title.title(
-                    Component.text("已重生！").color(NamedTextColor.GREEN),
-                    Component.text(""),
+                    Component.translatable("nextgenbedwars.respawn.title.respawned_title.main_title"),
+                    Component.translatable("nextgenbedwars.respawn.title.respawned_title.sub_title"),
                     Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ofSeconds(1))
             ));
             respawnTicks.remove(uuid);
