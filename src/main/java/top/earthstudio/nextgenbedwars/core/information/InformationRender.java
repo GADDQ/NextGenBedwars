@@ -10,6 +10,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.translation.GlobalTranslator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,7 +39,10 @@ public class InformationRender {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) return;
 
-            Component title = placeholderManager.resolve(titleTemplate, player);
+            Component title = GlobalTranslator.render(
+                    placeholderManager.resolve(titleTemplate, player),
+                    player.locale()
+            );
             Objective sidebar = scoreboard.getObjective(DisplaySlot.SIDEBAR);
             if (sidebar == null) {
                 sidebar = scoreboard.registerNewObjective("sidebar", Criteria.DUMMY, title);
@@ -49,7 +53,11 @@ public class InformationRender {
 
             List<Component> expanded = new ObjectArrayList<>();
             for (int i = 1; i < lines.size(); i++) {
-                expanded.addAll(splitLines(placeholderManager.resolve(lines.get(i), player)));
+                Component resolved = GlobalTranslator.render(
+                        placeholderManager.resolve(lines.get(i), player),
+                        player.locale()
+                );
+                expanded.addAll(splitLines(resolved));
             }
 
             int displayCount = Math.min(expanded.size(), 15);
@@ -162,11 +170,26 @@ public class InformationRender {
     }
 
     private static List<Component> splitLines(Component root) {
+        if (!containsNewline(root)) {
+            return List.of(root);
+        }
         List<Component> result = new ObjectArrayList<>();
         List<Component> currentParts = new ObjectArrayList<>();
         collectLineParts(root, Style.empty(), result, currentParts);
         result.add(joinParts(currentParts));
         return result;
+    }
+
+    private static boolean containsNewline(Component node) {
+        if (node instanceof TextComponent text && text.content().indexOf('\n') != -1) {
+            return true;
+        }
+        for (Component child : node.children()) {
+            if (containsNewline(child)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void collectLineParts(
