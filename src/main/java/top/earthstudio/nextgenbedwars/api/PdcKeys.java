@@ -9,7 +9,6 @@ public final class PdcKeys {
         private spawner() {}
         public static final NamespacedKey drop = new NamespacedKey("nextgenbedwars", "spawner_drop");
         public static final NamespacedKey preventMerge = new NamespacedKey("nextgenbedwars", "prevent_merge");
-        public static final NamespacedKey spawnerType = new NamespacedKey("nextgenbedwars", "spawner_type");
     }
 
     public static final class shop {
@@ -23,5 +22,10 @@ public final class PdcKeys {
     public static final class prop {
         private prop() {}
         public static final NamespacedKey id = new NamespacedKey("nextgenbedwars", "prop_id");
+    }
+
+    public static final class i18n {
+        private i18n() {}
+        public static final NamespacedKey translatable = new NamespacedKey("nextgenbedwars", "spawner_type");
     }
 }

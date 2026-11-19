@@ -1,30 +1,20 @@
 package top.earthstudio.nextgenbedwars.core.spawner.listener;
 
-import net.kyori.adventure.translation.GlobalTranslator;
-
 import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemMergeEvent;
-import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 
-import org.bukkit.persistence.PersistentDataType;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 
-import java.util.Map;
-
-public final class SpawnerActionListener implements Listener {
+public final class SpawnerMergeListener implements Listener {
     private final GameInstance gameInstance;
-    private final Map<String, SpawnerType> spawnerTypes;
 
-    public SpawnerActionListener(GameInstance gameInstance, Map<String, SpawnerType> spawnerTypes) {
+    public SpawnerMergeListener(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
-        this.spawnerTypes = spawnerTypes;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -45,24 +35,5 @@ public final class SpawnerActionListener implements Listener {
 
         if (entityPdc.has(PdcKeys.spawner.preventMerge) || targetPdc.has(PdcKeys.spawner.preventMerge))
             event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onItemPick(PlayerAttemptPickupItemEvent event) {
-        Player player = event.getPlayer();
-        var pdc = event.getItem().getItemStack().getPersistentDataContainer();
-
-        if (player.getWorld() != gameInstance.getWorld())
-            return;
-
-        if (!pdc.has(PdcKeys.spawner.spawnerType))
-            return;
-
-        event.getItem().getItemStack().editMeta(itemMeta ->
-                itemMeta.customName(GlobalTranslator.render(
-                        spawnerTypes.get(pdc.get(PdcKeys.spawner.spawnerType, PersistentDataType.STRING)).resourceName,
-                        player.locale()
-                ))
-        );
     }
 }

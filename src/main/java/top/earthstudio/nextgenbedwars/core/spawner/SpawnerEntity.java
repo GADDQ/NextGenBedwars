@@ -11,6 +11,7 @@ import org.joml.AxisAngle4f;
 import org.joml.Vector3f;
 
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
+import top.earthstudio.nextgenbedwars.api.language.ComponentDataType;
 import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 
 import static top.earthstudio.nextgenbedwars.core.spawner.SpawnerDisplayUtil.ZERO_VELOCITY;
@@ -93,7 +94,7 @@ public class SpawnerEntity {
                 if (!spawner.spawnerType.isAllowMerge)
                     entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
             }).getItemStack().editMeta(itemMeta ->
-                    itemMeta.getPersistentDataContainer().set(PdcKeys.spawner.spawnerType, PersistentDataType.STRING, spawner.type)
+                    itemMeta.getPersistentDataContainer().set(PdcKeys.i18n.translatable, ComponentDataType.COMPONENT, spawner.spawnerType.resourceName)
             );
         }
 
