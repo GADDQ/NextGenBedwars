@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.core.shop.listener;
+package top.earthstudio.nextgenbedwars.core.shop.item.listener;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,17 +11,17 @@ import org.bukkit.persistence.PersistentDataType;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.level.LevelManager;
-import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 import top.earthstudio.nextgenbedwars.api.respawn.event.BedwarsPlayerDeadEvent;
+import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
 import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopConfig;
 
-public final class ShopItemLevelListener implements Listener {
+public final class ItemShopLevelListener implements Listener {
     private final GameInstance gameInstance;
     private final LevelManager levelManager;
     private final ItemShopConfig itemShopConfig;
 
-    public ShopItemLevelListener(GameInstance gameInstance, LevelManager levelManager, ItemShopConfig itemShopConfig) {
+    public ItemShopLevelListener(GameInstance gameInstance, LevelManager levelManager, ItemShopConfig itemShopConfig) {
         this.gameInstance = gameInstance;
         this.levelManager = levelManager;
         this.itemShopConfig = itemShopConfig;
@@ -71,6 +71,8 @@ public final class ShopItemLevelListener implements Listener {
                         newPdc.set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
                     if (shopItem.id != null)
                         newPdc.set(PdcKeys.shop.itemId, PersistentDataType.STRING, shopItem.id);
+                    if (shopItem.propId != null)
+                        newPdc.set(PdcKeys.prop.id, PersistentDataType.STRING, shopItem.propId);
                 });
 
                 inv.setItem(i, newItem);

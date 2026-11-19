@@ -1,11 +1,14 @@
 package top.earthstudio.nextgenbedwars.api.shop.item;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ConfigSerializable
 public final class ShopItem { // struct ShopItem // TODO: Material Only, not ItemStack. add Component:description/name
@@ -36,5 +39,29 @@ public final class ShopItem { // struct ShopItem // TODO: Material Only, not Ite
 
     public ItemStack getActualItem(int level) {
         return actualItems.get(level);
+    }
+
+    public ShopItem copy() {
+        ShopItem copy = new ShopItem();
+        copy.id = this.id;
+        copy.coinType = this.coinType;
+        copy.price = this.price;
+        copy.maxLevel = this.maxLevel;
+        copy.executorId = this.executorId;
+        copy.propId = this.propId;
+        copy.isDecreaseLevelWhenPlayerDead = this.isDecreaseLevelWhenPlayerDead;
+        copy.isKeepWhenDead = this.isKeepWhenDead;
+        copy.isThrowable = this.isThrowable;
+        if (this.showItems != null) {
+            copy.showItems = this.showItems.stream()
+                    .map(ItemStack::clone)
+                    .collect(Collectors.toCollection(ObjectArrayList::new));
+        }
+        if (this.actualItems != null) {
+            copy.actualItems = this.actualItems.stream()
+                    .map(ItemStack::clone)
+                    .collect(Collectors.toCollection(ObjectArrayList::new));
+        }
+        return copy;
     }
 }

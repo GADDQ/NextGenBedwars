@@ -16,6 +16,7 @@ import top.earthstudio.nextgenbedwars.api.respawn.RespawnManager;
 import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
 import top.earthstudio.nextgenbedwars.api.level.LevelManager;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
+import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 import top.earthstudio.nextgenbedwars.api.util.ticker.GlobalTicker;
@@ -29,6 +30,7 @@ import top.earthstudio.nextgenbedwars.core.respawn.RespawnManagerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.executor.ShopExecutorImpl;
 import top.earthstudio.nextgenbedwars.core.level.LevelManagerImpl;
 import top.earthstudio.nextgenbedwars.core.shop.ShopManagerImpl;
+import top.earthstudio.nextgenbedwars.core.shop.item.ItemShopManagerImpl;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerManagerImpl;
 import top.earthstudio.nextgenbedwars.core.team.TeamManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldProtectorImpl;
@@ -58,6 +60,7 @@ public class GameManager {
         registerSubSystem(RespawnManager.class, RespawnManagerImpl::new);
         registerSubSystem(InformationManager.class, InformationManagerImpl::new);
         registerSubSystem(PlaceholderManager.class, PlaceholderManagerImpl::new);
+        registerSubSystem(ItemShopManager.class, ItemShopManagerImpl::new);
     }
 
     static public void shutdown() {
