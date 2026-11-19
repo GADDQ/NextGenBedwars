@@ -92,7 +92,9 @@ public class SpawnerEntity {
 
                 if (!spawner.spawnerType.isAllowMerge)
                     entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
-            });
+            }).getItemStack().editMeta(itemMeta ->
+                    itemMeta.getPersistentDataContainer().set(PdcKeys.spawner.spawnerType, PersistentDataType.STRING, spawner.type)
+            );
         }
 
         if (!spawner.spawnerType.isShowHolo)

@@ -13,7 +13,7 @@ import top.earthstudio.nextgenbedwars.api.spawner.Spawner;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerManager;
 import top.earthstudio.nextgenbedwars.api.spawner.SpawnerType;
 
-import top.earthstudio.nextgenbedwars.core.spawner.listener.SpawnerMergeListener;
+import top.earthstudio.nextgenbedwars.core.spawner.listener.SpawnerActionListener;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ public class SpawnerManagerImpl implements SpawnerManager {
     private Map<UUID, SpawnerEntity> spawners;
     private World world;
 
-    private SpawnerMergeListener spawnerMergeListener;
+    private SpawnerActionListener spawnerActionListener;
 
     private SpawnerTypeConfig spawnerTypeConfig;
     private SpawnerConfig spawnerConfig;
@@ -34,14 +34,14 @@ public class SpawnerManagerImpl implements SpawnerManager {
         spawners = new Object2ObjectOpenHashMap<>();
         world = gameInstance.getWorld();
 
-        spawnerMergeListener = new SpawnerMergeListener(gameInstance);
-        Bukkit.getPluginManager().registerEvents(spawnerMergeListener, BedwarsAPI.getInstance().plugin());
-
         spawnerTypeConfig = new SpawnerTypeConfig(gameInstance);
         spawnerConfig = new SpawnerConfig(gameInstance);
 
         spawnerTypes = spawnerTypeConfig.load();
         spawnerConfig.load(spawnerTypes).forEach(this::add);
+
+        spawnerActionListener = new SpawnerActionListener(gameInstance, spawnerTypes);
+        Bukkit.getPluginManager().registerEvents(spawnerActionListener, BedwarsAPI.getInstance().plugin());
     }
 
     @Override
@@ -98,8 +98,8 @@ public class SpawnerManagerImpl implements SpawnerManager {
         spawnerConfig = null;
         spawnerTypeConfig = null;
 
-        HandlerList.unregisterAll(spawnerMergeListener);
-        spawnerMergeListener = null;
+        HandlerList.unregisterAll(spawnerActionListener);
+        spawnerActionListener = null;
 
         world = null;
         spawners.values().forEach(SpawnerEntity::destroy);

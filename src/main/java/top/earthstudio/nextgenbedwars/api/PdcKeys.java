@@ -9,6 +9,7 @@ public final class PdcKeys {
         private spawner() {}
         public static final NamespacedKey drop = new NamespacedKey("nextgenbedwars", "spawner_drop");
         public static final NamespacedKey preventMerge = new NamespacedKey("nextgenbedwars", "prevent_merge");
+        public static final NamespacedKey spawnerType = new NamespacedKey("nextgenbedwars", "spawner_type");
     }
 
     public static final class shop {
