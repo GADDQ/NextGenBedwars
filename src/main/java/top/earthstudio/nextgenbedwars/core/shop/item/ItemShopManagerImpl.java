@@ -33,7 +33,7 @@ import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
-public class ItemShopManagerImpl implements ItemShopManager { // TODO: quick buy
+public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
     private Map<UUID, ItemShopPage> itemShopPages;
     private Map<Material, Component> resourceNames;
     private List<Category> categories;

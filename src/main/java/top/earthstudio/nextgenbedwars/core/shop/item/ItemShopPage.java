@@ -13,7 +13,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
@@ -49,9 +48,7 @@ public class ItemShopPage extends ChestGuiPage {
 
         this.itemShopManager = itemShopManager;
 
-        this.categories = itemShopManager.getTemplateCategories().stream()
-                .map(Category::copy)
-                .collect(Collectors.toCollection(ObjectArrayList::new));
+        this.categories = itemShopManager.getTemplateCategories();
 
         buildPage(player);
     }
