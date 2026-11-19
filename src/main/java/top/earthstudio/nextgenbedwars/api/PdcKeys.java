@@ -26,6 +26,7 @@ public final class PdcKeys {
 
     public static final class i18n {
         private i18n() {}
-        public static final NamespacedKey translatable = new NamespacedKey("nextgenbedwars", "spawner_type");
+        public static final NamespacedKey name = new NamespacedKey("nextgenbedwars", "translatable_name");
+        public static final NamespacedKey lore = new NamespacedKey("nextgenbedwars", "translatable_lore");
     }
 }

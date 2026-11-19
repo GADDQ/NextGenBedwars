@@ -94,7 +94,7 @@ public class SpawnerEntity {
                 if (!spawner.spawnerType.isAllowMerge)
                     entity.getPersistentDataContainer().set(PdcKeys.spawner.preventMerge, PersistentDataType.BOOLEAN, true);
             }).getItemStack().editMeta(itemMeta ->
-                    itemMeta.getPersistentDataContainer().set(PdcKeys.i18n.translatable, ComponentDataType.COMPONENT, spawner.spawnerType.resourceName)
+                    itemMeta.getPersistentDataContainer().set(PdcKeys.i18n.name, ComponentDataType.COMPONENT, spawner.spawnerType.resourceName)
             );
         }
 

@@ -1,5 +1,9 @@
 package top.earthstudio.nextgenbedwars.core.game.listener;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.translation.GlobalTranslator;
 
 import org.bukkit.entity.Player;
@@ -15,9 +19,16 @@ import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.language.ComponentDataType;
 
+import java.util.List;
+
 @SuppressWarnings("DataFlowIssue")
 public class GameI18nListener implements Listener {
     private final GameInstance gameInstance;
+
+    private static final Style DEFAULT_LORE_STYLE = Style.style()
+            .color(NamedTextColor.WHITE)
+            .decoration(TextDecoration.ITALIC, false)
+            .build();
 
     public GameI18nListener(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
@@ -26,20 +37,32 @@ public class GameI18nListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onItemPick(PlayerAttemptPickupItemEvent event) {
         Player player = event.getPlayer();
+        ItemStack item = event.getItem().getItemStack();
         var pdc = event.getItem().getItemStack().getPersistentDataContainer();
 
         if (player.getWorld() != gameInstance.getWorld())
             return;
 
-        if (!pdc.has(PdcKeys.i18n.translatable))
+        if (!pdc.has(PdcKeys.i18n.name))
             return;
 
-        event.getItem().getItemStack().editMeta(itemMeta ->
-                itemMeta.customName(GlobalTranslator.render(
-                        pdc.get(PdcKeys.i18n.translatable, ComponentDataType.COMPONENT),
-                        player.locale()
-                ))
-        );
+        if (pdc.has(PdcKeys.i18n.name)) {
+            item.editMeta(itemMeta ->
+                    itemMeta.itemName(GlobalTranslator.render(
+                            pdc.get(PdcKeys.i18n.name, ComponentDataType.COMPONENT),
+                            player.locale()
+                    ))
+            );
+        }
+
+        if (pdc.has(PdcKeys.i18n.lore)) {
+            List<Component> rawLore = pdc.get(PdcKeys.i18n.lore, ComponentDataType.COMPONENT_LIST);
+            item.editMeta(itemMeta ->
+                    itemMeta.lore(rawLore.stream()
+                            .map(line -> GlobalTranslator.render(line, player.locale()).applyFallbackStyle(DEFAULT_LORE_STYLE))
+                            .toList())
+            );
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -59,15 +82,23 @@ public class GameI18nListener implements Listener {
 
             var pdc = item.getPersistentDataContainer();
 
-            if (!pdc.has(PdcKeys.i18n.translatable))
-                continue;
+            if (pdc.has(PdcKeys.i18n.name)) {
+                item.editMeta(itemMeta ->
+                        itemMeta.itemName(GlobalTranslator.render(
+                                pdc.get(PdcKeys.i18n.name, ComponentDataType.COMPONENT),
+                                event.locale()
+                        ))
+                );
+            }
 
-            item.editMeta(itemMeta ->
-                    itemMeta.customName(GlobalTranslator.render(
-                            pdc.get(PdcKeys.i18n.translatable, ComponentDataType.COMPONENT),
-                            event.locale()
-                    ))
-            );
+            if (pdc.has(PdcKeys.i18n.lore)) {
+                List<Component> rawLore = pdc.get(PdcKeys.i18n.lore, ComponentDataType.COMPONENT_LIST);
+                item.editMeta(itemMeta ->
+                        itemMeta.lore(rawLore.stream()
+                                .map(line -> GlobalTranslator.render(line, player.locale()).applyFallbackStyle(DEFAULT_LORE_STYLE))
+                                .toList())
+                );
+            }
         }
     }
 }
