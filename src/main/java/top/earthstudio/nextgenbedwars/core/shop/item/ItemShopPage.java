@@ -39,6 +39,7 @@ public class ItemShopPage extends ChestGuiPage {
 
     public ItemShopPage(ItemShopManager itemShopManager, Player player) {
         super(Component.translatable("nextgenbedwars.shop.item_shop_title"), 6, false);
+        this.allowPlayerInventoryInteraction = true;
 
         this.itemShopManager = itemShopManager;
 
