@@ -4,6 +4,9 @@ import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -12,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -26,7 +30,12 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("UnstableApiUsage")
 public class ItemStackSerializer implements TypeSerializer<ItemStack> {
+    private static final Style DEFAULT_LORE_STYLE = Style.style()
+            .color(NamedTextColor.WHITE)
+            .decoration(TextDecoration.ITALIC, false)
+            .build();
 
     @Override
     public ItemStack deserialize(Type type, ConfigurationNode node) throws SerializationException {
@@ -51,7 +60,11 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
         if (name != null || (lore != null && !lore.isEmpty())) {
             item.editMeta(meta -> {
                 if (name != null) meta.itemName(name);
-                if (lore != null && !lore.isEmpty()) meta.lore(lore);
+                if (lore != null && !lore.isEmpty()) {
+                    meta.lore(lore.stream()
+                            .map(line -> line.applyFallbackStyle(DEFAULT_LORE_STYLE))
+                            .toList());
+                }
             });
         }
 
@@ -78,9 +91,13 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
             item.editMeta(meta -> meta.setUnbreakable(true));
         }
 
-        if (node.node("customModelData").getInt(0) != 0) {
-            int cmd = node.node("customModelData").getInt();
-            item.editMeta(meta -> meta.setCustomModelData(cmd));
+        int cmd = node.node("customModelData").getInt(0);
+        if (cmd != 0) {
+            item.editMeta(meta -> {
+                CustomModelDataComponent component = meta.getCustomModelDataComponent();
+                component.setFloats(List.of((float) cmd));
+                meta.setCustomModelDataComponent(component);
+            });
         }
 
         if (item.getItemMeta() instanceof PotionMeta) {
@@ -122,13 +139,9 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
                                         .getRegistry(RegistryKey.MOB_EFFECT)
                                         .get(effectKey);
 
-                                if (effectType == null) {
-                                    effectType = PotionEffectType.getByKey(effectKey);
-                                }
-
                                 if (effectType != null) {
-                                    int duration = effectNode.node("duration").getInt(600); // 默认 tick
-                                    int amplifier = effectNode.node("amplifier").getInt(0); // 0 = I级, 1 = II级
+                                    int duration = effectNode.node("duration").getInt(600);
+                                    int amplifier = effectNode.node("amplifier").getInt(0);
                                     boolean ambient = effectNode.node("ambient").getBoolean(false);
                                     boolean particles = effectNode.node("particles").getBoolean(true);
                                     boolean icon = effectNode.node("icon").getBoolean(true);
@@ -182,8 +195,11 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
                 node.node("unbreakable").set(true);
             }
 
-            if (meta.hasCustomModelData()) {
-                node.node("customModelData").set(meta.getCustomModelData());
+            if (meta.hasCustomModelDataComponent()) {
+                List<Float> floats = meta.getCustomModelDataComponent().getFloats();
+                if (!floats.isEmpty()) {
+                    node.node("customModelData").set(floats.getFirst().intValue());
+                }
             }
 
             if (meta instanceof PotionMeta potionMeta) {
