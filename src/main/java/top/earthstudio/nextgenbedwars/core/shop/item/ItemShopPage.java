@@ -23,16 +23,6 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class ItemShopPage extends ChestGuiPage {
-    private static final Style DEFAULT_NAME_STYLE = Style.style()
-            .color(NamedTextColor.WHITE)
-            .decoration(TextDecoration.ITALIC, false)
-            .build();
-
-    private static final Style DEFAULT_LORE_STYLE = Style.style()
-            .color(NamedTextColor.GRAY)
-            .decoration(TextDecoration.ITALIC, false)
-            .build();
-
     private final boolean isCategoryFullSize = false; // TODO: configurable
     private final boolean isResetMainPageWhenOpen = true; // TODO: configurable
     private int activeCategoryIndex = 0;
@@ -300,16 +290,15 @@ public class ItemShopPage extends ChestGuiPage {
     private ItemStack translateItem(ItemStack item, Locale locale) {
         ItemStack copy = item.clone();
         copy.editMeta(meta -> {
-            if (meta.hasDisplayName() && meta.displayName() != null) {
-                meta.displayName(
-                        GlobalTranslator.render(meta.displayName(), locale)
-                                .applyFallbackStyle(DEFAULT_NAME_STYLE)
+            if (meta.hasItemName()) {
+                meta.itemName();
+                meta.itemName(
+                        GlobalTranslator.render(meta.itemName(), locale)
                 );
             }
             if (meta.hasLore() && meta.lore() != null) {
                 meta.lore(meta.lore().stream()
-                        .map(line -> GlobalTranslator.render(line, locale)
-                                .applyFallbackStyle(DEFAULT_LORE_STYLE))
+                        .map(line -> GlobalTranslator.render(line, locale))
                         .toList());
             }
         });

@@ -50,7 +50,7 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
 
         if (name != null || (lore != null && !lore.isEmpty())) {
             item.editMeta(meta -> {
-                if (name != null) meta.displayName(name);
+                if (name != null) meta.itemName(name);
                 if (lore != null && !lore.isEmpty()) meta.lore(lore);
             });
         }
@@ -170,8 +170,8 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
 
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
-            if (meta.hasDisplayName()) {
-                node.node("name").set(Component.class, meta.displayName());
+            if (meta.hasItemName()) {
+                node.node("name").set(Component.class, meta.itemName());
             }
 
             if (meta.hasLore()) {
