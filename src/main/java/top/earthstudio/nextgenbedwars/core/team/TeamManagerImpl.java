@@ -205,8 +205,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         });
 
         placeholderManager.create("health", player ->
-                Component.text((int) Math.ceil(player.getHealth()), NamedTextColor.WHITE)
-                        .append(Component.text(" ❤", NamedTextColor.RED))
+                Component.text((int) Math.ceil(player.getHealth()))
         );
     }
 }

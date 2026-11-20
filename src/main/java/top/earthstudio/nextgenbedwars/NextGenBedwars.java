@@ -40,7 +40,7 @@ public final class NextGenBedwars extends JavaPlugin{
         languageTranslator = new LanguageTranslatorImpl();
 
         logger = getComponentLogger();
-        logger.info(Component.text("NextGenBedwars v0.1.5-Alpha, MIT Licence. Made by Earth_Studio with <3. Now starting up...").color(NamedTextColor.GREEN));
+        logger.info(Component.text("NextGenBedwars v0.2.0-Alpha, MIT Licence. Made by Earth_Studio with <3. Now starting up...").color(NamedTextColor.GREEN));
 
         extractLocaleResources();
         GlobalTranslator.translator().addSource(languageTranslator);
