@@ -8,7 +8,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import java.util.List;
 
 @ConfigSerializable
-public final class ShopItem { // struct ShopItem // TODO: Material Only, not ItemStack. add Component:description/name
+public final class ShopItem { // struct ShopItem
     public String id;
     public List<ItemStack> showItems = null;
     public List<ItemStack> actualItems = null;
