@@ -3,7 +3,6 @@ package top.earthstudio.nextgenbedwars.core.shop.item;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -31,9 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static java.util.Objects.requireNonNull;
-
-public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
+public class ItemShopManagerImpl implements ItemShopManager {
     private Map<UUID, ItemShopPage> itemShopPages;
     private Map<Material, Component> resourceNames;
     private List<Category> categories;
@@ -152,7 +149,7 @@ public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
         if (times <= 0) return false;
 
         if (isMaxLevel(player, shopItem)) {
-            player.sendMessage(Component.text("该物品已达到最高等级！").color(NamedTextColor.RED));
+            player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_already_max_level"));
             player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0f);
             return false;
         }
@@ -166,9 +163,7 @@ public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
             int maxAffordable = owned / shopItem.price;
             if (maxAffordable <= 0) {
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 0.5f);
-                player.sendMessage(Component.text("货币不足！需要 " + shopItem.price + " 个 ")
-                        .color(NamedTextColor.RED)
-                        .append(Component.translatable(requireNonNull(shopItem.coinType.getItemTranslationKey()))));
+                player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_resource_missing", resourceNames.get(shopItem.coinType), Component.text(shopItem.price - owned)));
                 return false;
             }
             times = Math.min(times, maxAffordable);
@@ -191,7 +186,7 @@ public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
 
         if (existingSlot == -1 && !canFit(player, toGive, shopItem.coinType, totalPrice)) {
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
-            player.sendMessage(Component.text("购买失败！背包已满！").color(NamedTextColor.RED));
+            player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_inventory_full"));
             return false;
         }
 
@@ -210,13 +205,14 @@ public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
         });
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
-            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem)) {
-                player.sendMessage(Component.text("购买失败！").color(NamedTextColor.RED));
+            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem)) { // message handle by executor
                 return false;
             }
         }
 
         removeCoin(player, shopItem.coinType, totalPrice);
+
+        int boughtAmount = toGive.getAmount();
 
         if (existingSlot != -1) {
             player.getInventory().setItem(existingSlot, toGive);
@@ -235,12 +231,7 @@ public class ItemShopManagerImpl implements ItemShopManager { // TODO: i18n
         }
 
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
-        player.sendMessage(
-                Component.text("你购买了 ").color(NamedTextColor.GREEN)
-                        .append(shopItem.getShowItem(targetLevel).displayName())
-                        .append(Component.text(" x"))
-                        .append(Component.text(toGive.getAmount()))
-        );
+        player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_buy_item", shopItem.getShowItem(targetLevel).getItemMeta().itemName(), Component.text(boughtAmount)));
         return true;
     }
 
