@@ -6,7 +6,6 @@ spawnerTypes:
     isAllowMerge: false
     isShowHolo: false
     holoMaterial: COPPER_BLOCK
-    resourceName: "铜锭"
     isShowTimer: true
     isShowLevel: true
 
@@ -17,7 +16,6 @@ spawnerTypes:
     isAllowMerge: false
     isShowHolo: false
     holoMaterial: IRON_BLOCK
-    resourceName: "铁锭"
     isShowTimer: true
     isShowLevel: true
 
@@ -28,7 +26,6 @@ spawnerTypes:
     isAllowMerge: false
     isShowHolo: false
     holoMaterial: GOLD_BLOCK
-    resourceName: "金锭"
     isShowTimer: true
     isShowLevel: true
 
@@ -39,7 +36,6 @@ spawnerTypes:
     isAllowMerge: false
     isShowHolo: true
     holoMaterial: DIAMOND_BLOCK
-    resourceName: "钻石"
     isShowTimer: true
     isShowLevel: true
 
@@ -50,7 +46,6 @@ spawnerTypes:
     isAllowMerge: false
     isShowHolo: true
     holoMaterial: EMERALD_BLOCK
-    resourceName: "绿宝石"
     isShowTimer: true
     isShowLevel: true
 
