@@ -1,14 +1,11 @@
 package top.earthstudio.nextgenbedwars.api.shop.item;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ConfigSerializable
 public final class ShopItem { // struct ShopItem // TODO: Material Only, not ItemStack. add Component:description/name

@@ -20,9 +20,13 @@ import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class ItemShopPage extends ChestGuiPage {
+    private static final Style DEFAULT_LORE_STYLE = Style.style()
+            .color(NamedTextColor.WHITE)
+            .decoration(TextDecoration.ITALIC, false)
+            .build();
+
     private final boolean isCategoryFullSize = false; // TODO: configurable
     private final boolean isResetMainPageWhenOpen = true; // TODO: configurable
     private int activeCategoryIndex = 0;
@@ -141,7 +145,7 @@ public class ItemShopPage extends ChestGuiPage {
             }
         }
 
-        buildCategoryContentFlipButton(player, page, categorySize, category);
+        buildCategoryContentFlipButton(page, categorySize, category);
     }
 
     private ItemStack renderShopItem(Player player, ShopItem shopItem, int targetLevel) {
@@ -220,7 +224,7 @@ public class ItemShopPage extends ChestGuiPage {
         add(8, 1, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
     }
 
-    private void buildCategoryContentFlipButton(Player player, int page, int categorySize, Category category) {
+    private void buildCategoryContentFlipButton(int page, int categorySize, Category category) {
         remove(0, 5);
         remove(8, 5);
 
@@ -298,7 +302,8 @@ public class ItemShopPage extends ChestGuiPage {
             }
             if (meta.hasLore() && meta.lore() != null) {
                 meta.lore(meta.lore().stream()
-                        .map(line -> GlobalTranslator.render(line, locale))
+                        .map(line -> GlobalTranslator.render(line, locale)
+                                .applyFallbackStyle(DEFAULT_LORE_STYLE))
                         .toList());
             }
         });
