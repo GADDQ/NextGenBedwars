@@ -20,7 +20,6 @@ public class ItemShopUtil {
         ItemStack copy = item.clone();
         copy.editMeta(meta -> {
             if (meta.hasItemName()) {
-                meta.itemName();
                 meta.itemName(
                         GlobalTranslator.render(meta.itemName(), locale)
                 );

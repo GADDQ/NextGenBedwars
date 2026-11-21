@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -18,6 +19,8 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 import top.earthstudio.nextgenbedwars.api.language.ComponentDataType;
 import top.earthstudio.nextgenbedwars.api.level.LevelManager;
+import top.earthstudio.nextgenbedwars.api.prop.IProp;
+import top.earthstudio.nextgenbedwars.api.prop.PropManager;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
@@ -33,6 +36,7 @@ import java.util.UUID;
 
 import static top.earthstudio.nextgenbedwars.core.shop.item.ItemShopUtil.translateItem;
 
+@SuppressWarnings("UnstableApiUsage")
 public class ItemShopManagerImpl implements ItemShopManager {
     private Map<UUID, ItemShopPage> itemShopPages;
     private Map<Material, Component> resourceNames;
@@ -42,6 +46,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     private ItemShopConfig itemShopConfig;
     private ShopExecutor shopExecutor;
     private LevelManager levelManager;
+    private PropManager propManager;
 
     private ItemShopLevelListener itemShopLevelListener;
 
@@ -66,6 +71,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     public void onReady() {
         shopExecutor = gameInstance.get(ShopExecutor.class);
         levelManager = gameInstance.get(LevelManager.class);
+        propManager = gameInstance.get(PropManager.class);
         gameInstance.get(ShopManager.class).addProvider("item_shop", this::cacheAndOpenFor);
 
         itemShopLevelListener = new ItemShopLevelListener(gameInstance, levelManager, itemShopConfig);
@@ -205,8 +211,17 @@ public class ItemShopManagerImpl implements ItemShopManager {
                 pdc.set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true);
             if (!shopItem.isThrowable)
                 pdc.set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
-            if (shopItem.propId != null)
+            if (shopItem.propId != null) {
                 pdc.set(PdcKeys.prop.id, PersistentDataType.STRING, shopItem.propId);
+
+                IProp prop = propManager.get(shopItem.propId);
+                if (prop != null && prop.cooldownTick > 0) {
+                    var cd = itemMeta.getUseCooldown();
+                    cd.setCooldownSeconds(prop.cooldownTick / 20f);
+                    cd.setCooldownGroup(new NamespacedKey("nextgenbedwars", "prop_" + shopItem.propId));
+                    itemMeta.setUseCooldown(cd);
+                }
+            }
         });
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
@@ -247,8 +262,14 @@ public class ItemShopManagerImpl implements ItemShopManager {
             }
         }
 
+        ItemStack finalItem = shopItem.getShowItem(targetLevel);
+
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
-        player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_buy_item", shopItem.getShowItem(targetLevel).getItemMeta().itemName(), Component.text(boughtAmount)));
+        player.sendMessage(Component.translatable(
+                "nextgenbedwars.shop.item_shop_buy_item",
+                finalItem.getItemMeta().hasItemName() ? finalItem.getItemMeta().itemName() : Component.translatable(finalItem.getType()),
+                Component.text(boughtAmount)
+        ));
         return true;
     }
 
@@ -259,6 +280,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         itemShopConfig = null;
         shopExecutor = null;
+        propManager = null;
         levelManager = null;
         gameInstance = null;
 

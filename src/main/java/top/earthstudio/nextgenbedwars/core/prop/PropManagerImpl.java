@@ -9,8 +9,11 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.IProp;
 import top.earthstudio.nextgenbedwars.api.prop.PropManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
 
+import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformManagerImpl;
 import top.earthstudio.nextgenbedwars.core.prop.listener.PropInteractListener;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformProp;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -26,6 +29,7 @@ public class PropManagerImpl implements PropManager {
         Bukkit.getPluginManager().registerEvents(propInteractListener, BedwarsAPI.getInstance().plugin());
 
         create("test", TestProp::new); // TODO: DEBUG ONLY
+        registerBuiltInPropSubSystem(gameInstance);
     }
 
     @Override
@@ -56,5 +60,14 @@ public class PropManagerImpl implements PropManager {
             propTemplates.clear();
             propTemplates = null;
         }
+    }
+
+    @Override
+    public void onReady() { // built-in prop register
+        create("platform", PlatformProp::new);
+    }
+
+    private void registerBuiltInPropSubSystem(GameInstance gameInstance) {
+        gameInstance.inject(PlatformManager.class, PlatformManagerImpl::new);
     }
 }

@@ -19,6 +19,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
+import top.earthstudio.nextgenbedwars.api.prop.IProp;
 import top.earthstudio.nextgenbedwars.api.prop.PropManager;
 
 import java.util.UUID;
@@ -55,6 +56,9 @@ public class PropInteractListener implements Listener {
         if (event.getItem() == null)
             return;
 
+        if (event.getPlayer().hasCooldown(event.getItem()))
+            return;
+
         var pdc = event.getItem().getItemMeta().getPersistentDataContainer();
         if (!pdc.has(PdcKeys.prop.id))
             return;
@@ -63,11 +67,13 @@ public class PropInteractListener implements Listener {
 
         boolean noCancelled = true;
 
+        IProp prop = propManager.get(id);
+
         switch (event.getAction())  {
-            case LEFT_CLICK_AIR -> noCancelled = propManager.get(id).onClick(gameInstance, event.getPlayer(), event.getItem());
-            case RIGHT_CLICK_AIR -> noCancelled = propManager.get(id).onUse(gameInstance, event.getPlayer(), event.getItem());
-            case LEFT_CLICK_BLOCK -> noCancelled = propManager.get(id).onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
-            case RIGHT_CLICK_BLOCK -> noCancelled = propManager.get(id).onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
+            case LEFT_CLICK_AIR -> noCancelled = prop.onClick(gameInstance, event.getPlayer(), event.getItem());
+            case RIGHT_CLICK_AIR -> noCancelled = prop.onUse(gameInstance, event.getPlayer(), event.getItem());
+            case LEFT_CLICK_BLOCK -> noCancelled = prop.onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
+            case RIGHT_CLICK_BLOCK -> noCancelled = prop.onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
             default -> {}
         }
 
@@ -89,6 +95,9 @@ public class PropInteractListener implements Listener {
 
         ItemStack prop = event.getPlayer().getInventory().getItem(event.getHand());
         if (prop.isEmpty())
+            return;
+
+        if (event.getPlayer().hasCooldown(prop))
             return;
 
         var pdc = prop.getItemMeta().getPersistentDataContainer();
@@ -118,6 +127,9 @@ public class PropInteractListener implements Listener {
         else prop = event.getPlayer().getInventory().getItem(EquipmentSlot.HAND);
 
         if (prop.isEmpty())
+            return;
+
+        if (event.getPlayer().hasCooldown(prop))
             return;
 
         var pdc = prop.getItemMeta().getPersistentDataContainer();
