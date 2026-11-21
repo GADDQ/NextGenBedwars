@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.shop.item;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -267,7 +268,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
         player.sendMessage(Component.translatable(
                 "nextgenbedwars.shop.item_shop_buy_item",
-                finalItem.getItemMeta().hasItemName() ? finalItem.getItemMeta().itemName() : Component.translatable(finalItem.getType()),
+                finalItem.getItemMeta().hasItemName() ? finalItem.getItemMeta().itemName() : Component.translatable(finalItem.getType()).color(NamedTextColor.WHITE),
                 Component.text(boughtAmount)
         ));
         return true;
