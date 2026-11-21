@@ -190,7 +190,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     }
 
     @Override
-    public void onReady() {
+    public void onReady() { // TODO: depart placeholder logic to another place
         if (gameInstance.isEditMode())
             return;
 
@@ -224,7 +224,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
                 component = component.append(team.displayName).append(Component.text(": ").color(NamedTextColor.WHITE));
                 if (team.isBedAlive)
-                    component = component.append(Component.text("✓").color(NamedTextColor.GREEN));
+                    component = component.append(Component.text("✔").color(NamedTextColor.GREEN));
                 else {
                     int leftPlayer = team.players.size() - getSpectators(team).size();
                     if (leftPlayer > 0)
