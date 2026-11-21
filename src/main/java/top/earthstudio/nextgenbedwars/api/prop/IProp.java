@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.api.prop;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -14,9 +15,23 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 public abstract class IProp {
     // TODO: Special Item (e.g. TNT, tower, wall, platform, etc.)
     public final String id;
+    public int cooldownTick = 0;
 
     protected IProp(String id) {
         this.id = id;
+    }
+
+    /**
+     * Applies the cooldown of this Prop to the specified player.
+     * <p>
+     * Only takes effect when {@code cooldownTick} is configured (greater than 0).<br>
+     * This method behaves exactly the same as {@code player.setCoolDown()}.
+     *
+     * @param player the target player
+     */
+    protected void setCoolDownFor(Player player) {
+        if (cooldownTick > 0)
+            player.setCooldown(new NamespacedKey("nextgenbedwars", "prop_" + id), cooldownTick);
     }
 
     public boolean onPick(GameInstance gameInstance, Player player, ItemStack prop) { return true; }
