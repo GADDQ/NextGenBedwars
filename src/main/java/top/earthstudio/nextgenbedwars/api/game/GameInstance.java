@@ -18,4 +18,6 @@ public interface GameInstance {
     UUID getUUID();
 
     <M extends IGameSubSystem> M get(Class<M> type);
+    <T extends IGameSubSystem> void inject(Class<T> type, SubSystemConstructor<T> constructor);
+    <M extends IGameSubSystem> void eject(Class<M> type);
 }

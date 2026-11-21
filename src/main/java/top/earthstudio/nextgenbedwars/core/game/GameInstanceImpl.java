@@ -95,7 +95,6 @@ public final class GameInstanceImpl implements GameInstance {
 
     private void setReady() {
         if (isShutdown) return;
-        isReady = true;
 
         gameState = GameState.WAITING;
         Bukkit.getPluginManager().callEvent(new BedwarsGameStateChangedEvent(this, GameState.WAITING));
@@ -121,6 +120,8 @@ public final class GameInstanceImpl implements GameInstance {
         Bukkit.getPluginManager().registerEvents(gameI18nListener, BedwarsAPI.getInstance().plugin());
 
         subSystems.forEach((subSystemClass, subSystem) -> subSystem.onReady());
+
+        isReady = true;
     }
 
     private void buildSubSystems(Map<Class<? extends IGameSubSystem>, SubSystemConstructor<?>> subSystemTemplates) {
@@ -217,6 +218,19 @@ public final class GameInstanceImpl implements GameInstance {
             throw new IllegalStateException("SubSystem not registered for type: " + type.getName());
         }
         return type.cast(system);
+    }
+
+    @Override
+    public <T extends IGameSubSystem> void inject(Class<T> type, SubSystemConstructor<T> constructor) {
+        IGameSubSystem subSystem = constructor.construct(this);
+        subSystems.put(type, subSystem);
+        if (isReady)
+            subSystem.onReady();
+    }
+
+    @Override
+    public <M extends IGameSubSystem> void eject(Class<M> type) {
+        subSystems.remove(type).shutdown();
     }
 
     /*
