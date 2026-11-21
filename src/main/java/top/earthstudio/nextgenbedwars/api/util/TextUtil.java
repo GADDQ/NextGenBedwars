@@ -162,4 +162,14 @@ public final class TextUtil {
             default -> "";
         };
     }
+
+    public static boolean isEmpty(@Nullable Component component) {
+        if (component == null || Component.empty().equals(component))
+            return true;
+
+        if (component instanceof TextComponent text)
+            return text.content().isEmpty() && text.children().isEmpty();
+
+        return false;
+    }
 }

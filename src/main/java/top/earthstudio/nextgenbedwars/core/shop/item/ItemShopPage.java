@@ -1,5 +1,8 @@
 package top.earthstudio.nextgenbedwars.core.shop.item;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.TooltipDisplay;
+
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.kyori.adventure.text.Component;
@@ -17,10 +20,12 @@ import top.earthstudio.nextgenbedwars.api.gui.chest.ChestGuiPage;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
+import top.earthstudio.nextgenbedwars.api.util.TextUtil;
 
 import java.util.List;
 import java.util.Locale;
 
+@SuppressWarnings("UnstableApiUsage")
 public class ItemShopPage extends ChestGuiPage {
     private static final Style DEFAULT_LORE_STYLE = Style.style()
             .color(NamedTextColor.WHITE)
@@ -152,6 +157,17 @@ public class ItemShopPage extends ChestGuiPage {
     private ItemStack renderShopItem(Player player, ShopItem shopItem, int targetLevel) {
         var finalShowItem = shopItem.getShowItem(targetLevel).clone();
 
+        finalShowItem.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
+                .addHiddenComponents(
+                        DataComponentTypes.ATTRIBUTE_MODIFIERS,
+                        DataComponentTypes.ENCHANTMENTS,
+                        DataComponentTypes.UNBREAKABLE,
+                        DataComponentTypes.POTION_CONTENTS,
+                        DataComponentTypes.STORED_ENCHANTMENTS,
+                        DataComponentTypes.TRIM
+                )
+                .build());
+
         List<Component> lore = finalShowItem.lore() != null
                 ? new ObjectArrayList<>(finalShowItem.lore())
                 : new ObjectArrayList<>();
@@ -161,11 +177,16 @@ public class ItemShopPage extends ChestGuiPage {
                 ? GlobalTranslator.render(rawResourceName, player.locale())
                 : Component.translatable(shopItem.coinType);
 
+        lore.addFirst(Component.empty());
+
         lore.addFirst(Component.translatable(
                 "nextgenbedwars.shop.price",
                 Component.text(shopItem.price).color(resourceName.color()),
                 resourceName
         ));
+
+        if (!TextUtil.isEmpty(lore.getLast()))
+            lore.add(Component.empty());
 
         if (itemShopManager.isMaxLevel(player, shopItem)) {
             lore.add(Component.translatable("nextgenbedwars.shop.max_level"));

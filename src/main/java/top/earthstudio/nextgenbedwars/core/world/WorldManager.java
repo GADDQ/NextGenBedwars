@@ -138,6 +138,7 @@ public class WorldManager {
         world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
         world.setGameRule(GameRule.DO_FIRE_TICK, false);
         world.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+        world.setGameRule(GameRule.LOCATOR_BAR, false);
         world.setTime(6000);
 
         world.getBlockAt(0, 64, 0).setType(Material.BEDROCK);

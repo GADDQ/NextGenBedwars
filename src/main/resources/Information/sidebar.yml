@@ -1,6 +1,6 @@
 information:
   WAITING:
-    - "{title_anim}"
+    - "<yellow><bold><lang:nextgenbedwars.placeholder.bedwars>"
     - "<gray>状态: <green>等待玩家中..."
     - ""
     - "<white>地图: <yellow>{map_name}"
@@ -8,7 +8,7 @@ information:
     - ""
     - "<gray>NextGenBedwars"
   STARTING:
-    - "{title_anim}"
+    - "<yellow><bold><lang:nextgenbedwars.placeholder.bedwars>"
     - "<gray>状态: <yellow>即将开始 ({countdown}s)"
     - ""
     - "<white>地图: <yellow>{map_name}"
@@ -16,15 +16,14 @@ information:
     - ""
     - "<gray>NextGenBedwars"
   PLAYING:
-    - "{title_anim}"
-    - "<white>你的队伍: {team_prefix}"
+    - "<yellow><bold><lang:nextgenbedwars.placeholder.bedwars>"
+    - "<gray>{date}"
     - ""
-    - "<white>击杀: <green>{kills}"
-    - "<white>血量: {health}"
+    - "{team_info}"
     - ""
     - "<gray>NextGenBedwars"
   ENDING:
-    - "{title_anim}"
+    - "<yellow><bold><lang:nextgenbedwars.placeholder.bedwars>"
     - "<gold><bold>游戏结束！"
     - ""
     - "<white>感谢游玩！"

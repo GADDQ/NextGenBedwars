@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -36,6 +37,8 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     private Map<Color, Team> teamsByColor;
     private Map<Team, Set<Player>> teamSpectators;
 
+    private List<Team> teamsByOrder;
+
     private TeamInteractListener teamInteractListener;
     private TeamRespawnListener teamRespawnListener;
     private TeamChatListener teamChatListener;
@@ -51,6 +54,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         teams = new Object2ObjectOpenHashMap<>();
         teamsByColor = new Object2ObjectOpenHashMap<>();
         teamSpectators = new Object2ObjectOpenHashMap<>();
+        teamsByOrder = new ObjectArrayList<>();
         world = gameInstance.getWorld();
 
         if (!gameInstance.isEditMode()) {
@@ -81,6 +85,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         team.uuid = uuid;
         teams.put(uuid, team);
         teamsByColor.put(team.teamColor, team);
+        teamsByOrder.add(team);
         teamSpectators.put(team, new ObjectOpenHashSet<>());
         return uuid;
     }
@@ -107,7 +112,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
     @Override
     public void randomAssignTeam(List<Player> players) {
         List<Player> playerList = new ObjectArrayList<>(players);
-        List<Team> teamList = getAll();
+        List<Team> teamList = new ObjectArrayList<>(getAll());
         shuffle(teamList);
         shuffle(playerList);
 
@@ -139,9 +144,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
     @Override
     public List<Team> getAll() {
-        List<Team> teamList = new ObjectArrayList<>();
-        teamList.addAll(teams.values());
-        return teamList;
+        return teamsByOrder;
     }
 
     @Override
@@ -149,6 +152,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         Team team = teams.remove(uuid);
         teamsByColor.remove(team.teamColor);
         teamSpectators.remove(team).clear();
+        teamsByOrder.remove(team);
     }
 
     @Override
@@ -175,6 +179,8 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
         this.gameInstance = null;
 
+        teamsByOrder.clear();
+        teamsByOrder = null;
         teamSpectators.clear();
         teamSpectators = null;
         teamsByColor.clear();
@@ -190,7 +196,7 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
 
         WorldProtector protector = gameInstance.get(WorldProtector.class);
 
-        for (Team team: teams.values()) {
+        for (Team team : getAll()) {
             protector.removeBlockFromWorldGroup(team.bedBlockLongs.firstLong());
             protector.removeBlockFromWorldGroup(team.bedBlockLongs.secondLong());
         }
@@ -206,5 +212,31 @@ public class TeamManagerImpl implements TeamManager { // TODO: disconnect / rejo
         placeholderManager.create("health", player ->
                 Component.text((int) Math.ceil(player.getHealth()))
         );
+
+        placeholderManager.create("team_info", player -> {
+            Component component = Component.empty();
+            boolean flag = false;
+            for (Team team : getAll()) {
+                if (flag)
+                    component = component.appendNewline();
+                else
+                    flag = true;
+
+                component = component.append(team.displayName).append(Component.text(": ").color(NamedTextColor.WHITE));
+                if (team.isBedAlive)
+                    component = component.append(Component.text("✓").color(NamedTextColor.GREEN));
+                else {
+                    int leftPlayer = team.players.size() - getSpectators(team).size();
+                    if (leftPlayer > 0)
+                        component = component.append(Component.text(leftPlayer).color(NamedTextColor.GREEN));
+                    else
+                        component = component.append(Component.text("✘").color(NamedTextColor.RED));
+                }
+
+                if (get(player) == team)
+                    component = component.append(Component.space()).append(Component.translatable("nextgenbedwars.team.you"));
+            }
+            return component;
+        });
     }
 }

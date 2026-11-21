@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.placeholder.PlaceholderManager;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -66,5 +67,15 @@ public class PlaceholderManagerImpl implements PlaceholderManager { // TODO: sup
     public void shutdown() {
         placeholderHooks.clear();
         placeholderHooks = null;
+    }
+
+    @Override
+    public void onReady() {
+        LocalDate now = LocalDate.now();
+        String yy = String.format("%02d", now.getYear() % 100);
+        String mm = String.format("%02d", now.getMonthValue());
+        String dd = String.format("%02d", now.getDayOfMonth());
+
+        create("date", player -> Component.translatable("nextgenbedwars.placeholder.date", Component.text(yy), Component.text(mm), Component.text(dd)));
     }
 }

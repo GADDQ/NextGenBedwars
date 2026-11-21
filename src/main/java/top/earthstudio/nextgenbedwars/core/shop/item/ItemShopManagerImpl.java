@@ -184,10 +184,12 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         int existingSlot = shopItem.isUpgradeable() ? findSlotByShopItemId(player, shopItem.id) : -1;
 
-        if (existingSlot == -1 && !canFit(player, toGive, shopItem.coinType, totalPrice)) {
-            player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
-            player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_inventory_full"));
-            return false;
+        if (!toGive.isEmpty()) { // exclude Material.AIR, most use for non-physical prop
+            if (existingSlot == -1 && !canFit(player, toGive, shopItem.coinType, totalPrice)) {
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+                player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_inventory_full"));
+                return false;
+            }
         }
 
         toGive.editMeta(itemMeta -> {
