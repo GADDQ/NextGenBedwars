@@ -7,5 +7,5 @@ translations:
   item_shop_already_max_level: "<red>该物品已达到最高等级！"
   item_shop_resource_missing: "<red>你没有足够的 {0:resource_name}！还需要 <white>{1:price} <red>个 {0:resource_name}！"
   item_shop_inventory_full: "<red>购买失败！背包已满！"
-  item_shop_buy_item: "<green>你购买了 {0:item_name} x{1:amount}"
+  item_shop_buy_item: "<green>你购买了 {0:item_name} <yellow>x{1:amount}"
   item_shop_already_buy: "<red>你已经购买过此物品！"

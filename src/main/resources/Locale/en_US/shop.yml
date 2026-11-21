@@ -7,5 +7,5 @@ translations:
   item_shop_already_max_level: "<red>This item is already at max level!"
   item_shop_resource_missing: "<red>You don't have enough {0:resource_name} ! Need <white>{1:price} <red>more!"
   item_shop_inventory_full: "<red>Purchase failed! Inventory is full!"
-  item_shop_buy_item: "<green>You purchased {0:item_name} x{1:amount}"
+  item_shop_buy_item: "<green>You purchased {0:item_name} <yellow>x{1:amount}"
   item_shop_already_buy: "<red>You have already purchased this item!"
