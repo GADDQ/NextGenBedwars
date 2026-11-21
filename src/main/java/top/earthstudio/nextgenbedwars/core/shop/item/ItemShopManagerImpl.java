@@ -219,17 +219,17 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         int boughtAmount = toGive.getAmount();
 
-        translateItem(toGive, player.locale());
-
         toGive.editMeta(itemMeta -> {
             var pdc = itemMeta.getPersistentDataContainer();
 
             if (itemMeta.hasItemName())
                 pdc.set(PdcKeys.i18n.name, ComponentDataType.COMPONENT, itemMeta.itemName());
 
-            if (itemMeta.hasLore())
+            if (itemMeta.hasLore() && itemMeta.lore() != null)
                 pdc.set(PdcKeys.i18n.lore, ComponentDataType.COMPONENT_LIST, itemMeta.lore());
         });
+
+        toGive = translateItem(toGive, player.locale());
 
         if (existingSlot != -1) {
             player.getInventory().setItem(existingSlot, toGive);

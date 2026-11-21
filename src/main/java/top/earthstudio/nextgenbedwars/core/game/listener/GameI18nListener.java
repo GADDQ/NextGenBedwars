@@ -95,7 +95,7 @@ public class GameI18nListener implements Listener {
                 List<Component> rawLore = pdc.get(PdcKeys.i18n.lore, ComponentDataType.COMPONENT_LIST);
                 item.editMeta(itemMeta ->
                         itemMeta.lore(rawLore.stream()
-                                .map(line -> GlobalTranslator.render(line, player.locale()).applyFallbackStyle(DEFAULT_LORE_STYLE))
+                                .map(line -> GlobalTranslator.render(line, event.locale()).applyFallbackStyle(DEFAULT_LORE_STYLE))
                                 .toList())
                 );
             }
