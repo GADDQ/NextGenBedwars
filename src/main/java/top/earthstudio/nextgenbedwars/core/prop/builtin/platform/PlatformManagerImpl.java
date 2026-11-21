@@ -93,7 +93,7 @@ public class PlatformManagerImpl implements PlatformManager {
     }
 
     private void placeBlockFor(PlatformProp platform) {
-        LongList list = new LongArrayList(9);
+        LongList list = new LongArrayList();
         Block center = platform.centerLocation.getBlock();
 
         for (int x = -1; x <= 1; x++) {
