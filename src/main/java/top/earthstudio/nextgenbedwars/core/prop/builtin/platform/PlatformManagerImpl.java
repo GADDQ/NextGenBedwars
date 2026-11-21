@@ -1,26 +1,29 @@
 package top.earthstudio.nextgenbedwars.core.prop.builtin.platform;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
-import it.unimi.dsi.fastutil.longs.LongList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import org.bukkit.event.HandlerList;
+import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
 import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.listener.PlatformListener;
 
 import java.util.Map;
 
 public class PlatformManagerImpl implements PlatformManager {
     private Map<PlatformProp, Integer> platforms;
-    private Map<PlatformProp, LongList> blockLongsList;
+    private Map<PlatformProp, LongArrayList> blockLongsMap;
     private ObjectArrayList<PlatformProp> pendingRemoves;
 
     private int disappearTick = 200;
@@ -28,12 +31,17 @@ public class PlatformManagerImpl implements PlatformManager {
     private GameInstance gameInstance;
     private WorldProtector worldProtector;
 
+    private PlatformListener platformListener;
+
     public PlatformManagerImpl(GameInstance gameInstance) {
         this.gameInstance = gameInstance;
 
         platforms = new Object2IntOpenHashMap<>();
-        blockLongsList = new Object2ObjectOpenHashMap<>();
+        blockLongsMap = new Object2ObjectOpenHashMap<>();
         pendingRemoves = new ObjectArrayList<>();
+
+        platformListener = new PlatformListener(this, gameInstance);
+        Bukkit.getPluginManager().registerEvents(platformListener, BedwarsAPI.getInstance().plugin());
     }
 
     @Override
@@ -69,21 +77,41 @@ public class PlatformManagerImpl implements PlatformManager {
     @Override
     public LongArrayList getAll() {
         LongArrayList list = new LongArrayList();
-        blockLongsList.forEach((platform, longs) -> list.addAll(longs));
+        blockLongsMap.forEach((platform, longs) -> list.addAll(longs));
         return list;
     }
 
     @Override
-    public void shutdown() {
-        for (PlatformProp platform : platforms.keySet()) {
-            removeBlockFor(platform);
+    public boolean contains(Block block) {
+        for (var list : blockLongsMap.values()) {
+            if (list.contains(BlockUtil.asLong(block)))
+                return true;
         }
+        return false;
+    }
+
+    @Override
+    public void remove(Block block) {
+        for (var entry : blockLongsMap.entrySet()) {
+            if (entry.getValue().rem(BlockUtil.asLong(block)))
+                return;
+        }
+    }
+
+    @Override
+    public void shutdown() {
+        HandlerList.unregisterAll(platformListener);
+        platformListener = null;
 
         pendingRemoves.clear();
         pendingRemoves = null;
 
-        blockLongsList.clear();
-        blockLongsList = null;
+        for (PlatformProp platform : platforms.keySet()) {
+            removeBlockFor(platform);
+        }
+
+        blockLongsMap.clear();
+        blockLongsMap = null;
 
         platforms.clear();
         platforms = null;
@@ -93,7 +121,7 @@ public class PlatformManagerImpl implements PlatformManager {
     }
 
     private void placeBlockFor(PlatformProp platform) {
-        LongList list = new LongArrayList();
+        LongArrayList list = new LongArrayList();
         Block center = platform.centerLocation.getBlock();
 
         for (int x = -1; x <= 1; x++) {
@@ -118,11 +146,11 @@ public class PlatformManagerImpl implements PlatformManager {
             }
         }
 
-        blockLongsList.put(platform, list);
+        blockLongsMap.put(platform, list);
     }
 
     private void removeBlockFor(PlatformProp platform) {
-        LongList list = blockLongsList.remove(platform);
+        LongArrayList list = blockLongsMap.remove(platform);
         if (list == null) return;
 
         World world = gameInstance.getWorld();
@@ -137,7 +165,7 @@ public class PlatformManagerImpl implements PlatformManager {
     }
 
     private long tryReplace(Block block) {
-        if (Tag.BEDS.isTagged(block.getType()))
+        if (!Tag.AIR.isTagged(block.getType()))
             return -1;
 
         long blockLong = BlockUtil.asLong(block.getX(), block.getY(), block.getZ());
