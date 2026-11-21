@@ -1,6 +1,7 @@
 package top.earthstudio.nextgenbedwars.api.util;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -21,6 +22,10 @@ public final class BlockUtil {
      */
     public static long asLong(int x, int y, int z) {
         return ((long) (x & 0x3FFFFFF) << 38) | ((long) (y & 0xFFF) << 26) | ((long) (z & 0x3FFFFFF));
+    }
+
+    public static long asLong(Location location) {
+        return asLong(location.getBlockX(), location.getBlockY(), location.getBlockZ());
     }
 
     public static long asLong(Block block) {
