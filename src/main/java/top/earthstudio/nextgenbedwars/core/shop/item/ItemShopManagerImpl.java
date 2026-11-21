@@ -219,7 +219,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
                 if (prop != null && prop.cooldownTick > 0) {
                     var cd = itemMeta.getUseCooldown();
                     cd.setCooldownSeconds(prop.cooldownTick / 20f);
-                    cd.setCooldownGroup(new NamespacedKey("nextgenbedwars", "prop_" + shopItem.propId));
+                    cd.setCooldownGroup(new NamespacedKey("nextgenbedwars", "prop_" + shopItem.propId + "_cooldown"));
                     itemMeta.setUseCooldown(cd);
                 }
             }

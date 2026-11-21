@@ -31,7 +31,7 @@ public abstract class IProp {
      */
     protected void setCooldownFor(Player player) {
         if (cooldownTick > 0)
-            player.setCooldown(new NamespacedKey("nextgenbedwars", "prop_" + id), cooldownTick);
+            player.setCooldown(new NamespacedKey("nextgenbedwars", "prop_" + id + "_cooldown"), cooldownTick);
     }
 
     public boolean onPick(GameInstance gameInstance, Player player, ItemStack prop) { return true; }
