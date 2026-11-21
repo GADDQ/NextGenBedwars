@@ -26,7 +26,7 @@ public class PlatformManagerImpl implements PlatformManager {
     private Map<PlatformProp, LongArrayList> blockLongsMap;
     private ObjectArrayList<PlatformProp> pendingRemoves;
 
-    private int disappearTick = 200;
+    private final int disappearTick = 200; // TODO: configurable
 
     private GameInstance gameInstance;
     private WorldProtector worldProtector;
