@@ -25,11 +25,11 @@ public abstract class IProp {
      * Applies the cooldown of this Prop to the specified player.
      * <p>
      * Only takes effect when {@code cooldownTick} is configured (greater than 0).<br>
-     * This method behaves exactly the same as {@code player.setCoolDown()}.
+     * This method behaves exactly the same as {@code player.setCooldown()}.
      *
      * @param player the target player
      */
-    protected void setCoolDownFor(Player player) {
+    protected void setCooldownFor(Player player) {
         if (cooldownTick > 0)
             player.setCooldown(new NamespacedKey("nextgenbedwars", "prop_" + id), cooldownTick);
     }

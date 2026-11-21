@@ -42,7 +42,7 @@ public class PlatformProp extends IProp {
 
         gameInstance.get(PlatformManager.class).use(this);
 
-        setCoolDownFor(player);
+        setCooldownFor(player);
         propItem.setAmount(propItem.getAmount() - 1);
         return true;
     }
