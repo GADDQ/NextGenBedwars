@@ -33,9 +33,10 @@ public class PlatformProp extends IProp {
             }
         }
 
+        player.setVelocity(VECTOR_ZERO);
+        player.setFallDistance(0);
+
         if (block.isCollidable()) {
-            player.setVelocity(VECTOR_ZERO);
-            player.setFallDistance(0);
             player.teleport(player.getLocation().add(0, 1, 0));
             centerLocation = block.getLocation().add(0, 1, 0);
         }
