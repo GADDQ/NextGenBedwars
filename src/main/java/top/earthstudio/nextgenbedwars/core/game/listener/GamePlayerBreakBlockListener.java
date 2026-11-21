@@ -39,6 +39,9 @@ public final class GamePlayerBreakBlockListener implements Listener {
         if (event.getBlock().getState(false) instanceof Container)
             return;
 
+        if (!event.isDropItems())
+            return;
+
         event.setExpToDrop(0);
 
         Collection<ItemStack> drops = event.getBlock().getDrops(silkTouchTool);
