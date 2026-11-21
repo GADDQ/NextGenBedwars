@@ -83,6 +83,7 @@ public class PlatformListener implements Listener {
                 block.setType(Material.AIR);
                 it.remove();
             }
+            platformManager.remove(block);
         }
     }
 }
