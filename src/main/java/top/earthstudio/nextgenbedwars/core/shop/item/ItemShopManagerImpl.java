@@ -16,6 +16,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
+import top.earthstudio.nextgenbedwars.api.language.ComponentDataType;
 import top.earthstudio.nextgenbedwars.api.level.LevelManager;
 import top.earthstudio.nextgenbedwars.api.shop.ShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
@@ -219,6 +220,16 @@ public class ItemShopManagerImpl implements ItemShopManager {
         int boughtAmount = toGive.getAmount();
 
         translateItem(toGive, player.locale());
+
+        toGive.editMeta(itemMeta -> {
+            var pdc = itemMeta.getPersistentDataContainer();
+
+            if (itemMeta.hasItemName())
+                pdc.set(PdcKeys.i18n.name, ComponentDataType.COMPONENT, itemMeta.itemName());
+
+            if (itemMeta.hasLore())
+                pdc.set(PdcKeys.i18n.lore, ComponentDataType.COMPONENT_LIST, itemMeta.lore());
+        });
 
         if (existingSlot != -1) {
             player.getInventory().setItem(existingSlot, toGive);
