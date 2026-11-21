@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static top.earthstudio.nextgenbedwars.core.shop.item.ItemShopUtil.translateItem;
+
 public class ItemShopManagerImpl implements ItemShopManager {
     private Map<UUID, ItemShopPage> itemShopPages;
     private Map<Material, Component> resourceNames;
@@ -215,6 +217,8 @@ public class ItemShopManagerImpl implements ItemShopManager {
         removeCoin(player, shopItem.coinType, totalPrice);
 
         int boughtAmount = toGive.getAmount();
+
+        translateItem(toGive, player.locale());
 
         if (existingSlot != -1) {
             player.getInventory().setItem(existingSlot, toGive);
