@@ -1,0 +1,5 @@
+translations:
+  platform_invalid_use: "<red>救援平台珍贵，切勿浪费......"
+  
+  warp_powder_use: "<green>正在回城！<yellow>{0:second} <green>内请不要移动......"
+  warp_powder_failed: "<red>回城失败！你在回城时移动了！"

@@ -1,0 +1,5 @@
+translations:
+  platform_invalid_use: "<red>The platform is precious, don't waste it......"
+
+  warp_powder_use: "<green>Returning to base! <yellow>Please do not move for {0:second} <green>seconds..."
+  warp_powder_failed: "<red>Return failed! You moved while returning!"
