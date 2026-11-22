@@ -24,7 +24,7 @@ public final class WorldProtectListener implements Listener {
         this.world = world;
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getWorld() == world) {
             if (
