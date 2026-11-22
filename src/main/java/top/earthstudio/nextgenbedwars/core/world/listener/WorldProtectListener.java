@@ -99,7 +99,11 @@ public final class WorldProtectListener implements Listener {
         if (event.getToBlock().getWorld() == world) {
             Block toBlock = event.getToBlock();
 
-            if (!toBlock.getType().isAir() && !toBlock.isLiquid() && !toBlock.getType().isCollidable()) {
+            if (!toBlock.getType().isCollidable()) {
+                if (Tag.AIR.isTagged(toBlock.getType()) && worldProtector.contains(BlockUtil.asLong(toBlock))) {
+                    event.setCancelled(true);
+                    return;
+                }
                 worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(toBlock));
             }
         }
