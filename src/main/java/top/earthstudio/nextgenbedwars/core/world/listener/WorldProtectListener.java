@@ -5,12 +5,14 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Directional;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
@@ -130,6 +132,11 @@ public final class WorldProtectListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPistonExtend(BlockPistonExtendEvent event) {
         if (event.getBlock().getWorld() == world) {
+            if (worldProtector.contains(BlockUtil.asLong(event.getBlock().getRelative(event.getDirection())))) {
+                event.setCancelled(true);
+                return;
+            }
+
             for (Block block : event.getBlocks()) {
                 if (worldProtector.contains(BlockUtil.asLong(block)) || Tag.BEDS.isTagged(block.getType())) {
                     event.setCancelled(true);
@@ -148,6 +155,32 @@ public final class WorldProtectListener implements Listener {
                     return;
                 }
             }
+        }
+    }
+
+    // ---------- Advance Liquid Detect ----------
+    // TODO: This need to be configurable because it's not the standard function from Bedwars
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBlockDispense(BlockDispenseEvent event) {
+        if (event.getBlock().getWorld() != world)
+            return;
+
+        if (event.getBlock().getBlockData() instanceof Directional directional) {
+            Block targetBlock = event.getBlock().getRelative(directional.getFacing());
+            if (worldProtector.contains(BlockUtil.asLong(targetBlock)))
+                event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBucketEmpty(PlayerBucketEmptyEvent event) {
+        if (event.getBlock().getWorld() != world)
+            return;
+
+        if (worldProtector.contains(BlockUtil.asLong(event.getBlock()))) {
+            event.getPlayer().sendMessage(Component.translatable("nextgenbedwars.world_protect.forbidden_place"));
+            event.setCancelled(true);
         }
     }
 
