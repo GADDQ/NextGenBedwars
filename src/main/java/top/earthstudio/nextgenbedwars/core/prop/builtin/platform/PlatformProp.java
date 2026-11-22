@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.prop.builtin.platform;
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,7 @@ public class PlatformProp extends IProp {
         }
 
         gameInstance.get(PlatformManager.class).use(this);
+        player.playSound(player, Sound.BLOCK_WOOL_FALL, 2, 0.7f);
 
         setCooldownFor(player);
         propItem.setAmount(propItem.getAmount() - 1);
