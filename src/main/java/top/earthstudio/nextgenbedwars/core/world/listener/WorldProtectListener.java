@@ -153,6 +153,7 @@ public final class WorldProtectListener implements Listener {
             return;
 
         if (worldProtector.contains(BlockUtil.asLong(event.getBlock())))
-            worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(event.getBlock()));
+            if (event.getBlock().isLiquid())
+                worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(event.getBlock()));
     }
 }
