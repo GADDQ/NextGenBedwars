@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 
@@ -26,7 +27,13 @@ public final class WorldProtectListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getWorld() == world) {
-            if (!Tag.AIR.isTagged(event.getBlockReplacedState().getType()) && Tag.REPLACEABLE.isTagged(event.getBlockReplacedState().getType())) {
+            if (
+                    (
+                            !Tag.AIR.isTagged(event.getBlockReplacedState().getType()) &&
+                            Tag.REPLACEABLE.isTagged(event.getBlockReplacedState().getType())
+                    ) ||
+                            event.getBlockReplacedState().getBlock().isLiquid()
+            ) {
                 worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(event.getBlockPlaced()));
                 return;
             }
@@ -138,5 +145,14 @@ public final class WorldProtectListener implements Listener {
                 }
             }
         }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onBucketFill(PlayerBucketFillEvent event) {
+        if (event.getBlock().getWorld() != world)
+            return;
+
+        if (worldProtector.contains(BlockUtil.asLong(event.getBlock())))
+            worldProtector.removeBlockFromWorldGroup(BlockUtil.asLong(event.getBlock()));
     }
 }
