@@ -10,9 +10,12 @@ import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.IProp;
 import top.earthstudio.nextgenbedwars.api.prop.PropManager;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.platform.PlatformManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.warppowder.WarpPowderManager;
 
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformManagerImpl;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.wall.WallProp;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.WarpPowderManagerImpl;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.WarpPowderProp;
 import top.earthstudio.nextgenbedwars.core.prop.listener.PropInteractListener;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformProp;
 
@@ -67,9 +70,11 @@ public class PropManagerImpl implements PropManager {
     public void onReady() { // built-in prop register
         create("platform", PlatformProp::new);
         create("wall", WallProp::new);
+        create("warp_powder", WarpPowderProp::new);
     }
 
     private void registerBuiltInPropSubSystem(GameInstance gameInstance) {
         gameInstance.inject(PlatformManager.class, PlatformManagerImpl::new);
+        gameInstance.inject(WarpPowderManager.class, WarpPowderManagerImpl::new);
     }
 }

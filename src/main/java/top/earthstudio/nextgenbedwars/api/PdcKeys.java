@@ -22,6 +22,9 @@ public final class PdcKeys {
     public static final class prop {
         private prop() {}
         public static final NamespacedKey id = new NamespacedKey("nextgenbedwars", "prop_id");
+
+        // ---------- Built-In Prop Relative ----------
+        public static final NamespacedKey warp_powder_active = new NamespacedKey("nextgenbedwars", "prop_warp_powder_active");
     }
 
     public static final class i18n {
