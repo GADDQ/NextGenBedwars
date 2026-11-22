@@ -2,8 +2,8 @@ translations:
   display.rest_spawn_time: "{0:second}<green> 秒后刷新"
   display.level: "<gold>等级 {0:level}"
 
-  spawnertype.resource_name.copper: "<#d97742><bold>铜锭"
-  spawnertype.resource_name.iron: "<white><bold>铁锭"
-  spawnertype.resource_name.gold: "<gold><bold>金锭"
-  spawnertype.resource_name.diamond: "<aqua><bold>钻石"
-  spawnertype.resource_name.emerald: "<dark_green><bold>绿宝石"
+  spawnertype.resource_name.copper: "<#d97742>铜锭"
+  spawnertype.resource_name.iron: "<white>铁锭"
+  spawnertype.resource_name.gold: "<gold>金锭"
+  spawnertype.resource_name.diamond: "<aqua>钻石"
+  spawnertype.resource_name.emerald: "<dark_green>绿宝石"

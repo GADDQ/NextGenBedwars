@@ -2,8 +2,8 @@ translations:
   display.rest_spawn_time: "<green>Spawns in <white>{0:second}<green>s"
   display.level: "<gold>Level {0:level}"
 
-  spawnertype.resource_name.copper: "<#d97742><bold>Copper"
-  spawnertype.resource_name.iron: "<white><bold>Iron"
-  spawnertype.resource_name.gold: "<gold><bold>Gold"
-  spawnertype.resource_name.diamond: "<aqua><bold>Diamond"
-  spawnertype.resource_name.emerald: "<dark_green><bold>Emerald"
+  spawnertype.resource_name.copper: "<#d97742>Copper"
+  spawnertype.resource_name.iron: "<white>Iron"
+  spawnertype.resource_name.gold: "<gold>Gold"
+  spawnertype.resource_name.diamond: "<aqua>Diamond"
+  spawnertype.resource_name.emerald: "<dark_green>Emerald"
