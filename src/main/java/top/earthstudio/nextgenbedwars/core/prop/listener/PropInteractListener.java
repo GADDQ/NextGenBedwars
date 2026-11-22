@@ -70,10 +70,10 @@ public class PropInteractListener implements Listener {
         IProp prop = propManager.get(id);
 
         switch (event.getAction())  {
-            case LEFT_CLICK_AIR -> noCancelled = prop.onClick(gameInstance, event.getPlayer(), event.getItem());
-            case RIGHT_CLICK_AIR -> noCancelled = prop.onUse(gameInstance, event.getPlayer(), event.getItem());
-            case LEFT_CLICK_BLOCK -> noCancelled = prop.onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
-            case RIGHT_CLICK_BLOCK -> noCancelled = prop.onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getItem());
+            case LEFT_CLICK_AIR -> noCancelled = !prop.onClick(gameInstance, event.getPlayer(), event.getItem());
+            case RIGHT_CLICK_AIR -> noCancelled = !prop.onUse(gameInstance, event.getPlayer(), event.getItem());
+            case LEFT_CLICK_BLOCK -> noCancelled = !prop.onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getInteractionPoint(), event.getItem());
+            case RIGHT_CLICK_BLOCK -> noCancelled = !prop.onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getInteractionPoint(), event.getItem());
             default -> {}
         }
 
@@ -106,7 +106,7 @@ public class PropInteractListener implements Listener {
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
 
-        if (!propManager.get(id).onUseOnPlayer(gameInstance, event.getPlayer(), (Player) event.getRightClicked(), prop))
+        if (propManager.get(id).onUseOnPlayer(gameInstance, event.getPlayer(), (Player) event.getRightClicked(), prop))
             event.setCancelled(true);
 
         lastEntityInteractTick.put(event.getPlayer().getUniqueId(), Bukkit.getCurrentTick());
@@ -138,7 +138,7 @@ public class PropInteractListener implements Listener {
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
 
-        if (!propManager.get(id).onAttack(gameInstance, event.getPlayer(), (Player) event.getAttacked(), prop))
+        if (propManager.get(id).onAttack(gameInstance, event.getPlayer(), (Player) event.getAttacked(), prop))
             event.setCancelled(true);
     }
 
@@ -155,7 +155,7 @@ public class PropInteractListener implements Listener {
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
 
-        if (!propManager.get(id).onPick(gameInstance, event.getPlayer(), prop))
+        if (propManager.get(id).onPick(gameInstance, event.getPlayer(), prop))
             event.setCancelled(true);
     }
 
@@ -169,7 +169,7 @@ public class PropInteractListener implements Listener {
             return;
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
-        if (!propManager.get(id).onDrop(gameInstance, event.getPlayer(), event.getItemDrop()))
+        if (propManager.get(id).onDrop(gameInstance, event.getPlayer(), event.getItemDrop()))
             event.setCancelled(true);
     }
 
@@ -183,7 +183,7 @@ public class PropInteractListener implements Listener {
             return;
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
-        if (!propManager.get(id).onConsume(gameInstance, event.getPlayer(), event.getPlayer().getInventory().getItem(event.getHand())))
+        if (propManager.get(id).onConsume(gameInstance, event.getPlayer(), event.getPlayer().getInventory().getItem(event.getHand())))
             event.setCancelled(true);
     }
 
@@ -199,7 +199,7 @@ public class PropInteractListener implements Listener {
             return;
 
         String id = pdc.get(PdcKeys.prop.id, PersistentDataType.STRING);
-        if (!propManager.get(id).onCrossbowLoad(gameInstance, player, player.getInventory().getItem(event.getHand())))
+        if (propManager.get(id).onCrossbowLoad(gameInstance, player, player.getInventory().getItem(event.getHand())))
             event.setCancelled(true);
     }
 

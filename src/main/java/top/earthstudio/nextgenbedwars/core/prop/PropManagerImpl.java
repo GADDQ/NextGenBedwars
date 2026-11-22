@@ -12,6 +12,7 @@ import top.earthstudio.nextgenbedwars.api.prop.PropManager;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
 
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformManagerImpl;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.wall.WallProp;
 import top.earthstudio.nextgenbedwars.core.prop.listener.PropInteractListener;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformProp;
 
@@ -65,6 +66,7 @@ public class PropManagerImpl implements PropManager {
     @Override
     public void onReady() { // built-in prop register
         create("platform", PlatformProp::new);
+        create("wall", WallProp::new);
     }
 
     private void registerBuiltInPropSubSystem(GameInstance gameInstance) {

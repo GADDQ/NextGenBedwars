@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.api.prop;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -34,31 +35,31 @@ public abstract class IProp {
             player.setCooldown(new NamespacedKey("nextgenbedwars", "prop_" + id + "_cooldown"), cooldownTick);
     }
 
-    public boolean onPick(GameInstance gameInstance, Player player, ItemStack prop) { return true; }
-    public boolean onDrop(GameInstance gameInstance, Player player, Item prop) { return true; }
+    public boolean onPick(GameInstance gameInstance, Player player, ItemStack prop) { return false; }
+    public boolean onDrop(GameInstance gameInstance, Player player, Item prop) { return false; }
 
-    public boolean onClick(GameInstance gameInstance, Player player, ItemStack propItem) { return true; }
-    public boolean onUse(GameInstance gameInstance, Player player, ItemStack propItem) { return true; }
+    public boolean onClick(GameInstance gameInstance, Player player, ItemStack propItem) { return false; }
+    public boolean onUse(GameInstance gameInstance, Player player, ItemStack propItem) { return false; }
 
-    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, ItemStack propItem) { return onClick(gameInstance, player, propItem); }
-    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, ItemStack propItem) { return onUse(gameInstance, player, propItem); }
+    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) { return onClick(gameInstance, player, propItem); }
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) { return onUse(gameInstance, player, propItem); }
 
     public boolean onAttack(GameInstance gameInstance, Player attacker, Player victim, ItemStack propItem) {
         onClick(gameInstance, attacker, propItem);
-        return true;
+        return false;
     }
 
     public boolean onUseOnPlayer(GameInstance gameInstance, Player user, Player bearer, ItemStack propItem) {
         onUse(gameInstance, user, propItem);
-        return true;
+        return false;
     }
 
     public boolean onConsume(GameInstance gameInstance, Player player, ItemStack propItem) {
-        return true;
+        return false;
     }
 
     public boolean onCrossbowLoad(GameInstance gameInstance, Player player, ItemStack propItem) {
-        return true;
+        return false;
     }
 
     /**

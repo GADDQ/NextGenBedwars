@@ -18,7 +18,7 @@ public class PlatformProp extends IProp {
 
     public PlatformProp() {
         super("platform");
-        cooldownTick = 200;
+        cooldownTick = 400;
     }
 
     @Override
