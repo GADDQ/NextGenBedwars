@@ -2,6 +2,9 @@ package top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder;
 
 import net.kyori.adventure.text.Component;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -33,5 +36,12 @@ public class WarpPowderProp extends IProp {
         propItem.editPersistentDataContainer(pdc -> pdc.set(PdcKeys.prop.warp_powder_active, PersistentDataType.BOOLEAN, true));
         gameInstance.get(WarpPowderManager.class).use(player, this);
         return true;
+    }
+
+    @Override
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
+        if (interactionLocation.getBlock().getState() instanceof Container)
+            return false;
+        return super.onUseOnBlock(gameInstance, player, block, interactionLocation, propItem);
     }
 }

@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
+import org.bukkit.event.inventory.InventoryType;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
@@ -74,6 +75,10 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
 
                 // TODO: FIXME!!! This is a temp fix, should use statement system later to remove player when player logout
                 if (player != null) {
+                    InventoryType type = player.getOpenInventory().getType();
+                    if (type != InventoryType.CRAFTING && type != InventoryType.CREATIVE)
+                        player.closeInventory();
+
                     player.teleport(team.respawnLocation);
                     warpPowder.propItem.setAmount(warpPowder.propItem.getAmount() - 1);
                 }
