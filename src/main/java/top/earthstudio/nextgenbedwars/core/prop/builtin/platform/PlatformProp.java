@@ -43,7 +43,7 @@ public class PlatformProp extends IProp {
         }
 
         gameInstance.get(PlatformManager.class).use(this);
-        player.playSound(player, Sound.BLOCK_WOOL_FALL, 2, 0.7f);
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_WOOL_FALL, 2, 0.7f);
 
         setCooldownFor(player);
         propItem.setAmount(propItem.getAmount() - 1);

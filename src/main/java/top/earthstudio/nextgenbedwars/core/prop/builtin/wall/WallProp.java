@@ -51,7 +51,7 @@ public class WallProp extends IProp {
         }
 
         setCooldownFor(player);
-        player.playSound(player, Sound.BLOCK_ANVIL_LAND, 2, 0.5f);
+        player.getWorld().playSound(centerBottom.getLocation(), Sound.BLOCK_ANVIL_LAND, 2, 0.5f);
         propItem.setAmount(propItem.getAmount() - 1);
 
         return true;
