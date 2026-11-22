@@ -82,7 +82,7 @@ public final class TeamInteractListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         if (event.getBlock().getWorld() != gameInstance.getWorld()) return;
 
-        if (gameInstance.getGameState() != GameState.PLAYING) {
+        if (gameInstance.getGameState() != GameState.PLAYING) { // TODO: FIXME!!! THIS NEED MOVE TO ANOTHER LISTENER AND PREVENT BLOCK PLACE!
             event.setCancelled(true);
             return;
         }
