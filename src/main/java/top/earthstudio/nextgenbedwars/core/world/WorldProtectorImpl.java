@@ -263,7 +263,7 @@ public class WorldProtectorImpl implements WorldProtector {
                                     for (int z = 0; z < 16; z++) {
                                         Material type = snapshot.getBlockType(x, currentY, z);
                                         // 跳过空气和非碰撞方块和流体并排除区域外方块
-                                        if (!type.isAir() && type.isCollidable() && !(type == Material.WATER || type == Material.LAVA)) {
+                                        if (!type.isAir() && type.isCollidable()) {
                                             int worldX = baseBlockX + x;
                                             int worldZ = baseBlockZ + z;
                                             if (worldX < minX || worldX > maxX || currentY < minY || currentY > maxY || worldZ < minZ || worldZ > maxZ)

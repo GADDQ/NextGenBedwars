@@ -7,7 +7,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
@@ -165,7 +164,7 @@ public class PlatformManagerImpl implements PlatformManager {
     }
 
     private long tryReplace(Block block) {
-        if (!Tag.AIR.isTagged(block.getType()))
+        if (block.isCollidable())
             return -1;
 
         long blockLong = BlockUtil.asLong(block.getX(), block.getY(), block.getZ());

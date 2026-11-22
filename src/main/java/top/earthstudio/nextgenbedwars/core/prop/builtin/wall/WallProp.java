@@ -42,7 +42,7 @@ public class WallProp extends IProp {
                 for (int vertical = 0; vertical < 5; vertical++) {
                     for (int horizontal = -4; horizontal <= 4; horizontal++) {
                         Block target = centerBottom.getRelative(horizontal, vertical, 0);
-                        if (Tag.AIR.isTagged(target.getType()))
+                        if (!target.isCollidable())
                             if (!worldProtector.contains(BlockUtil.asLong(target)))
                                 target.setType(Material.BRICKS);
                     }
