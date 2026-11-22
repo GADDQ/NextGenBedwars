@@ -11,7 +11,7 @@ import org.bukkit.util.Vector;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.IProp;
-import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.platform.PlatformManager;
 
 public class PlatformProp extends IProp {
     private static final Vector VECTOR_ZERO = new Vector(0, 0, 0);

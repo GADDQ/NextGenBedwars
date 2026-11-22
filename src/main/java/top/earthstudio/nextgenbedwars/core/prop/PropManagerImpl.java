@@ -9,7 +9,7 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.IProp;
 import top.earthstudio.nextgenbedwars.api.prop.PropManager;
-import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.platform.PlatformManager;
 
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformManagerImpl;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.wall.WallProp;

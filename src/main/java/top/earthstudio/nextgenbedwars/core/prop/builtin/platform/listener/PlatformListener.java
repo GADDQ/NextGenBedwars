@@ -9,7 +9,7 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.platform.PlatformManager;
 
 import java.util.List;
 

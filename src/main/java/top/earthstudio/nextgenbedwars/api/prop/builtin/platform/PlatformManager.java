@@ -1,4 +1,4 @@
-package top.earthstudio.nextgenbedwars.api.prop.builtin;
+package top.earthstudio.nextgenbedwars.api.prop.builtin.platform;
 
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import org.bukkit.block.Block;

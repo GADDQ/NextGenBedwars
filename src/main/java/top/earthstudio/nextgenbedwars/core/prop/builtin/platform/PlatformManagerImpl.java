@@ -13,7 +13,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.prop.builtin.PlatformManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.platform.PlatformManager;
 import top.earthstudio.nextgenbedwars.api.util.BlockUtil;
 import top.earthstudio.nextgenbedwars.api.world.WorldProtector;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.listener.PlatformListener;
