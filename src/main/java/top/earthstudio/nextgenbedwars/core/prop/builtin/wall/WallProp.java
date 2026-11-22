@@ -3,7 +3,6 @@ package top.earthstudio.nextgenbedwars.core.prop.builtin.wall;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
@@ -51,7 +50,7 @@ public class WallProp extends IProp {
         }
 
         setCooldownFor(player);
-        player.getWorld().playSound(centerBottom.getLocation(), Sound.BLOCK_ANVIL_LAND, 2, 0.5f);
+        player.getWorld().playSound(centerBottom.getRelative(0, 2, 0).getLocation(), Sound.BLOCK_ANVIL_LAND, 2, 0.5f);
         propItem.setAmount(propItem.getAmount() - 1);
 
         return true;

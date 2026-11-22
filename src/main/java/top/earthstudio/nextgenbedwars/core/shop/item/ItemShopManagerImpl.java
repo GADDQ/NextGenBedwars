@@ -216,12 +216,16 @@ public class ItemShopManagerImpl implements ItemShopManager {
                 pdc.set(PdcKeys.prop.id, PersistentDataType.STRING, shopItem.propId);
 
                 IProp prop = propManager.get(shopItem.propId);
-                if (prop != null && prop.cooldownTick > 0) {
+
+                if (prop.cooldownTick > 0) {
                     var cd = itemMeta.getUseCooldown();
                     cd.setCooldownSeconds(prop.cooldownTick / 20f);
                     cd.setCooldownGroup(new NamespacedKey("nextgenbedwars", "prop_" + shopItem.propId + "_cooldown"));
                     itemMeta.setUseCooldown(cd);
                 }
+
+                if (prop.isShowGlintEffect)
+                    itemMeta.setEnchantmentGlintOverride(true);
             }
         });
 

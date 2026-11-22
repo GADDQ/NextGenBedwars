@@ -17,6 +17,7 @@ public abstract class IProp {
     // TODO: Special Item (e.g. TNT, tower, wall, platform, etc.)
     public final String id;
     public int cooldownTick = 0;
+    public boolean isShowGlintEffect = true;
 
     protected IProp(String id) {
         this.id = id;
