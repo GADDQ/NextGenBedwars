@@ -105,6 +105,8 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
     }
 
     public void shutdown() {
+        handler = null;
+
         GlobalTicker.remove(uuid);
         uuid = null;
 

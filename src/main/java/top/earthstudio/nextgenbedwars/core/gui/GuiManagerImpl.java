@@ -66,6 +66,8 @@ public class GuiManagerImpl implements GuiManager {
     }
 
     static public void shutdown() {
+        INSTANCE = null;
+
         new ObjectArrayList<>(guiPages.keySet()).forEach(InventoryView::close);
 
         HandlerList.unregisterAll(guiInteractListener);
