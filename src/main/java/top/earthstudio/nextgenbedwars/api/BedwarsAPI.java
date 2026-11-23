@@ -7,6 +7,7 @@ import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.game.SubSystemConstructor;
 import top.earthstudio.nextgenbedwars.api.gui.GuiManager;
 import top.earthstudio.nextgenbedwars.api.language.LanguageTranslator;
+import top.earthstudio.nextgenbedwars.api.particle.ParticleAnimationManager;
 
 @SuppressWarnings("unused")
 public interface BedwarsAPI {
@@ -28,6 +29,7 @@ public interface BedwarsAPI {
     GuiManager getGuiManager();
     EditCommand getEditCommand();
     LanguageTranslator getLanguageTranslator();
+    ParticleAnimationManager getParticleAnimationManager();
 
     // ================= 核心挂载与注销通道 =================
     static void register(BedwarsAPI implementation) {

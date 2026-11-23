@@ -19,6 +19,7 @@ import top.earthstudio.nextgenbedwars.core.command.BedwarsCommand;
 import top.earthstudio.nextgenbedwars.core.game.GameManager;
 import top.earthstudio.nextgenbedwars.core.gui.GuiManagerImpl;
 import top.earthstudio.nextgenbedwars.core.language.LanguageTranslatorImpl;
+import top.earthstudio.nextgenbedwars.core.particle.ParticleAnimationManagerImpl;
 import top.earthstudio.nextgenbedwars.core.world.WorldManager;
 
 import java.io.File;
@@ -30,6 +31,7 @@ public final class NextGenBedwars extends JavaPlugin{
     static public ComponentLogger logger;
 
     static private LanguageTranslator languageTranslator;
+    static private ParticleAnimationManagerImpl particleAnimationManager;
 
     @Override
     public void onEnable() {
@@ -46,6 +48,7 @@ public final class NextGenBedwars extends JavaPlugin{
         GlobalTranslator.translator().addSource(languageTranslator);
 
         GlobalTicker.initialize(this);
+        particleAnimationManager = new ParticleAnimationManagerImpl();
         WorldManager.initialize(this);
         GameManager.initialize();
         GuiManagerImpl.initialize(this);
@@ -64,6 +67,7 @@ public final class NextGenBedwars extends JavaPlugin{
         GuiManagerImpl.shutdown();
         GameManager.shutdown();
         WorldManager.shutdown();
+        particleAnimationManager.shutdown();
         GlobalTicker.shutdown();
 
         GlobalTranslator.translator().removeSource(languageTranslator);
