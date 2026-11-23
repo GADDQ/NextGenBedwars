@@ -3,3 +3,5 @@ translations:
 
   warp_powder_use: "<green>Returning to base! <yellow>Please do not move for {0:second} <green>seconds..."
   warp_powder_failed: "<red>Return failed! You moved while returning!"
+  warp_powder_already_using: "<red>You are already using Warp Powder!"
+  warp_powder_already_cancel: "<yellow>Return cancelled!"
