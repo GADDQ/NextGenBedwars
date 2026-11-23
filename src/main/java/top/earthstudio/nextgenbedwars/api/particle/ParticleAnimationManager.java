@@ -6,8 +6,9 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public interface ParticleAnimationManager {
-    UUID set(Location location, IParticleAnimationSequence sequence);
-    UUID set(Location location, ParticleData particleData);
+    UUID set(Location location, ParticleAnimationSequence particleAnimationSequence);
     void remove(Location location, UUID uuid);
     void removeAll(Location location);
+    UUID playComplex(Location location, IParticleComplexAnimation animation);
+    void stopComplex(UUID complexUuid);
 }
