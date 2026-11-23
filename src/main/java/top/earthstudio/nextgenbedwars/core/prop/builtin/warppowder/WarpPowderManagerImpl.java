@@ -88,7 +88,10 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
             warpPowderCountdowns.put(warpPowder, leftTick - 1);
         }
 
-        pendingRemoves.forEach(this::remove);
+        if (!pendingRemoves.isEmpty()) {
+            pendingRemoves.forEach(this::remove);
+            pendingRemoves.clear();
+        }
     }
 
     @Override
