@@ -18,8 +18,19 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
+    private static final class ComplexAnimationEntry {
+        final IParticleComplexAnimation animation;
+        final Location location;
+        final List<ObjectObjectImmutablePair<UUID, ParticleAnimationSequence>> activeChildren = new ObjectArrayList<>();
+
+        ComplexAnimationEntry(IParticleComplexAnimation animation, Location location) {
+            this.animation = animation;
+            this.location = location;
+        }
+    }
+
     private Map<Location, Map<UUID, ParticleAnimationSequence>> particlesMap;
-    private List<IParticleComplexAnimation> complexAnimations;
+    private Map<UUID, ComplexAnimationEntry> complexAnimations;
 
     private UUID uuid;
 
@@ -31,41 +42,62 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
 
     public ParticleAnimationManagerImpl() {
         particlesMap = new Object2ObjectOpenHashMap<>();
-        complexAnimations = new ObjectArrayList<>();
+        complexAnimations = new Object2ObjectOpenHashMap<>();
 
         uuid = GlobalTicker.add(new TickerTask() {
             @Override
             public void shutdown() {
+                complexAnimations.clear();
                 particlesMap.clear();
             }
 
             @Override
             public void run() {
                 ObjectArrayList<ObjectObjectImmutablePair<Location, UUID>> pendingRemoveSequences = new ObjectArrayList<>();
-                ObjectArrayList<IParticleComplexAnimation> pendingRemoveComplexAnimations = new ObjectArrayList<>();
+                ObjectArrayList<UUID> pendingRemoveComplexAnimations = new ObjectArrayList<>();
 
-                complexAnimations.forEach(complexAnimation -> {
-                    ObjectArrayList<ParticleAnimationSequence> sequences = complexAnimation.timeLine.get(complexAnimation.frame);
-                    if (sequences != null) {
-                        sequences.forEach(sequence -> sequence.isPause = complexAnimation.isPause);
+                complexAnimations.forEach((complexUuid, entry) -> {
+                    IParticleComplexAnimation complexAnimation = entry.animation;
 
-                        if (!complexAnimation.isPause) {
-                            sequences.forEach(sequence -> set(complexAnimation.location, sequence));
+                    Map<UUID, ParticleAnimationSequence> locationMap = particlesMap.get(entry.location);
+                    if (locationMap == null) {
+                        entry.activeChildren.clear();
+                    } else {
+                        entry.activeChildren.removeIf(pair -> !locationMap.containsKey(pair.left()));
+                        for (var child : entry.activeChildren) {
+                            child.right().isPause = complexAnimation.isPause;
                         }
                     }
 
+                    if (complexAnimation.isPause) {
+                        return;
+                    }
+
+                    ObjectArrayList<ParticleAnimationSequence> sequences = complexAnimation.timeLine.get(complexAnimation.frame);
+                    if (sequences != null) {
+                        for (ParticleAnimationSequence sequence : sequences) {
+                            sequence.isPause = false;
+                            sequence.frame = sequence.isReversed ? sequence.particleSequence.size() - 1 : 0;
+                            UUID childUuid = play(entry.location, sequence);
+                            entry.activeChildren.add(new ObjectObjectImmutablePair<>(childUuid, sequence));
+                        }
+                    }
+
+                    int lastFrame = complexAnimation.timeLine.lastIntKey();
                     if (!complexAnimation.isReversed) {
-                        if (complexAnimation.frame < complexAnimation.timeLine.keySet().stream().toList().getLast())
+                        if (complexAnimation.frame < lastFrame)
                             complexAnimation.frame++;
                         else if (complexAnimation.isLoop)
                             complexAnimation.frame = 0;
-                        else pendingRemoveComplexAnimations.add(complexAnimation);
+                        else
+                            pendingRemoveComplexAnimations.add(complexUuid);
                     } else {
                         if (complexAnimation.frame > 0)
                             complexAnimation.frame--;
                         else if (complexAnimation.isLoop)
-                            complexAnimation.frame = complexAnimation.timeLine.keySet().stream().toList().getLast();
-                        else pendingRemoveComplexAnimations.add(complexAnimation);
+                            complexAnimation.frame = lastFrame;
+                        else
+                            pendingRemoveComplexAnimations.add(complexUuid);
                     }
                 });
 
@@ -106,12 +138,12 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
                 );
 
                 if (!pendingRemoveComplexAnimations.isEmpty()) {
-                    pendingRemoveComplexAnimations.forEach(complexAnimation -> complexAnimations.remove(complexAnimation));
+                    pendingRemoveComplexAnimations.forEach(complexAnimations::remove);
                     pendingRemoveComplexAnimations.clear();
                 }
 
                 if (!pendingRemoveSequences.isEmpty()) {
-                    pendingRemoveSequences.forEach(pair -> remove(pair.left(), pair.right()));
+                    pendingRemoveSequences.forEach(pair -> stop(pair.right()));
                     pendingRemoveSequences.clear();
                 }
             }
@@ -121,7 +153,7 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
     }
 
     @Override
-    public UUID set(Location location, ParticleAnimationSequence particleAnimationSequence) {
+    public UUID play(Location location, ParticleAnimationSequence particleAnimationSequence) {
         UUID uuid = UUID.randomUUID();
         particlesMap.computeIfAbsent(location.clone(), k -> new ConcurrentHashMap<>()).put(uuid, particleAnimationSequence);
         return uuid;
@@ -131,13 +163,10 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
      * 移除特定 UUID 的动画
      */
     @Override
-    public void remove(Location location, UUID uuid) {
-        Map<UUID, ParticleAnimationSequence> map = particlesMap.get(location);
-        if (map != null) {
-            map.remove(uuid);
-            if (map.isEmpty()) {
-                particlesMap.remove(location);
-            }
+    public void stop(UUID uuid) {
+        for (var map : particlesMap.values()) {
+            if (map.remove(uuid) != null)
+                return;
         }
     }
 
@@ -145,18 +174,29 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
      * 移除该位置下的所有动画
      */
     @Override
-    public void removeAll(Location location) {
+    public void stopAll(Location location) {
         particlesMap.remove(location);
     }
 
     @Override
     public UUID playComplex(Location location, IParticleComplexAnimation animation) {
-        return null;
+        Location targetLocation = location.clone();
+        animation.location = targetLocation;
+
+        UUID complexUuid = UUID.randomUUID();
+        complexAnimations.put(complexUuid, new ComplexAnimationEntry(animation, targetLocation));
+        return complexUuid;
     }
 
     @Override
     public void stopComplex(UUID complexUuid) {
-
+        ComplexAnimationEntry entry = complexAnimations.remove(complexUuid);
+        if (entry != null) {
+            for (var child : entry.activeChildren) {
+                stop(child.left());
+            }
+            entry.activeChildren.clear();
+        }
     }
 
     public void shutdown() {
