@@ -2,9 +2,10 @@ package top.earthstudio.nextgenbedwars.api.prop;
 
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
-import org.bukkit.Location;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -42,8 +43,8 @@ public abstract class IProp {
     public boolean onClick(GameInstance gameInstance, Player player, ItemStack propItem) { return false; }
     public boolean onUse(GameInstance gameInstance, Player player, ItemStack propItem) { return false; }
 
-    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) { return onClick(gameInstance, player, propItem); }
-    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) { return onUse(gameInstance, player, propItem); }
+    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) { return onClick(gameInstance, player, propItem); }
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) { return onUse(gameInstance, player, propItem); }
 
     public boolean onAttack(GameInstance gameInstance, Player attacker, Player victim, ItemStack propItem) {
         onClick(gameInstance, attacker, propItem);

@@ -72,8 +72,8 @@ public class PropInteractListener implements Listener {
         switch (event.getAction())  {
             case LEFT_CLICK_AIR -> noCancelled = !prop.onClick(gameInstance, event.getPlayer(), event.getItem());
             case RIGHT_CLICK_AIR -> noCancelled = !prop.onUse(gameInstance, event.getPlayer(), event.getItem());
-            case LEFT_CLICK_BLOCK -> noCancelled = !prop.onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getInteractionPoint(), event.getItem());
-            case RIGHT_CLICK_BLOCK -> noCancelled = !prop.onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getInteractionPoint(), event.getItem());
+            case LEFT_CLICK_BLOCK -> noCancelled = !prop.onClickOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getBlockFace(), event.getItem());
+            case RIGHT_CLICK_BLOCK -> noCancelled = !prop.onUseOnBlock(gameInstance, event.getPlayer(), event.getClickedBlock(), event.getBlockFace(), event.getItem());
             default -> {}
         }
 

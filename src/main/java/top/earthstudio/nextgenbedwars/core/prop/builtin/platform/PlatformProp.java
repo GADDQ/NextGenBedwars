@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -53,9 +54,10 @@ public class PlatformProp extends IProp {
     }
 
     @Override
-    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) {
+        Location interactionLocation = block.getRelative(blockFace).getLocation();
         if ((interactionLocation.getBlock().getState() instanceof Container) || interactionLocation.getBlock().getState().getType() == Material.ENDER_CHEST)
             return false;
-        return super.onUseOnBlock(gameInstance, player, block, interactionLocation, propItem);
+        return super.onUseOnBlock(gameInstance, player, block, blockFace, propItem);
     }
 }

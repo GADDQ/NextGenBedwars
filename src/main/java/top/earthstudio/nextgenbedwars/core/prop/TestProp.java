@@ -2,8 +2,8 @@ package top.earthstudio.nextgenbedwars.core.prop;
 
 import net.kyori.adventure.text.Component;
 
-import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,7 +43,7 @@ public class TestProp extends IProp {
     }
 
     @Override
-    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
+    public boolean onClickOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) {
         player.sendMessage(Component.text("道具左键点击方块"));
         return true;
     }
@@ -55,7 +55,7 @@ public class TestProp extends IProp {
     }
 
     @Override
-    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) {
         player.sendMessage(Component.text("道具右键点击方块"));
         return true;
     }
