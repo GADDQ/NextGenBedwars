@@ -59,7 +59,7 @@ public class PropInteractListener implements Listener {
         if (event.getPlayer().hasCooldown(event.getItem()))
             return;
 
-        var pdc = event.getItem().getItemMeta().getPersistentDataContainer();
+        var pdc = event.getItem().getPersistentDataContainer();
         if (!pdc.has(PdcKeys.prop.id))
             return;
 
@@ -100,7 +100,7 @@ public class PropInteractListener implements Listener {
         if (event.getPlayer().hasCooldown(prop))
             return;
 
-        var pdc = prop.getItemMeta().getPersistentDataContainer();
+        var pdc = prop.getPersistentDataContainer();
         if (!pdc.has(PdcKeys.prop.id))
             return;
 
@@ -132,7 +132,7 @@ public class PropInteractListener implements Listener {
         if (event.getPlayer().hasCooldown(prop))
             return;
 
-        var pdc = prop.getItemMeta().getPersistentDataContainer();
+        var pdc = prop.getPersistentDataContainer();
         if (!pdc.has(PdcKeys.prop.id))
             return;
 

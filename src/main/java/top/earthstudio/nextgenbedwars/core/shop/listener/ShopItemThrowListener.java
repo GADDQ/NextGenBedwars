@@ -102,9 +102,7 @@ public final class ShopItemThrowListener implements Listener {
     private boolean isExternalContainer(Inventory inventory, org.bukkit.entity.HumanEntity player) {
         if (inventory == null) return false;
 
-        if (inventory.equals(player.getInventory())) return false;
-
-        return true;
+        return !inventory.equals(player.getInventory());
     }
 
     private boolean isPlayerInventory(Inventory inventory, org.bukkit.entity.HumanEntity player) {
@@ -113,7 +111,7 @@ public final class ShopItemThrowListener implements Listener {
 
     private boolean isNotThrowable(ItemStack item) {
         if (item == null || item.getType().isAir() || !item.hasItemMeta()) return false;
-        var pdc = item.getItemMeta().getPersistentDataContainer();
+        var pdc = item.getPersistentDataContainer();
         return pdc.has(PdcKeys.shop.throwable) && Boolean.FALSE.equals(pdc.get(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN));
     }
 }
