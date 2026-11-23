@@ -80,6 +80,7 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
         WarpPowderProp warpPowder = activeWarpPowders.remove(player.getUniqueId());
         warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GUNPOWDER.getKey());
         warpPowder.propItem.editPersistentDataContainer(pdc -> pdc.remove(PdcKeys.prop.warp_powder_active));
+        warpPowder.propItem.setAmount(warpPowder.propItem.getAmount() - 1);
         warpPowderCountdowns.remove(warpPowder);
     }
 
@@ -91,16 +92,15 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
             int leftTick = warpPowderCountdowns.get(warpPowder);
             if (leftTick <= 0) {
                 Player player = Bukkit.getPlayer(entry.getKey());
-                Team team = teamManager.get(player);
 
                 // TODO: FIXME!!! This is a temp fix, should use statement system later to remove player when player logout
                 if (player != null) {
+                    Team team = teamManager.get(player);
                     InventoryType type = player.getOpenInventory().getType();
                     if (type != InventoryType.CRAFTING && type != InventoryType.CREATIVE)
                         player.closeInventory();
 
                     player.teleport(team.respawnLocation);
-                    warpPowder.propItem.setAmount(warpPowder.propItem.getAmount() - 1);
                     pendingRemoves.add(player);
                 }
                 continue;
