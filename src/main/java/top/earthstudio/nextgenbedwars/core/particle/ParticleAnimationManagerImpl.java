@@ -50,21 +50,27 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
 
                             // 2. 帧数计算
                             if (!particleData.isPause) {
-                                if (particleData.frame < particleData.particleSequence.size() - 1) {
-                                    if (!particleData.isReversed)
+                                if (!particleData.isReversed) {
+                                    if (particleData.frame < particleData.particleSequence.size() - 1) {
                                         particleData.frame++;
-                                    else
+                                    } else if (!particleData.isLoop) {
+                                        // 非循环动画播放完毕后移除
+                                        pendingRemoves.add(new ObjectObjectImmutablePair<>(location, uuid));
+                                    } else {
+                                        // 循环动画重置
+                                        particleData.frame = 0;
+                                    }
+                                } else {
+                                    if (particleData.frame > 0) {
                                         particleData.frame--;
+                                    } else if (!particleData.isLoop) {
+                                        // 非循环动画播放完毕后移除
+                                        pendingRemoves.add(new ObjectObjectImmutablePair<>(location, uuid));
+                                    } else {
+                                        // 循环动画重置
+                                        particleData.frame = particleData.particleSequence.size() - 1;
+                                    }
                                 }
-                            } else if (!particleData.isLoop) {
-                                // 非循环动画播放完毕后移除
-                                pendingRemoves.add(new ObjectObjectImmutablePair<>(location, uuid));
-                            } else {
-                                // 循环动画重置
-                                if (!particleData.isReversed)
-                                    particleData.frame = 0;
-                                else
-                                    particleData.frame = particleData.particleSequence.size() - 1;
                             }
                         })
                 );
