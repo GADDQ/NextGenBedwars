@@ -1,5 +1,9 @@
 package top.earthstudio.nextgenbedwars.core.particle;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
+
 import org.bukkit.Location;
 
 import top.earthstudio.nextgenbedwars.api.particle.IParticleAnimationSequence;
@@ -23,7 +27,7 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
     }
 
     public ParticleAnimationManagerImpl() {
-        particlesMap = new ConcurrentHashMap<>();
+        particlesMap = new Object2ObjectOpenHashMap<>();
 
         uuid = GlobalTicker.add(new TickerTask() {
             @Override
@@ -33,6 +37,7 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
 
             @Override
             public void run() {
+                ObjectArrayList<ObjectObjectImmutablePair<Location, UUID>> pendingRemoves = new ObjectArrayList<>();
                 particlesMap.forEach((location, map) ->
                         map.forEach((uuid, particleData) -> {
                             // 1. 播放粒子
@@ -47,13 +52,18 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
                                 particleData.frame++;
                             } else if (!particleData.loop) {
                                 // 非循环动画播放完毕后移除
-                                remove(location, uuid);
+                                pendingRemoves.add(new ObjectObjectImmutablePair<>(location, uuid));
                             } else {
                                 // 循环动画重置
                                 particleData.frame = 0;
                             }
                         })
                 );
+
+                if (!pendingRemoves.isEmpty()) {
+                    pendingRemoves.forEach(pair -> remove(pair.left(), pair.right()));
+                    pendingRemoves.clear();
+                }
             }
         });
 
