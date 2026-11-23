@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder;
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
@@ -40,7 +41,7 @@ public class WarpPowderProp extends IProp {
 
     @Override
     public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
-        if (interactionLocation.getBlock().getState() instanceof Container)
+        if ((interactionLocation.getBlock().getState() instanceof Container) || interactionLocation.getBlock().getState().getType() == Material.ENDER_CHEST)
             return false;
         return super.onUseOnBlock(gameInstance, player, block, interactionLocation, propItem);
     }

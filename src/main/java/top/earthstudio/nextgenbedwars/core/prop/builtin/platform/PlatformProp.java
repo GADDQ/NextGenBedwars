@@ -3,8 +3,10 @@ package top.earthstudio.nextgenbedwars.core.prop.builtin.platform;
 import net.kyori.adventure.text.Component;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -48,5 +50,12 @@ public class PlatformProp extends IProp {
         setCooldownFor(player);
         propItem.setAmount(propItem.getAmount() - 1);
         return true;
+    }
+
+    @Override
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
+        if ((interactionLocation.getBlock().getState() instanceof Container) || interactionLocation.getBlock().getState().getType() == Material.ENDER_CHEST)
+            return false;
+        return super.onUseOnBlock(gameInstance, player, block, interactionLocation, propItem);
     }
 }

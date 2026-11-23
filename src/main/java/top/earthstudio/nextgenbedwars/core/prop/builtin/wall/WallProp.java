@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +22,9 @@ public class WallProp extends IProp {
 
     @Override
     public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
+        if ((interactionLocation.getBlock().getState() instanceof Container) || interactionLocation.getBlock().getState().getType() == Material.ENDER_CHEST)
+            return false;
+
         WorldProtector worldProtector = gameInstance.get(WorldProtector.class);
         Block centerBottom = interactionLocation.getBlock();
 
