@@ -1,40 +1,52 @@
 package top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-
 import org.bukkit.event.inventory.InventoryType;
+
 import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
+import top.earthstudio.nextgenbedwars.api.particle.ParticleAnimationManager;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.warppowder.WarpPowderManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
 import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.listener.WarpPowderListener;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.particle.WarpPowderUsingAnimation;
 
 import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("UnstableApiUsage")
 public class WarpPowderManagerImpl implements WarpPowderManager {
     private Map<UUID, WarpPowderProp> activeWarpPowders;
     private Map<WarpPowderProp, Integer> warpPowderCountdowns;
+    private Map<UUID, UUID> ringAnimations;
+    private Map<UUID, UUID> animationSequences;
 
     private GameInstance gameInstance;
     private TeamManager teamManager;
+    private ParticleAnimationManager particleAnimationManager;
 
     private WarpPowderListener warpPowderListener;
 
     public WarpPowderManagerImpl(GameInstance gameInstance) {
         activeWarpPowders = new Object2ObjectOpenHashMap<>();
         warpPowderCountdowns = new Object2IntOpenHashMap<>();
+        ringAnimations = new Object2ObjectOpenHashMap<>();
+        animationSequences = new Object2ObjectOpenHashMap<>();
 
         this.gameInstance = gameInstance;
+        this.particleAnimationManager = BedwarsAPI.getInstance().getParticleAnimationManager();
 
         warpPowderListener = new WarpPowderListener(this, gameInstance);
         Bukkit.getPluginManager().registerEvents(warpPowderListener, BedwarsAPI.getInstance().plugin());
@@ -46,9 +58,15 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
     }
 
     @Override
-    public void use(Player player, WarpPowderProp warpPowder) {
+    public boolean use(Player player, WarpPowderProp warpPowder) {
+        if (activeWarpPowders.containsKey(player.getUniqueId()))
+            return false;
+
+        warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GLOWSTONE_DUST.getKey());
+        ringAnimations.put(player.getUniqueId(), particleAnimationManager.playComplex(player.getLocation(), new WarpPowderUsingAnimation(player.getLocation())));
         activeWarpPowders.put(player.getUniqueId(), warpPowder);
         warpPowderCountdowns.put(warpPowder, warpPowder.countdownTick);
+        return true;
     }
 
     @Override
@@ -58,7 +76,9 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
 
     @Override
     public void remove(Player player) {
+        particleAnimationManager.stopComplex(ringAnimations.remove(player.getUniqueId()));
         WarpPowderProp warpPowder = activeWarpPowders.remove(player.getUniqueId());
+        warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GUNPOWDER.getKey());
         warpPowder.propItem.editPersistentDataContainer(pdc -> pdc.remove(PdcKeys.prop.warp_powder_active));
         warpPowderCountdowns.remove(warpPowder);
     }
@@ -81,8 +101,8 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
 
                     player.teleport(team.respawnLocation);
                     warpPowder.propItem.setAmount(warpPowder.propItem.getAmount() - 1);
+                    pendingRemoves.add(player);
                 }
-                pendingRemoves.add(player);
                 continue;
             }
             warpPowderCountdowns.put(warpPowder, leftTick - 1);
@@ -101,6 +121,16 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
 
         this.gameInstance = null;
         this.teamManager = null;
+
+        ringAnimations.forEach((playerUuid, animationUuid) -> particleAnimationManager.stopComplex(animationUuid));
+        ringAnimations.clear();
+        ringAnimations = null;
+
+        animationSequences.forEach((playerUuid, animationUuid) -> particleAnimationManager.stop(animationUuid));
+        animationSequences.clear();
+        animationSequences = null;
+
+        particleAnimationManager = null;
 
         warpPowderCountdowns.clear();
         warpPowderCountdowns = null;

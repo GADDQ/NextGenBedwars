@@ -31,7 +31,7 @@ public class WarpPowderListener implements Listener {
         if (event.getPlayer().getWorld() != gameInstance.getWorld())
             return;
 
-        if (!event.hasChangedPosition())
+        if (event.getTo().distanceSquared(event.getFrom()) <= 0.002)
             return;
 
         Player player = event.getPlayer();

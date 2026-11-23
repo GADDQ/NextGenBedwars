@@ -2,9 +2,9 @@ package top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder;
 
 import net.kyori.adventure.text.Component;
 
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,8 +19,9 @@ public class WarpPowderProp extends IProp {
     public int countdownTick = 100;
     public ItemStack propItem;
 
-    public WarpPowderProp() {
+    public WarpPowderProp() { // TODO: sound and more particle animation
         super("warp_powder");
+        propTexture = Material.GUNPOWDER;
     }
 
     @Override
@@ -29,20 +30,22 @@ public class WarpPowderProp extends IProp {
 
         if (propItem.getPersistentDataContainer().has(PdcKeys.prop.warp_powder_active)) {
             gameInstance.get(WarpPowderManager.class).remove(player);
-            player.sendMessage(Component.text("cancel")); // TODO: i18n
+            player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_cancel"));
             return true;
         }
 
-        player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_use", Component.text((float) countdownTick / 20)));
-        propItem.editPersistentDataContainer(pdc -> pdc.set(PdcKeys.prop.warp_powder_active, PersistentDataType.BOOLEAN, true));
-        gameInstance.get(WarpPowderManager.class).use(player, this);
+        if (gameInstance.get(WarpPowderManager.class).use(player, this)) {
+            player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_use", Component.text((float) countdownTick / 20)));
+            propItem.editPersistentDataContainer(pdc -> pdc.set(PdcKeys.prop.warp_powder_active, PersistentDataType.BOOLEAN, true));
+        } else player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_already_using"));
+
         return true;
     }
 
     @Override
-    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, Location interactionLocation, ItemStack propItem) {
-        if ((interactionLocation.getBlock().getState() instanceof Container) || interactionLocation.getBlock().getState().getType() == Material.ENDER_CHEST)
+    public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) {
+        if ((block.getState() instanceof Container) || block.getState().getType() == Material.ENDER_CHEST)
             return false;
-        return super.onUseOnBlock(gameInstance, player, block, interactionLocation, propItem);
+        return super.onUseOnBlock(gameInstance, player, block, blockFace, propItem);
     }
 }

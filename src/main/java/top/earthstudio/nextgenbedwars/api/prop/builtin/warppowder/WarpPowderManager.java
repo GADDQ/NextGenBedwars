@@ -5,7 +5,7 @@ import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.WarpPowderProp;
 
 public interface WarpPowderManager extends IGameSubSystem {
-    void use(Player player, WarpPowderProp warpPowder);
+    boolean use(Player player, WarpPowderProp warpPowder);
     boolean contains(Player player);
     void remove(Player player);
 }
