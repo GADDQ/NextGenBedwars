@@ -55,8 +55,7 @@ public class PlatformProp extends IProp {
 
     @Override
     public boolean onUseOnBlock(GameInstance gameInstance, Player player, Block block, BlockFace blockFace, ItemStack propItem) {
-        Location interactionLocation = block.getRelative(blockFace).getLocation();
-        if ((interactionLocation.getBlock().getState() instanceof Container) || interactionLocation.getBlock().getState().getType() == Material.ENDER_CHEST)
+        if ((block.getState() instanceof Container) || block.getState().getType() == Material.ENDER_CHEST)
             return false;
         return super.onUseOnBlock(gameInstance, player, block, blockFace, propItem);
     }
