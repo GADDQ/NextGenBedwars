@@ -192,6 +192,9 @@ public class PropInteractListener implements Listener {
         if (event.getEntityType() != EntityType.PLAYER)
             return;
 
+        if (event.getEntity().getWorld() != gameInstance.getWorld())
+            return;
+
         Player player = (Player) event.getEntity();
 
         var pdc = event.getCrossbow().getPersistentDataContainer();
@@ -206,6 +209,9 @@ public class PropInteractListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerShootBow(EntityShootBowEvent event) {
         if (event.getEntityType() != EntityType.PLAYER)
+            return;
+
+        if (event.getEntity().getWorld() != gameInstance.getWorld())
             return;
 
         Player player = (Player) event.getEntity();
