@@ -202,6 +202,10 @@ public class ItemShopManagerImpl implements ItemShopManager {
             }
         }
 
+        IProp prop = shopItem.propId != null ? propManager.get(shopItem.propId) : null;
+        if (prop != null && prop.propTexture != null)
+            toGive = toGive.withType(prop.propTexture);
+
         toGive.editMeta(itemMeta -> {
             var pdc = itemMeta.getPersistentDataContainer();
             pdc.set(PdcKeys.shop.itemId, PersistentDataType.STRING, shopItem.id);
@@ -212,20 +216,21 @@ public class ItemShopManagerImpl implements ItemShopManager {
                 pdc.set(PdcKeys.shop.keepWhenDead, PersistentDataType.BOOLEAN, true);
             if (!shopItem.isThrowable)
                 pdc.set(PdcKeys.shop.throwable, PersistentDataType.BOOLEAN, false);
+
             if (shopItem.propId != null) {
                 pdc.set(PdcKeys.prop.id, PersistentDataType.STRING, shopItem.propId);
 
-                IProp prop = propManager.get(shopItem.propId);
+                if (prop != null) {
+                    if (prop.cooldownTick > 0) {
+                        var cd = itemMeta.getUseCooldown();
+                        cd.setCooldownSeconds(prop.cooldownTick / 20f);
+                        cd.setCooldownGroup(new NamespacedKey("nextgenbedwars", "prop_" + shopItem.propId + "_cooldown"));
+                        itemMeta.setUseCooldown(cd);
+                    }
 
-                if (prop.cooldownTick > 0) {
-                    var cd = itemMeta.getUseCooldown();
-                    cd.setCooldownSeconds(prop.cooldownTick / 20f);
-                    cd.setCooldownGroup(new NamespacedKey("nextgenbedwars", "prop_" + shopItem.propId + "_cooldown"));
-                    itemMeta.setUseCooldown(cd);
+                    if (prop.isShowGlintEffect)
+                        itemMeta.setEnchantmentGlintOverride(true);
                 }
-
-                if (prop.isShowGlintEffect)
-                    itemMeta.setEnchantmentGlintOverride(true);
             }
         });
 

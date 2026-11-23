@@ -3,6 +3,7 @@ package top.earthstudio.nextgenbedwars.api.prop;
 import it.unimi.dsi.fastutil.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair;
 
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,6 +20,8 @@ public abstract class IProp {
     public final String id;
     public int cooldownTick = 0;
     public boolean isShowGlintEffect = true;
+
+    public Material propTexture = null;
 
     protected IProp(String id) {
         this.id = id;
