@@ -8,15 +8,17 @@ import java.util.List;
 public class ParticleData { // struct ParticleData
     public List<ParticleBuilder> particleSequence;
     public int frame;
-    public boolean loop;
+    public boolean isLoop;
+    public boolean isPause = false;
+    public boolean isReversed = false;
 
-    public ParticleData(List<ParticleBuilder> particleSequence, int frame, boolean loop) {
+    public ParticleData(List<ParticleBuilder> particleSequence, int frame, boolean isLoop) {
         this.particleSequence = particleSequence;
         this.frame = frame;
-        this.loop = loop;
+        this.isLoop = isLoop;
     }
 
-    public ParticleData(List<ParticleBuilder> particleSequence, boolean loop) {
-        this(particleSequence, 0, loop);
+    public ParticleData(List<ParticleBuilder> particleSequence, boolean isLoop) {
+        this(particleSequence, 0, isLoop);
     }
 }

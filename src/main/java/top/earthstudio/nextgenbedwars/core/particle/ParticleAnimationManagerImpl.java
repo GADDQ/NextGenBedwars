@@ -38,6 +38,7 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
             @Override
             public void run() {
                 ObjectArrayList<ObjectObjectImmutablePair<Location, UUID>> pendingRemoves = new ObjectArrayList<>();
+
                 particlesMap.forEach((location, map) ->
                         map.forEach((uuid, particleData) -> {
                             // 1. 播放粒子
@@ -48,14 +49,22 @@ public class ParticleAnimationManagerImpl implements ParticleAnimationManager {
                             }
 
                             // 2. 帧数计算
-                            if (particleData.frame < particleData.particleSequence.size() - 1) {
-                                particleData.frame++;
-                            } else if (!particleData.loop) {
+                            if (!particleData.isPause) {
+                                if (particleData.frame < particleData.particleSequence.size() - 1) {
+                                    if (!particleData.isReversed)
+                                        particleData.frame++;
+                                    else
+                                        particleData.frame--;
+                                }
+                            } else if (!particleData.isLoop) {
                                 // 非循环动画播放完毕后移除
                                 pendingRemoves.add(new ObjectObjectImmutablePair<>(location, uuid));
                             } else {
                                 // 循环动画重置
-                                particleData.frame = 0;
+                                if (!particleData.isReversed)
+                                    particleData.frame = 0;
+                                else
+                                    particleData.frame = particleData.particleSequence.size() - 1;
                             }
                         })
                 );
