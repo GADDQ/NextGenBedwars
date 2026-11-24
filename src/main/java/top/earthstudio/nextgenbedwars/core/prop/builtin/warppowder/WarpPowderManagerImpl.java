@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.inventory.InventoryType;
@@ -16,11 +17,14 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.PdcKeys;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.particle.ParticleAnimationManager;
+import top.earthstudio.nextgenbedwars.api.particle.ParticleAnimationSequence;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.warppowder.WarpPowderManager;
 import top.earthstudio.nextgenbedwars.api.team.Team;
 import top.earthstudio.nextgenbedwars.api.team.TeamManager;
 
 import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.listener.WarpPowderListener;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.particle.WarpPowderRespawnPointSequence;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.particle.WarpPowderTeleportSequence;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.particle.WarpPowderUsingAnimation;
 
 import java.util.Map;
@@ -31,7 +35,7 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
     private Map<UUID, WarpPowderProp> activeWarpPowders;
     private Map<WarpPowderProp, Integer> warpPowderCountdowns;
     private Map<UUID, UUID> ringAnimations;
-    private Map<UUID, UUID> animationSequences;
+    private Map<UUID, ObjectArrayList<UUID>> animationSequences;
 
     private GameInstance gameInstance;
     private TeamManager teamManager;
@@ -64,6 +68,11 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
 
         warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GLOWSTONE_DUST.getKey());
         ringAnimations.put(player.getUniqueId(), particleAnimationManager.playComplex(player.getLocation(), new WarpPowderUsingAnimation(player.getLocation())));
+        addSequence(player, WarpPowderTeleportSequence.get(player.getLocation()));
+        addSequence(player, WarpPowderRespawnPointSequence.get(teamManager.get(player).respawnLocation));
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, 1, 0.7f);
+        player.getWorld().playSound(teamManager.get(player).respawnLocation, Sound.BLOCK_PORTAL_TRIGGER, 1, 0.7f);
+
         activeWarpPowders.put(player.getUniqueId(), warpPowder);
         warpPowderCountdowns.put(warpPowder, warpPowder.countdownTick);
         return true;
@@ -77,10 +86,10 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
     @Override
     public void remove(Player player) {
         particleAnimationManager.stopComplex(ringAnimations.remove(player.getUniqueId()));
+        animationSequences.forEach((playerUuid, sequences) -> sequences.forEach(sequenceUuid -> particleAnimationManager.stop(sequenceUuid)));
         WarpPowderProp warpPowder = activeWarpPowders.remove(player.getUniqueId());
         warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GUNPOWDER.getKey());
         warpPowder.propItem.editPersistentDataContainer(pdc -> pdc.remove(PdcKeys.prop.warp_powder_active));
-        warpPowder.propItem.setAmount(warpPowder.propItem.getAmount() - 1);
         warpPowderCountdowns.remove(warpPowder);
     }
 
@@ -109,7 +118,11 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
         }
 
         if (!pendingRemoves.isEmpty()) {
-            pendingRemoves.forEach(this::remove);
+            pendingRemoves.forEach(player -> {
+                var warpPowder = activeWarpPowders.get(player.getUniqueId());
+                remove(player);
+                warpPowder.propItem.setAmount(warpPowder.propItem.getAmount() - 1);
+            });
             pendingRemoves.clear();
         }
     }
@@ -126,7 +139,7 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
         ringAnimations.clear();
         ringAnimations = null;
 
-        animationSequences.forEach((playerUuid, animationUuid) -> particleAnimationManager.stop(animationUuid));
+        animationSequences.forEach((playerUuid, sequences) -> sequences.forEach(sequenceUuid -> particleAnimationManager.stop(sequenceUuid)));
         animationSequences.clear();
         animationSequences = null;
 
@@ -137,5 +150,12 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
 
         activeWarpPowders.clear();
         activeWarpPowders = null;
+    }
+
+    private void addSequence(Player player, ParticleAnimationSequence sequence) {
+        if (!animationSequences.containsKey(player.getUniqueId()))
+            animationSequences.put(player.getUniqueId(), new ObjectArrayList<>());
+
+        animationSequences.get(player.getUniqueId()).add(particleAnimationManager.play(player.getLocation(), sequence));
     }
 }
