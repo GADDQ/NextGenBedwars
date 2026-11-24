@@ -70,8 +70,8 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
         ringAnimations.put(player.getUniqueId(), particleAnimationManager.playComplex(player.getLocation(), new WarpPowderUsingAnimation(player.getLocation())));
         addSequence(player, WarpPowderTeleportSequence.get(player.getLocation()));
         addSequence(player, WarpPowderRespawnPointSequence.get(teamManager.get(player).respawnLocation));
-        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, 1, 0.7f);
-        player.getWorld().playSound(teamManager.get(player).respawnLocation, Sound.BLOCK_PORTAL_TRIGGER, 1, 0.7f);
+        player.getWorld().playSound(player.getLocation(), Sound.BLOCK_PORTAL_TRIGGER, 0.5f, 0.7f);
+        player.getWorld().playSound(teamManager.get(player).respawnLocation, Sound.BLOCK_PORTAL_TRIGGER, 0.5f, 0.7f);
 
         activeWarpPowders.put(player.getUniqueId(), warpPowder);
         warpPowderCountdowns.put(warpPowder, warpPowder.countdownTick);
