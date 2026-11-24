@@ -74,7 +74,7 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
         player.getWorld().playSound(teamManager.get(player).respawnLocation, Sound.BLOCK_PORTAL_TRIGGER, 0.5f, 0.7f);
 
         activeWarpPowders.put(player.getUniqueId(), warpPowder);
-        warpPowderCountdowns.put(warpPowder, warpPowder.countdownTick);
+        warpPowderCountdowns.put(warpPowder, warpPowder.usingTick);
         return true;
     }
 
@@ -92,6 +92,7 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
         WarpPowderProp warpPowder = activeWarpPowders.remove(player.getUniqueId());
         warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GUNPOWDER.getKey());
         warpPowder.propItem.editPersistentDataContainer(pdc -> pdc.remove(PdcKeys.prop.warp_powder_active));
+        warpPowder.setCooldownFor(player);
         warpPowderCountdowns.remove(warpPowder);
     }
 

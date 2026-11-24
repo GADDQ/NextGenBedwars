@@ -16,12 +16,13 @@ import top.earthstudio.nextgenbedwars.api.prop.IProp;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.warppowder.WarpPowderManager;
 
 public class WarpPowderProp extends IProp {
-    public int countdownTick = 100;
+    public int usingTick = 100;
     public ItemStack propItem;
 
     public WarpPowderProp() { // TODO: sound and more particle animation
         super("warp_powder");
         propTexture = Material.GUNPOWDER;
+        cooldownTick = 100;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class WarpPowderProp extends IProp {
         }
 
         if (gameInstance.get(WarpPowderManager.class).use(player, this)) {
-            player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_use", Component.text((float) countdownTick / 20)));
+            player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_use", Component.text((float) usingTick / 20)));
             propItem.editPersistentDataContainer(pdc -> pdc.set(PdcKeys.prop.warp_powder_active, PersistentDataType.BOOLEAN, true));
         } else player.sendMessage(Component.translatable("nextgenbedwars.prop.warp_powder_already_using"));
 
@@ -47,5 +48,10 @@ public class WarpPowderProp extends IProp {
         if ((block.getState() instanceof Container) || block.getState().getType() == Material.ENDER_CHEST)
             return false;
         return super.onUseOnBlock(gameInstance, player, block, blockFace, propItem);
+    }
+
+    @Override
+    public void setCooldownFor(Player player) {
+        super.setCooldownFor(player);
     }
 }
