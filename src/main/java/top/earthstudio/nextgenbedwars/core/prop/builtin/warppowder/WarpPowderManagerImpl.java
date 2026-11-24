@@ -86,7 +86,9 @@ public class WarpPowderManagerImpl implements WarpPowderManager {
     @Override
     public void remove(Player player) {
         particleAnimationManager.stopComplex(ringAnimations.remove(player.getUniqueId()));
-        animationSequences.forEach((playerUuid, sequences) -> sequences.forEach(sequenceUuid -> particleAnimationManager.stop(sequenceUuid)));
+        var sequences = animationSequences.get(player.getUniqueId());
+        sequences.forEach(uuid -> particleAnimationManager.stop(uuid));
+        sequences.clear();
         WarpPowderProp warpPowder = activeWarpPowders.remove(player.getUniqueId());
         warpPowder.propItem.setData(DataComponentTypes.ITEM_MODEL, Material.GUNPOWDER.getKey());
         warpPowder.propItem.editPersistentDataContainer(pdc -> pdc.remove(PdcKeys.prop.warp_powder_active));
