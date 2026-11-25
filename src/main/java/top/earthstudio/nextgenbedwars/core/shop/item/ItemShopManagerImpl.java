@@ -235,7 +235,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         });
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
-            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem)) { // message handle by executor
+            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem, toGive)) { // message handle by executor
                 return false;
             }
         }
