@@ -23,6 +23,7 @@ import java.util.Random;
 
 public class MagnetShoesListener implements Listener, IGameSubSystem {
     static private final Vector VECTOR_ZERO = new Vector(0, 0, 0);
+    static private final NamespacedKey MAGNET_SHOES = new NamespacedKey("nextgenbedwars", "prop_id");
 
     private final GameInstance gameInstance;
     private final Random random;
@@ -61,7 +62,7 @@ public class MagnetShoesListener implements Listener, IGameSubSystem {
             return;
 
         var pdc = shoe.getPersistentDataContainer();
-        if (!Objects.equals(pdc.get(new NamespacedKey("nextgenbedwars", "prop_id"), PersistentDataType.STRING), "magnet_shoes"))
+        if (!Objects.equals(pdc.get(MAGNET_SHOES, PersistentDataType.STRING), "magnet_shoes"))
             return;
 
         int num = random.nextInt(100) + 1;
