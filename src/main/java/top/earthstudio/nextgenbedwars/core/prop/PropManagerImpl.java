@@ -9,9 +9,12 @@ import top.earthstudio.nextgenbedwars.api.BedwarsAPI;
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
 import top.earthstudio.nextgenbedwars.api.prop.IProp;
 import top.earthstudio.nextgenbedwars.api.prop.PropManager;
+import top.earthstudio.nextgenbedwars.api.prop.builtin.compass.CompassManager;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.platform.PlatformManager;
 import top.earthstudio.nextgenbedwars.api.prop.builtin.warppowder.WarpPowderManager;
 
+import top.earthstudio.nextgenbedwars.core.prop.builtin.compass.CompassManagerImpl;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.compass.CompassProp;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformManagerImpl;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.wall.WallProp;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.WarpPowderManagerImpl;
@@ -71,10 +74,12 @@ public class PropManagerImpl implements PropManager {
         create("platform", PlatformProp::new);
         create("wall", WallProp::new);
         create("warp_powder", WarpPowderProp::new);
+        create("compass", CompassProp::new);
     }
 
     private void registerBuiltInPropSubSystem(GameInstance gameInstance) {
         gameInstance.inject(PlatformManager.class, PlatformManagerImpl::new);
         gameInstance.inject(WarpPowderManager.class, WarpPowderManagerImpl::new);
+        gameInstance.inject(CompassManager.class, CompassManagerImpl::new);
     }
 }

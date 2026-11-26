@@ -5,3 +5,6 @@ translations:
   warp_powder_failed: "<red>Return failed! You moved while returning!"
   warp_powder_already_using: "<red>You are already using Warp Powder!"
   warp_powder_cancel: "<yellow>Return cancelled!"
+
+  tracker_compass_no_target: "<red>No target to track!"
+  tracker_compass_target: "<green>Nearest player is {0:distance} blocks away!"

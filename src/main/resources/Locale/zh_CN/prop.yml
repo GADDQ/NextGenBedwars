@@ -5,3 +5,6 @@ translations:
   warp_powder_failed: "<red>回城失败！你在回城时移动了！"
   warp_powder_already_using: "<red>你已经在使用回城卷轴了！"
   warp_powder_cancel: "<yellow>已取消回城！"
+
+  tracker_compass_no_target: "<red>无目标可追踪！"
+  tracker_compass_target: "<green>最近的玩家在 <yellow>{0:distance} <green>格外！"
