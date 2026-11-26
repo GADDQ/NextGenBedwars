@@ -7,4 +7,4 @@ translations:
   warp_powder_cancel: "<yellow>Return cancelled!"
 
   tracker_compass_no_target: "<red>No target to track!"
-  tracker_compass_target: "<green>Nearest player is {0:distance} blocks away!"
+  tracker_compass_target: "<green>Nearest player is <yellow>{0:distance} <green>blocks away!"
