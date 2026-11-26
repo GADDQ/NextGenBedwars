@@ -1,13 +1,20 @@
 package top.earthstudio.nextgenbedwars.api.util;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.DyedItemColor;
+
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
 import org.bukkit.Color;
 import org.bukkit.DyeColor;
-
+import org.bukkit.Material;
+import org.bukkit.Tag;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Set;
 
 /**
  * 负责纯色彩与染料相关的工具类。
@@ -17,8 +24,22 @@ import org.jetbrains.annotations.Nullable;
  *     <li>Bukkit {@link Color} 转换为 Adventure {@link TextColor} 与最接近的 {@link NamedTextColor}</li>
  * </ul>
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "UnstableApiUsage"})
 public final class ColorUtil {
+    private static final Set<String> COLORABLE_BASE_SUFFIXES = Set.of(
+            "WOOL",
+            "TERRACOTTA",
+            "STAINED_GLASS",
+            "STAINED_GLASS_PANE",
+            "CONCRETE",
+            "CONCRETE_POWDER",
+            "CARPET",
+            "GLAZED_TERRACOTTA",
+            "SHULKER_BOX",
+            "BED",
+            "CANDLE",
+            "BANNER"
+    );
 
     private ColorUtil() {}
 
@@ -117,5 +138,60 @@ public final class ColorUtil {
     public static String toNamedTextColorName(@NotNull Color color) {
         NamedTextColor named = NamedTextColor.namedColor(color.asRGB());
         return named != null ? NamedTextColor.NAMES.key(named) : null;
+    }
+
+    public static boolean isRgbDyeable(Material material) {
+        return Tag.ITEMS_DYEABLE.isTagged(material);
+    }
+
+    public static boolean isColorableVariant(Material material) {
+        return extractColorableSuffix(material) != null;
+    }
+
+    public static boolean isDyeable(Material material) {
+        return isRgbDyeable(material) || isColorableVariant(material);
+    }
+
+    public static ItemStack dyeItem(ItemStack item, DyeColor dyeColor, Color rgbColor) {
+        Material type = item.getType();
+        if (isRgbDyeable(type)) {
+            ItemStack copy = item.clone();
+            copy.setData(DataComponentTypes.DYED_COLOR, DyedItemColor.dyedItemColor(rgbColor));
+            return copy;
+        }
+        String suffix = extractColorableSuffix(type);
+        if (suffix != null) {
+            Material colored = Material.matchMaterial(dyeColor.name() + "_" + suffix);
+            if (colored != null) {
+                return item.withType(colored);
+            }
+        }
+        return item;
+    }
+
+    private static String extractColorableSuffix(Material material) {
+        if (!material.isItem()) {
+            return null;
+        }
+        String name = material.name();
+        if (name.equals("GLASS")) {
+            return "STAINED_GLASS";
+        }
+        if (name.equals("GLASS_PANE")) {
+            return "STAINED_GLASS_PANE";
+        }
+        if (COLORABLE_BASE_SUFFIXES.contains(name)) {
+            return name;
+        }
+        for (DyeColor color : DyeColor.values()) {
+            String prefix = color.name() + "_";
+            if (name.startsWith(prefix)) {
+                String suffix = name.substring(prefix.length());
+                if (COLORABLE_BASE_SUFFIXES.contains(suffix)) {
+                    return suffix;
+                }
+            }
+        }
+        return null;
     }
 }
