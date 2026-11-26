@@ -2,6 +2,7 @@ package top.earthstudio.nextgenbedwars.core.shop.item;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -28,6 +29,7 @@ import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
+import top.earthstudio.nextgenbedwars.api.shop.item.ShopShowModifier;
 import top.earthstudio.nextgenbedwars.core.shop.item.listener.ItemShopLevelListener;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerTypeConfig;
 
@@ -43,6 +45,8 @@ public class ItemShopManagerImpl implements ItemShopManager {
     private Map<Material, Component> resourceNames;
     private List<Category> categories;
 
+    private List<ShopShowModifier> showModifiers;
+
     private GameInstance gameInstance;
     private ItemShopConfig itemShopConfig;
     private ShopExecutor shopExecutor;
@@ -56,6 +60,8 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         itemShopPages = new Object2ObjectOpenHashMap<>();
         resourceNames = new Object2ObjectOpenHashMap<>();
+
+        showModifiers = new ObjectArrayList<>();
 
         itemShopConfig = new ItemShopConfig(gameInstance);
         categories = itemShopConfig.load();
@@ -97,6 +103,23 @@ public class ItemShopManagerImpl implements ItemShopManager {
     @Override
     public Map<Material, Component> getResourceNames() {
         return resourceNames;
+    }
+
+    @Override
+    public void registerShowModifier(ShopShowModifier modifier) {
+        showModifiers.add(modifier);
+    }
+
+    @Override
+    public ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem) {
+        ItemStack result = showItem;
+        for (ShopShowModifier modifier : showModifiers) {
+            ItemStack modified = modifier.modify(player, shopItem, targetLevel, result);
+            if (modified != null) {
+                result = modified;
+            }
+        }
+        return result;
     }
 
     @Override
@@ -297,6 +320,9 @@ public class ItemShopManagerImpl implements ItemShopManager {
         propManager = null;
         levelManager = null;
         gameInstance = null;
+
+        showModifiers.clear();
+        showModifiers = null;
 
         itemShopPages.clear();
         itemShopPages = null;

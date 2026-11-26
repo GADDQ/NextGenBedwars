@@ -148,7 +148,12 @@ public class ItemShopPage extends ChestGuiPage {
     }
 
     private ItemStack renderShopItem(Player player, ShopItem shopItem, int targetLevel) {
-        var finalShowItem = shopItem.getShowItem(targetLevel).clone();
+        var finalShowItem = itemShopManager.applyShowModifiers(
+                player,
+                shopItem,
+                targetLevel,
+                shopItem.getShowItem(targetLevel).clone()
+        );
 
         finalShowItem.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
                 .addHiddenComponents(

@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import org.bukkit.inventory.ItemStack;
 import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 import top.earthstudio.nextgenbedwars.api.gui.IGuiPage;
 
@@ -16,6 +17,9 @@ public interface ItemShopManager extends IGameSubSystem {
     IGuiPage cacheAndOpenFor(Player player);
     List<Category> getTemplateCategories();
     Map<Material, Component> getResourceNames();
+
+    void registerShowModifier(ShopShowModifier modifier);
+    ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem);
 
     boolean canAfford(Player player, ShopItem shopItem);
     boolean isMaxLevel(Player player, ShopItem shopItem);
