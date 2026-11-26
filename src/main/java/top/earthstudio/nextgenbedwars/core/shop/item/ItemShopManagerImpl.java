@@ -134,7 +134,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
     @Override
     public int getBatchTimes(ShopItem shopItem, boolean fullStack) {
-        if (!shopItem.isStackable || shopItem.isUpgradeable() || (shopItem.executorId != null && !shopItem.executorId.isBlank())) {
+        if (!shopItem.isStackable || shopItem.isUpgradeable()) {
             return 1;
         }
         ItemStack sample = (shopItem.actualItems != null && !shopItem.actualItems.isEmpty())
@@ -165,7 +165,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
             return false;
         }
 
-        if (!shopItem.isStackable || shopItem.isUpgradeable() || (shopItem.executorId != null && !shopItem.executorId.isBlank())) {
+        if (!shopItem.isStackable || shopItem.isUpgradeable()) {
             times = 1;
         }
 
