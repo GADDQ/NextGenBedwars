@@ -134,17 +134,18 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
     @Override
     public int getBatchTimes(ShopItem shopItem, boolean fullStack) {
-        if (shopItem.isUpgradeable() || (shopItem.executorId != null && !shopItem.executorId.isBlank())) {
+        if (!shopItem.isStackable || shopItem.isUpgradeable() || (shopItem.executorId != null && !shopItem.executorId.isBlank())) {
             return 1;
         }
         ItemStack sample = (shopItem.actualItems != null && !shopItem.actualItems.isEmpty())
                 ? shopItem.getActualItem(0)
                 : shopItem.getShowItem(0);
-        int maxStack = sample.getMaxStackSize();
-        if (maxStack <= 1) {
-            return 1;
-        }
-        int targetAmount = fullStack ? maxStack : Math.max(1, maxStack / 2);
+        IProp prop = shopItem.propId != null ? propManager.get(shopItem.propId) : null;
+        int maxStack = (prop != null && prop.propTexture != null)
+                ? prop.propTexture.getMaxStackSize()
+                : sample.getMaxStackSize();
+        int batchCap = maxStack > 1 ? maxStack : 64;
+        int targetAmount = fullStack ? batchCap : Math.max(1, batchCap / 2);
         int singleAmount = Math.max(1, sample.getAmount());
         return Math.max(1, targetAmount / singleAmount);
     }
@@ -164,7 +165,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
             return false;
         }
 
-        if (shopItem.isUpgradeable() || (shopItem.executorId != null && !shopItem.executorId.isBlank())) {
+        if (!shopItem.isStackable || shopItem.isUpgradeable() || (shopItem.executorId != null && !shopItem.executorId.isBlank())) {
             times = 1;
         }
 
@@ -180,7 +181,6 @@ public class ItemShopManagerImpl implements ItemShopManager {
         }
 
         int totalPrice = shopItem.price * times;
-
         int targetLevel = getTargetLevel(player, shopItem);
 
         ItemStack toGive;
@@ -190,17 +190,8 @@ public class ItemShopManagerImpl implements ItemShopManager {
             ItemStack show = shopItem.getShowItem(targetLevel);
             toGive = new ItemStack(show.getType(), show.getAmount());
         }
-        toGive.setAmount(toGive.getAmount() * times);
 
-        int existingSlot = shopItem.isUpgradeable() ? findSlotByShopItemId(player, shopItem.id) : -1;
-
-        if (!toGive.isEmpty()) { // exclude Material.AIR, most use for non-physical prop
-            if (existingSlot == -1 && !canFit(player, toGive, shopItem.coinType, totalPrice)) {
-                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
-                player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_inventory_full"));
-                return false;
-            }
-        }
+        int boughtAmount = toGive.getAmount() * times;
 
         IProp prop = shopItem.propId != null ? propManager.get(shopItem.propId) : null;
         if (prop != null && prop.propTexture != null)
@@ -232,20 +223,6 @@ public class ItemShopManagerImpl implements ItemShopManager {
                         itemMeta.setEnchantmentGlintOverride(true);
                 }
             }
-        });
-
-        if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
-            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem, toGive)) { // message handle by executor
-                return false;
-            }
-        }
-
-        removeCoin(player, shopItem.coinType, totalPrice);
-
-        int boughtAmount = toGive.getAmount();
-
-        toGive.editMeta(itemMeta -> {
-            var pdc = itemMeta.getPersistentDataContainer();
 
             if (itemMeta.hasItemName())
                 pdc.set(PdcKeys.i18n.name, ComponentDataType.COMPONENT, itemMeta.itemName());
@@ -256,10 +233,37 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         toGive = translateItem(toGive, player.locale());
 
+        int existingSlot = shopItem.isUpgradeable() ? findSlotByShopItemId(player, shopItem.id) : -1;
+
+        if (!toGive.isEmpty()) {
+            if (existingSlot == -1 && !canFit(player, toGive, boughtAmount, shopItem.coinType, totalPrice)) {
+                player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
+                player.sendMessage(Component.translatable("nextgenbedwars.shop.item_shop_inventory_full"));
+                return false;
+            }
+        }
+
+        if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
+            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem, toGive)) {
+                return false;
+            }
+        }
+
+        removeCoin(player, shopItem.coinType, totalPrice);
+
         if (existingSlot != -1) {
+            toGive.setAmount(boughtAmount);
             player.getInventory().setItem(existingSlot, toGive);
-        } else {
-            player.getInventory().addItem(toGive);
+        } else if (!toGive.isEmpty()) {
+            int maxStack = Math.max(1, toGive.getMaxStackSize());
+            int remaining = boughtAmount;
+            while (remaining > 0) {
+                int give = Math.min(remaining, maxStack);
+                ItemStack stack = toGive.clone();
+                stack.setAmount(give);
+                player.getInventory().addItem(stack);
+                remaining -= give;
+            }
         }
 
         if (shopItem.isUpgradeable()) {
@@ -304,7 +308,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         categories = null;
     }
 
-    private boolean canFit(Player player, ItemStack toAdd, Material removeType, int removeAmount) {
+    private boolean canFit(Player player, ItemStack toAdd, int addAmount, Material removeType, int removeAmount) {
         var inv = player.getInventory();
         ItemStack[] contents = inv.getStorageContents();
 
@@ -329,7 +333,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         }
 
         int maxStack = toAdd.getMaxStackSize();
-        int remaining = toAdd.getAmount();
+        int remaining = addAmount;
 
         if (maxStack > 1) {
             for (ItemStack item : simulated) {

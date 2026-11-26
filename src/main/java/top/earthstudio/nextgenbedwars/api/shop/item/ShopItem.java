@@ -23,6 +23,7 @@ public final class ShopItem { // struct ShopItem
     public boolean isDecreaseLevelWhenPlayerDead = false;
     public boolean isKeepWhenDead = false;
     public boolean isThrowable = true;
+    public boolean isStackable = true;
 
     public ShopItem() {}
 
