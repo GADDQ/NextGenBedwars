@@ -15,6 +15,8 @@ import top.earthstudio.nextgenbedwars.api.prop.builtin.warppowder.WarpPowderMana
 
 import top.earthstudio.nextgenbedwars.core.prop.builtin.compass.CompassManagerImpl;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.compass.CompassProp;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.magnetshoe.MagnetShoes;
+import top.earthstudio.nextgenbedwars.core.prop.builtin.magnetshoe.listener.MagnetShoesListener;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.platform.PlatformManagerImpl;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.wall.WallProp;
 import top.earthstudio.nextgenbedwars.core.prop.builtin.warppowder.WarpPowderManagerImpl;
@@ -75,11 +77,13 @@ public class PropManagerImpl implements PropManager {
         create("wall", WallProp::new);
         create("warp_powder", WarpPowderProp::new);
         create("compass", CompassProp::new);
+        create("magnet_shoes", MagnetShoes::new);
     }
 
     private void registerBuiltInPropSubSystem(GameInstance gameInstance) {
         gameInstance.inject(PlatformManager.class, PlatformManagerImpl::new);
         gameInstance.inject(WarpPowderManager.class, WarpPowderManagerImpl::new);
         gameInstance.inject(CompassManager.class, CompassManagerImpl::new);
+        gameInstance.inject(MagnetShoesListener.class, MagnetShoesListener::new);
     }
 }
