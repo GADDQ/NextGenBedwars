@@ -29,7 +29,7 @@ import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
-import top.earthstudio.nextgenbedwars.api.shop.item.ShopShowModifier;
+import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopShowModifier;
 import top.earthstudio.nextgenbedwars.core.shop.item.listener.ItemShopLevelListener;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerTypeConfig;
 
@@ -45,7 +45,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     private Map<Material, Component> resourceNames;
     private List<Category> categories;
 
-    private List<ShopShowModifier> showModifiers;
+    private List<ItemShopShowModifier> showModifiers;
 
     private GameInstance gameInstance;
     private ItemShopConfig itemShopConfig;
@@ -106,14 +106,14 @@ public class ItemShopManagerImpl implements ItemShopManager {
     }
 
     @Override
-    public void registerShowModifier(ShopShowModifier modifier) {
+    public void registerShowModifier(ItemShopShowModifier modifier) {
         showModifiers.add(modifier);
     }
 
     @Override
     public ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem) {
         ItemStack result = showItem;
-        for (ShopShowModifier modifier : showModifiers) {
+        for (ItemShopShowModifier modifier : showModifiers) {
             ItemStack modified = modifier.modify(player, shopItem, targetLevel, result);
             if (modified != null) {
                 result = modified;
