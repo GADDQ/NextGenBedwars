@@ -27,10 +27,10 @@ import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
-import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopShowModifier;
 
 import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShopExecutor;
 import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShowModifier;
+import top.earthstudio.nextgenbedwars.api.shop.showmodifier.ShopShowModifier;
 import top.earthstudio.nextgenbedwars.core.shop.item.listener.ItemShopLevelListener;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerTypeConfig;
 
@@ -46,11 +46,10 @@ public class ItemShopManagerImpl implements ItemShopManager {
     private Map<Material, Component> resourceNames;
     private List<Category> categories;
 
-    private Map<String, ItemShopShowModifier> showModifiers;
-
     private GameInstance gameInstance;
     private ItemShopConfig itemShopConfig;
     private ShopExecutor shopExecutor;
+    private ShopShowModifier shopShowModifier;
     private LevelManager levelManager;
     private PropManager propManager;
 
@@ -61,8 +60,6 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         itemShopPages = new Object2ObjectOpenHashMap<>();
         resourceNames = new Object2ObjectOpenHashMap<>();
-
-        showModifiers = new Object2ObjectOpenHashMap<>();
 
         itemShopConfig = new ItemShopConfig(gameInstance);
         categories = itemShopConfig.load();
@@ -78,6 +75,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     @Override
     public void onReady() {
         shopExecutor = gameInstance.get(ShopExecutor.class);
+        shopShowModifier = gameInstance.get(ShopShowModifier.class);
         levelManager = gameInstance.get(LevelManager.class);
         propManager = gameInstance.get(PropManager.class);
         gameInstance.get(ShopManager.class).addProvider("item_shop", this::cacheAndOpenFor);
@@ -109,17 +107,15 @@ public class ItemShopManagerImpl implements ItemShopManager {
     }
 
     @Override
-    public void registerShowModifier(String id, ItemShopShowModifier modifier) {
-        if (showModifiers.putIfAbsent(id, modifier) != null)
-            throw new IllegalStateException("ItemShopShowModifier ID has been used!");
-    }
-
-    @Override
     public ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem) {
-        if (shopItem.showModifierId == null)
+        if (shopItem.showModifierId == null || shopItem.showModifierId.isBlank())
             return showItem;
 
-        return showModifiers.get(shopItem.showModifierId).modify(gameInstance, player, shopItem, targetLevel, showItem);
+        var modifier = shopShowModifier.get(shopItem.showModifierId);
+        if (modifier == null)
+            return showItem;
+
+        return modifier.modify(gameInstance, player, shopItem, targetLevel, showItem);
     }
 
     @Override
@@ -326,12 +322,10 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         itemShopConfig = null;
         shopExecutor = null;
+        shopShowModifier = null;
         propManager = null;
         levelManager = null;
         gameInstance = null;
-
-        showModifiers.clear();
-        showModifiers = null;
 
         itemShopPages.clear();
         itemShopPages = null;
@@ -431,7 +425,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     }
 
     private void registerBuiltIn() {
-        registerShowModifier("dye_color", new DyeableShowModifier());
+        shopShowModifier.register("dye_color", new DyeableShowModifier());
 
         shopExecutor.register("dye_color", new DyeableShopExecutor());
     }

@@ -39,7 +39,7 @@ public class CompassManagerImpl implements CompassManager { // ATTENTION: This w
     @Override
     public void onReady() {
         this.teamManager = gameInstance.get(TeamManager.class);
-        gameInstance.get(ShopExecutor.class).register("compass", (player, shopItem, giveItem) -> {
+        gameInstance.get(ShopExecutor.class).register("compass", (gameInstance, player, shopItem, giveItem) -> {
             refresh(player, giveItem);
             return true;
         });

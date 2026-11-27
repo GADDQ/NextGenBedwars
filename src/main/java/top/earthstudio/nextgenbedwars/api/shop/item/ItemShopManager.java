@@ -18,7 +18,6 @@ public interface ItemShopManager extends IGameSubSystem {
     List<Category> getTemplateCategories();
     Map<Material, Component> getResourceNames();
 
-    void registerShowModifier(String id, ItemShopShowModifier modifier);
     ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem);
 
     boolean canAfford(Player player, ShopItem shopItem);
