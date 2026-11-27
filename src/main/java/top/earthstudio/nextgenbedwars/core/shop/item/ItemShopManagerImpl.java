@@ -2,7 +2,6 @@ package top.earthstudio.nextgenbedwars.core.shop.item;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -28,8 +27,8 @@ import top.earthstudio.nextgenbedwars.api.shop.executor.ShopExecutor;
 import top.earthstudio.nextgenbedwars.api.shop.item.Category;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
-
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopShowModifier;
+
 import top.earthstudio.nextgenbedwars.core.shop.item.listener.ItemShopLevelListener;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerTypeConfig;
 
@@ -45,7 +44,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     private Map<Material, Component> resourceNames;
     private List<Category> categories;
 
-    private List<ItemShopShowModifier> showModifiers;
+    private Map<String, ItemShopShowModifier> showModifiers;
 
     private GameInstance gameInstance;
     private ItemShopConfig itemShopConfig;
@@ -61,7 +60,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         itemShopPages = new Object2ObjectOpenHashMap<>();
         resourceNames = new Object2ObjectOpenHashMap<>();
 
-        showModifiers = new ObjectArrayList<>();
+        showModifiers = new Object2ObjectOpenHashMap<>();
 
         itemShopConfig = new ItemShopConfig(gameInstance);
         categories = itemShopConfig.load();
@@ -106,20 +105,17 @@ public class ItemShopManagerImpl implements ItemShopManager {
     }
 
     @Override
-    public void registerShowModifier(ItemShopShowModifier modifier) {
-        showModifiers.add(modifier);
+    public void registerShowModifier(String id, ItemShopShowModifier modifier) {
+        if (showModifiers.putIfAbsent(id, modifier) != null)
+            throw new IllegalStateException("ItemShopShowModifier ID has been used!");
     }
 
     @Override
     public ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem) {
-        ItemStack result = showItem;
-        for (ItemShopShowModifier modifier : showModifiers) {
-            ItemStack modified = modifier.modify(player, shopItem, targetLevel, result);
-            if (modified != null) {
-                result = modified;
-            }
-        }
-        return result;
+        if (shopItem.showModifierId == null)
+            return showItem;
+
+        return showModifiers.get(shopItem.showModifierId).modify(player, shopItem, targetLevel, showItem);
     }
 
     @Override
