@@ -247,8 +247,11 @@ public class ItemShopManagerImpl implements ItemShopManager {
                 }
             }
 
-            if (itemMeta.hasItemName())
+            if (itemMeta.hasItemName()) {
                 pdc.set(PdcKeys.i18n.name, ComponentDataType.COMPONENT, itemMeta.itemName());
+            } else if (itemMeta.hasDisplayName()) {
+                pdc.set(PdcKeys.i18n.name, ComponentDataType.COMPONENT, itemMeta.displayName());
+            }
 
             if (itemMeta.hasLore() && itemMeta.lore() != null)
                 pdc.set(PdcKeys.i18n.lore, ComponentDataType.COMPONENT_LIST, itemMeta.lore());
@@ -301,10 +304,16 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         ItemStack finalItem = shopItem.getShowItem(targetLevel);
 
+        Component itemName = finalItem.getItemMeta().hasItemName()
+                ? finalItem.getItemMeta().itemName()
+                : finalItem.getItemMeta().hasDisplayName()
+                ? finalItem.getItemMeta().displayName()
+                : Component.translatable(finalItem.getType()).color(NamedTextColor.WHITE);
+
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 2f);
         player.sendMessage(Component.translatable(
                 "nextgenbedwars.shop.item_shop_buy_item",
-                finalItem.getItemMeta().hasItemName() ? finalItem.getItemMeta().itemName() : Component.translatable(finalItem.getType()).color(NamedTextColor.WHITE),
+                itemName,
                 Component.text(boughtAmount)
         ));
         return true;

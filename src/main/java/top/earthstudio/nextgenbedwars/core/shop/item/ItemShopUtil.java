@@ -23,6 +23,11 @@ public class ItemShopUtil {
                 meta.itemName(
                         GlobalTranslator.render(meta.itemName(), locale)
                 );
+            } else if (meta.hasDisplayName()) {
+                meta.displayName(
+                        GlobalTranslator.render(meta.displayName(), locale)
+                                .applyFallbackStyle(DEFAULT_LORE_STYLE)
+                );
             }
             if (meta.hasLore() && meta.lore() != null) {
                 meta.lore(meta.lore().stream()

@@ -76,11 +76,24 @@ public class ItemShopPage extends ChestGuiPage {
                 break;
 
             Category category = categories.get(targetIndex);
+
             if (category != null) {
+                var finalIcon = category.categoryIcon.clone();
+                finalIcon.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
+                        .addHiddenComponents(
+                                DataComponentTypes.ATTRIBUTE_MODIFIERS,
+                                DataComponentTypes.ENCHANTMENTS,
+                                DataComponentTypes.UNBREAKABLE,
+                                DataComponentTypes.POTION_CONTENTS,
+                                DataComponentTypes.STORED_ENCHANTMENTS,
+                                DataComponentTypes.TRIM
+                        )
+                        .build());
+
                 add(
                         i,
                         0,
-                        translateItem(category.categoryIcon, player.locale()),
+                        translateItem(finalIcon, player.locale()),
                         (p, clickType) -> {
                             currentCategoryContentPage = 0;
                             activeCategoryIndex = targetIndex;
@@ -98,7 +111,19 @@ public class ItemShopPage extends ChestGuiPage {
     private void buildPageDivider(Player player, ItemStack divider) {
         for (int x = 0; x <= 8; x++) {
             if (x == 4) {
-                add(x, 1, translateItem(categories.get(activeCategoryIndex).categoryIcon, player.locale()));
+                var finalIcon = categories.get(activeCategoryIndex).categoryIcon.clone();
+                finalIcon.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
+                        .addHiddenComponents(
+                                DataComponentTypes.ATTRIBUTE_MODIFIERS,
+                                DataComponentTypes.ENCHANTMENTS,
+                                DataComponentTypes.UNBREAKABLE,
+                                DataComponentTypes.POTION_CONTENTS,
+                                DataComponentTypes.STORED_ENCHANTMENTS,
+                                DataComponentTypes.TRIM
+                        )
+                        .build());
+
+                add(x, 1, translateItem(finalIcon, player.locale()));
             } else {
                 add(x, 1, divider);
             }

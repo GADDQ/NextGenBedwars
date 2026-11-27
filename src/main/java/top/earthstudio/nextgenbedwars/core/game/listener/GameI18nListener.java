@@ -47,12 +47,17 @@ public class GameI18nListener implements Listener {
             return;
 
         if (pdc.has(PdcKeys.i18n.name)) {
-            item.editMeta(itemMeta ->
-                    itemMeta.itemName(GlobalTranslator.render(
-                            pdc.get(PdcKeys.i18n.name, ComponentDataType.COMPONENT),
-                            player.locale()
-                    ))
+            Component renderedName = GlobalTranslator.render(
+                    pdc.get(PdcKeys.i18n.name, ComponentDataType.COMPONENT),
+                    player.locale()
             );
+            item.editMeta(itemMeta -> {
+                if (itemMeta instanceof org.bukkit.inventory.meta.PotionMeta) {
+                    itemMeta.displayName(renderedName.applyFallbackStyle(DEFAULT_LORE_STYLE));
+                } else {
+                    itemMeta.itemName(renderedName);
+                }
+            });
         }
 
         if (pdc.has(PdcKeys.i18n.lore)) {

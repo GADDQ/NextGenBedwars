@@ -59,7 +59,13 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
 
         if (name != null || (lore != null && !lore.isEmpty())) {
             item.editMeta(meta -> {
-                if (name != null) meta.itemName(name);
+                if (name != null) {
+                    if (meta instanceof PotionMeta) {
+                        meta.displayName(name.applyFallbackStyle(DEFAULT_LORE_STYLE));
+                    } else {
+                        meta.itemName(name);
+                    }
+                }
                 if (lore != null && !lore.isEmpty()) {
                     meta.lore(lore.stream()
                             .map(line -> line.applyFallbackStyle(DEFAULT_LORE_STYLE))
@@ -185,6 +191,8 @@ public class ItemStackSerializer implements TypeSerializer<ItemStack> {
         if (meta != null) {
             if (meta.hasItemName()) {
                 node.node("name").set(Component.class, meta.itemName());
+            } else if (meta.hasDisplayName()) {
+                node.node("name").set(Component.class, meta.displayName());
             }
 
             if (meta.hasLore()) {
