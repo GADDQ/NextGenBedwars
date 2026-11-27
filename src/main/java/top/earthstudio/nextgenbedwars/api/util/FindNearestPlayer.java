@@ -163,4 +163,34 @@ public final class FindNearestPlayer { // ATTENTION: This was built by LLM.
     private static long cellKey(int cx, int cz) {
         return ((long) cx << 32) | (cz & 0xFFFFFFFFL);
     }
+
+    public static Result findNearest(Player self, List<Player> worldPlayers, TeamManager teamManager) {
+        Team myTeam = teamManager.get(self);
+        if (myTeam == null) return null;
+
+        double sx = self.getX();
+        double sy = self.getY();
+        double sz = self.getZ();
+
+        Player nearest = null;
+        double minDistSq = Double.MAX_VALUE;
+
+        for (Player target : worldPlayers) {
+            if (target.getUniqueId().equals(self.getUniqueId())) continue;
+            if (target.getGameMode() == GameMode.SPECTATOR) continue;
+            Team targetTeam = teamManager.get(target);
+            if (targetTeam == null || targetTeam.equals(myTeam)) continue;
+
+            double dx = target.getX() - sx;
+            double dy = target.getY() - sy;
+            double dz = target.getZ() - sz;
+            double distSq = dx * dx + dy * dy + dz * dz;
+            if (distSq < minDistSq) {
+                minDistSq = distSq;
+                nearest = target;
+            }
+        }
+
+        return nearest == null ? null : new Result(nearest, minDistSq);
+    }
 }

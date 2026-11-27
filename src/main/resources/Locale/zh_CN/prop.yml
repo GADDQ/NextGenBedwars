@@ -11,3 +11,5 @@ translations:
 
   trap_trigger_victim: "<red>你掉进陷阱了！"
   trap_trigger_trapper: "<red>有人触发了队伍布下的陷阱！"
+
+  tnt_sheep_no_target: "<red>附近没有敌人，无法生成 TNT 羊！"

@@ -11,3 +11,5 @@ translations:
 
   trap_trigger_victim: "<red>You triggered a trap!"
   trap_trigger_trapper: "<red>Someone triggered your team's trap!"
+
+  tnt_sheep_no_target: "<red>No target found! Cannot spawn TNT Sheep!"
