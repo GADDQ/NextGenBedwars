@@ -118,7 +118,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
             if (modifier == null)
                 continue;
 
-            finalShowItem = modifier.modify(gameInstance, player, shopItem, targetLevel, showItem);
+            finalShowItem = modifier.modify(gameInstance, player, shopItem, targetLevel, finalShowItem);
         }
 
         return finalShowItem;
