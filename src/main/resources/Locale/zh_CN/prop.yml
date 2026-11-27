@@ -8,3 +8,6 @@ translations:
 
   tracker_compass_no_target: "<red>无目标可追踪！"
   tracker_compass_target: "<green>最近的玩家在 <yellow>{0:distance} <green>格外！"
+
+  trap_trigger_victim: "<red>你掉进陷阱了！"
+  trap_trigger_trapper: "<red>有人触发了队伍布下的陷阱！"

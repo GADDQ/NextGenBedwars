@@ -8,3 +8,6 @@ translations:
 
   tracker_compass_no_target: "<red>No target to track!"
   tracker_compass_target: "<green>Nearest player is <yellow>{0:distance} <green>blocks away!"
+
+  trap_trigger_victim: "<red>You triggered a trap!"
+  trap_trigger_trapper: "<red>Someone triggered your team's trap!"
