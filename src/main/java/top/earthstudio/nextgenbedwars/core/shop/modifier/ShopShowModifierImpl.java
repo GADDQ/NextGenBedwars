@@ -3,20 +3,20 @@ package top.earthstudio.nextgenbedwars.core.shop.modifier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import top.earthstudio.nextgenbedwars.api.game.GameInstance;
-import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopShowModifier;
+import top.earthstudio.nextgenbedwars.api.shop.showmodifier.ShopShowModify;
 import top.earthstudio.nextgenbedwars.api.shop.showmodifier.ShopShowModifier;
 
 import java.util.Map;
 
 public class ShopShowModifierImpl implements ShopShowModifier {
-    public Map<String, ItemShopShowModifier> modifiers;
+    public Map<String, ShopShowModify> modifiers;
 
     public ShopShowModifierImpl(GameInstance gameInstance) {
         modifiers = new Object2ObjectOpenHashMap<>();
     }
 
     @Override
-    public void register(String id, ItemShopShowModifier modifier) {
+    public void register(String id, ShopShowModify modifier) {
         if (modifiers.putIfAbsent(id, modifier) != null)
             throw new IllegalStateException("modifier id already been used!");
     }
@@ -27,7 +27,7 @@ public class ShopShowModifierImpl implements ShopShowModifier {
     }
 
     @Override
-    public ItemShopShowModifier get(String id) {
+    public ShopShowModify get(String id) {
         return modifiers.get(id);
     }
 

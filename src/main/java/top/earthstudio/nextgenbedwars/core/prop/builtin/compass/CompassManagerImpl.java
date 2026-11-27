@@ -41,7 +41,7 @@ public class CompassManagerImpl implements CompassManager { // ATTENTION: This w
         this.teamManager = gameInstance.get(TeamManager.class);
         gameInstance.get(ShopExecutor.class).register("compass", (gameInstance, player, shopItem, giveItem) -> {
             refresh(player, giveItem);
-            return true;
+            return giveItem;
         });
     }
 

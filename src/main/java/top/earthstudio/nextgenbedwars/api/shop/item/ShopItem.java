@@ -17,9 +17,9 @@ public final class ShopItem { // struct ShopItem
 
     public int maxLevel = 0;
 
-    public String executorId;
     public String propId;
-    public String showModifierId;
+    public List<String> executorId;
+    public List<String> showModifierId;
 
     public boolean isDecreaseLevelWhenPlayerDead = false;
     public boolean isKeepWhenDead = false;

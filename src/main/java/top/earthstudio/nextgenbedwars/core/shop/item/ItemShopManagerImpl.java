@@ -29,7 +29,7 @@ import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 
 import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShopExecutor;
-import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShowModifier;
+import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShowModify;
 import top.earthstudio.nextgenbedwars.api.shop.showmodifier.ShopShowModifier;
 import top.earthstudio.nextgenbedwars.core.shop.item.listener.ItemShopLevelListener;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerTypeConfig;
@@ -108,14 +108,20 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
     @Override
     public ItemStack applyShowModifiers(Player player, ShopItem shopItem, int targetLevel, ItemStack showItem) {
-        if (shopItem.showModifierId == null || shopItem.showModifierId.isBlank())
+        if (shopItem.showModifierId == null || shopItem.showModifierId.isEmpty())
             return showItem;
 
-        var modifier = shopShowModifier.get(shopItem.showModifierId);
-        if (modifier == null)
-            return showItem;
+        ItemStack finalShowItem = showItem;
 
-        return modifier.modify(gameInstance, player, shopItem, targetLevel, showItem);
+        for (String id : shopItem.showModifierId) {
+            var modifier = shopShowModifier.get(id);
+            if (modifier == null)
+                continue;
+
+            finalShowItem = modifier.modify(gameInstance, player, shopItem, targetLevel, showItem);
+        }
+
+        return finalShowItem;
     }
 
     @Override
@@ -265,9 +271,13 @@ public class ItemShopManagerImpl implements ItemShopManager {
             }
         }
 
-        if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
-            if (!shopExecutor.get(shopItem.executorId).execute(gameInstance, player, shopItem, toGive)) {
-                return false;
+        if (shopItem.executorId != null && !shopItem.executorId.isEmpty()) {
+            for (String id : shopItem.executorId) {
+                var returnItem = shopExecutor.get(id).execute(gameInstance, player, shopItem, toGive);
+                if (returnItem == null) {
+                    return false;
+                } else
+                    toGive = returnItem;
             }
         }
 
@@ -425,7 +435,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
     }
 
     private void registerBuiltIn() {
-        shopShowModifier.register("dye_color", new DyeableShowModifier());
+        shopShowModifier.register("dye_color", new DyeableShowModify());
 
         shopExecutor.register("dye_color", new DyeableShopExecutor());
     }

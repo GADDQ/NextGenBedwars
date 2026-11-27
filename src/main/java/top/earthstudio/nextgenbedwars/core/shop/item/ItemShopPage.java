@@ -3,6 +3,8 @@ package top.earthstudio.nextgenbedwars.core.shop.item;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
 
+import io.papermc.paper.registry.RegistryAccess;
+import io.papermc.paper.registry.RegistryKey;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.kyori.adventure.text.Component;
@@ -25,6 +27,22 @@ import static top.earthstudio.nextgenbedwars.core.shop.item.ItemShopUtil.transla
 
 @SuppressWarnings("UnstableApiUsage")
 public class ItemShopPage extends ChestGuiPage {
+    private static final TooltipDisplay HIDE_ALL_EXCEPT = buildHideAllExcept();
+
+    private static TooltipDisplay buildHideAllExcept() { // TODO: configurable
+        var builder = TooltipDisplay.tooltipDisplay();
+        for (var type : RegistryAccess.registryAccess().getRegistry(RegistryKey.DATA_COMPONENT_TYPE)) {
+            if (type.equals(DataComponentTypes.ITEM_NAME)
+                    || type.equals(DataComponentTypes.CUSTOM_NAME)
+                    || type.equals(DataComponentTypes.LORE)
+                    || type.equals(DataComponentTypes.TOOLTIP_DISPLAY)) {
+                continue;
+            }
+            builder.addHiddenComponents(type);
+        }
+        return builder.build();
+    }
+
     private final boolean isCategoryFullSize = false; // TODO: configurable
     private final boolean isResetMainPageWhenOpen = true; // TODO: configurable
     private int activeCategoryIndex = 0;
@@ -79,16 +97,7 @@ public class ItemShopPage extends ChestGuiPage {
 
             if (category != null) {
                 var finalIcon = category.categoryIcon.clone();
-                finalIcon.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
-                        .addHiddenComponents(
-                                DataComponentTypes.ATTRIBUTE_MODIFIERS,
-                                DataComponentTypes.ENCHANTMENTS,
-                                DataComponentTypes.UNBREAKABLE,
-                                DataComponentTypes.POTION_CONTENTS,
-                                DataComponentTypes.STORED_ENCHANTMENTS,
-                                DataComponentTypes.TRIM
-                        )
-                        .build());
+                finalIcon.setData(DataComponentTypes.TOOLTIP_DISPLAY, HIDE_ALL_EXCEPT);
 
                 add(
                         i,
@@ -112,16 +121,7 @@ public class ItemShopPage extends ChestGuiPage {
         for (int x = 0; x <= 8; x++) {
             if (x == 4) {
                 var finalIcon = categories.get(activeCategoryIndex).categoryIcon.clone();
-                finalIcon.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
-                        .addHiddenComponents(
-                                DataComponentTypes.ATTRIBUTE_MODIFIERS,
-                                DataComponentTypes.ENCHANTMENTS,
-                                DataComponentTypes.UNBREAKABLE,
-                                DataComponentTypes.POTION_CONTENTS,
-                                DataComponentTypes.STORED_ENCHANTMENTS,
-                                DataComponentTypes.TRIM
-                        )
-                        .build());
+                finalIcon.setData(DataComponentTypes.TOOLTIP_DISPLAY, HIDE_ALL_EXCEPT);
 
                 add(x, 1, translateItem(finalIcon, player.locale()));
             } else {
@@ -180,16 +180,7 @@ public class ItemShopPage extends ChestGuiPage {
                 shopItem.getShowItem(targetLevel).clone()
         );
 
-        finalShowItem.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay() // TODO: configurable
-                .addHiddenComponents(
-                        DataComponentTypes.ATTRIBUTE_MODIFIERS,
-                        DataComponentTypes.ENCHANTMENTS,
-                        DataComponentTypes.UNBREAKABLE,
-                        DataComponentTypes.POTION_CONTENTS,
-                        DataComponentTypes.STORED_ENCHANTMENTS,
-                        DataComponentTypes.TRIM
-                )
-                .build());
+        finalShowItem.setData(DataComponentTypes.TOOLTIP_DISPLAY, HIDE_ALL_EXCEPT);
 
         List<Component> lore = finalShowItem.lore() != null
                 ? new ObjectArrayList<>(finalShowItem.lore())

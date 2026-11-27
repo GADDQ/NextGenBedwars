@@ -4,9 +4,9 @@ import top.earthstudio.nextgenbedwars.api.game.IGameSubSystem;
 
 @SuppressWarnings("unused")
 public interface ShopExecutor extends IGameSubSystem {
-    void register(String id, ShopBuyAction shopBuyAction);
+    void register(String id, ShopExecute shopExecute);
     void unregister(String id);
-    ShopBuyAction get(String id);
+    ShopExecute get(String id);
 
     @Override
     default void update() {}
