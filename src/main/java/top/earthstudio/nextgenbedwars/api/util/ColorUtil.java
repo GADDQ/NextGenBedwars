@@ -152,7 +152,7 @@ public final class ColorUtil {
         return isRgbDyeable(material) || isColorableVariant(material);
     }
 
-    public static ItemStack dyeItem(ItemStack item, DyeColor dyeColor, Color rgbColor) {
+    public static ItemStack dyeItem(ItemStack item, Color rgbColor) {
         Material type = item.getType();
         if (isRgbDyeable(type)) {
             ItemStack copy = item.clone();
@@ -161,7 +161,7 @@ public final class ColorUtil {
         }
         String suffix = extractColorableSuffix(type);
         if (suffix != null) {
-            Material colored = Material.matchMaterial(dyeColor.name() + "_" + suffix);
+            Material colored = Material.matchMaterial(toNearestDyeColor(rgbColor) + "_" + suffix);
             if (colored != null) {
                 return item.withType(colored);
             }
@@ -193,5 +193,51 @@ public final class ColorUtil {
             }
         }
         return null;
+    }
+
+    @NotNull
+    public static DyeColor toNearestDyeColor(@Nullable Color color) {
+        return toNearestDyeColor(color, DyeColor.WHITE);
+    }
+
+    @NotNull
+    public static DyeColor toNearestDyeColor(@Nullable Color color, @NotNull DyeColor defaultDyeColor) {
+        if (color == null) {
+            return defaultDyeColor;
+        }
+
+        DyeColor exact = DyeColor.getByColor(color);
+        if (exact != null) {
+            return exact;
+        }
+
+        DyeColor closest = defaultDyeColor;
+        int minDistance = Integer.MAX_VALUE;
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+
+        for (DyeColor dyeColor : DyeColor.values()) {
+            Color target = dyeColor.getColor();
+            int dr = target.getRed() - r;
+            int dg = target.getGreen() - g;
+            int db = target.getBlue() - b;
+            int distance = dr * dr + dg * dg + db * db;
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest = dyeColor;
+            }
+        }
+        return closest;
+    }
+
+    @NotNull
+    public static Color toColor(@Nullable DyeColor dyeColor) {
+        return toColor(dyeColor, Color.WHITE);
+    }
+
+    @NotNull
+    public static Color toColor(@Nullable DyeColor dyeColor, @NotNull Color defaultColor) {
+        return dyeColor != null ? dyeColor.getColor() : defaultColor;
     }
 }

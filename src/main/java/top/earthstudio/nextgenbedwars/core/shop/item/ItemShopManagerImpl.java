@@ -29,6 +29,8 @@ import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopManager;
 import top.earthstudio.nextgenbedwars.api.shop.item.ShopItem;
 import top.earthstudio.nextgenbedwars.api.shop.item.ItemShopShowModifier;
 
+import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShopExecutor;
+import top.earthstudio.nextgenbedwars.api.shop.item.builtin.DyeableShowModifier;
 import top.earthstudio.nextgenbedwars.core.shop.item.listener.ItemShopLevelListener;
 import top.earthstudio.nextgenbedwars.core.spawner.SpawnerTypeConfig;
 
@@ -82,6 +84,8 @@ public class ItemShopManagerImpl implements ItemShopManager {
 
         itemShopLevelListener = new ItemShopLevelListener(gameInstance, levelManager, itemShopConfig);
         Bukkit.getPluginManager().registerEvents(itemShopLevelListener, BedwarsAPI.getInstance().plugin());
+
+        registerBuiltIn();
     }
 
     @Override
@@ -115,7 +119,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         if (shopItem.showModifierId == null)
             return showItem;
 
-        return showModifiers.get(shopItem.showModifierId).modify(player, shopItem, targetLevel, showItem);
+        return showModifiers.get(shopItem.showModifierId).modify(gameInstance, player, shopItem, targetLevel, showItem);
     }
 
     @Override
@@ -266,7 +270,7 @@ public class ItemShopManagerImpl implements ItemShopManager {
         }
 
         if (shopItem.executorId != null && !shopItem.executorId.isBlank()) {
-            if (!shopExecutor.get(shopItem.executorId).execute(player, shopItem, toGive)) {
+            if (!shopExecutor.get(shopItem.executorId).execute(gameInstance, player, shopItem, toGive)) {
                 return false;
             }
         }
@@ -424,5 +428,11 @@ public class ItemShopManagerImpl implements ItemShopManager {
             }
         }
         return total;
+    }
+
+    private void registerBuiltIn() {
+        registerShowModifier("dye_color", new DyeableShowModifier());
+
+        shopExecutor.register("dye_color", new DyeableShopExecutor());
     }
 }
